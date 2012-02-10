@@ -13,6 +13,8 @@ Foundry Application Platform as a Service, but even if this has been the
 primary consumer, the framework is general purpose and can be used to
 deploy many different
 
+\\TODO: what is BOSH not
+
 == BOSH Component Definitons
 
 === Infrastructure as a Service (IaaS)
@@ -113,6 +115,9 @@ accordance to the specification.
 
 == Installing BOSH
 
+//TODO: replace this with gem install of cli gem
+//TODO: remove this section when we don't need chef_deployer anymore
+
 BOSH is a Ruby based toolchain and we suggest that you are set up with
 the following  
 
@@ -126,7 +131,7 @@ the following
 
 //TODO: ruby requirements - bundler version
 
-== Configure BOSH
+== Configure BOSH Director
 
 [NOTE]
 The current +chef-solo+ based installer is being re-written as a
@@ -155,12 +160,41 @@ cd ~/projects/bosh/release
 chef_deployer deploy ~/projects/deployments/mycloud/cloud
 ----------------------------------------
 
-== Release Engineering ==
+== BOSH CLI
+
+\\Go Oleg
+
+== Some section that has stemcells + releases / Director interaction
+
+\\upload
+
+== Releases
 
 === Release Repository
 
 A BOSH release is built from a directory tree following a structure
 described in this section:
+
+=== Jobs
+\\TODO: job templates
+\\TODO: use of properties
+\\TODO: "the job of a vm"
+\\TODO: monitrc (gonit)
+\\TODO: DNS support
+
+=== Packages
+\\TODO: ishisness!
+\\TODO: compilation
+\\TOOD: dependencies
+\\TODO: package specs
+
+=== Sources
+\\ final release
+
+=== Blobs
+\\ TODO: configuration options for Blobstore (Atmos vs S3)
+
+=== Versioning schemes
 
 === Configuring Releases ===
 
@@ -168,8 +202,18 @@ described in this section:
 
 === Final Releases ===
 
+
 == BOSH Deployments
+
+\\TODO: capture all the steps that the deployment does
 
 === BOSH Property Store
 
 === BOSH Deployment Manifest
+\\TODO: options global/job propertes
+\\TODO: cloud_properties for the cli
+
+== BOSH Troubleshooting
+\\TODO: cloud check
+\\TODO: BOSH SSH
+\\TODO: logs
