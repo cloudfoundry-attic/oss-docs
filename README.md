@@ -1,7 +1,7 @@
-# BOSH Technical Overview
+# BOSH Docs
 © VMWare 2012
 
-The BOSH Technical Overview is written in MultiMarkdown (MMD). If you want to install the MultiMarkdown tools, you can read about that here: [MultiMarkdown](https://github.com/fletcher/peg-multimarkdown) 
+The BOSH Docs are written in MultiMarkdown (MMD). If you want to install the MultiMarkdown tools, you can read about that here: [MultiMarkdown](https://github.com/fletcher/peg-multimarkdown) 
 
 To create a PDF from a MMD document you need both MultiMarkdown and LaTeX on your system. You can read about how to do this here: [LaTeX Home Page](http://www.latex-project.org/)
 
