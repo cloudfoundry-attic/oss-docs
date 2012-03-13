@@ -1,4 +1,0 @@
-Cloud Foundry Document Repository
-=================================
-
-Something happened - Please refer to the Github Wiki associated with this repository.
