@@ -183,7 +183,7 @@ With a fully configured environment, we can begin deploying the sample applicati
 
 		bosh create release –force –with-tarball
 		
-1. Answer `wordpress` to the `release name`prompt
+1. Answer `wordpress` to the `release name` prompt
 
 1. Your terminal will display information about the release including the Release Manifest, Packages, Jobs, and tarball location.
 
