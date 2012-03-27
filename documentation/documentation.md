@@ -1,116 +1,65 @@
-latex input:	mmd-article-header
-Title:	BOSH Documentation 
-Author:	VMware 2012 - Cloud Foundry
-Base Header Level:	2  
-LaTeX Mode:	memoir  
-latex input:	mmd-article-begin-doc
-latex footer:	mmd-memoir-footer
+# Introduction
 
+BOSH is a framework and tool-chain for release engineering, deployment and life cycle management of distributed services, particularly Cloud Foundry. In this manual we describe the architecture, topology, configuration and use of BOSH, as well as the structure and conventions used in packaging and deployment.
 
+BOSH introduces a fairly prescriptive way of managing systems and services. It was originally developed in the context of the Cloud Foundry Application Platform as a Service, but even if this has been the primary consumer, the framework is general purpose and can be used to deploy other distributed services on top of a Cloud Provider Interface (CPI) provided by VMware vSphere, Amazon Web Services, or OpenStack.
 
-# Introduction to BOSH
+# BOSH Components #
 
-BOSH is a framwork and tool-chain for release engineering, deployment
-and life cycle management of distributed services. In this manual we
-describe the architecture, topology, configuration and use of BOSH, as
-well as the structure and conventions used in packaging and deployment.
+## Fig 1. Interaction of BOSH Components
 
-BOSH introduces a fairly prescriptive way of managing systems and
-services. It was originally developed in the context of the Cloud
-Foundry Application Platform as a Service, but even if this has been the
-primary consumer, the framework is general purpose and can be used to
-deploy many different
-
-TODO: what is BOSH not
-
-# BOSH Component Definitons
+![Figure 1](fig1.pdf)
 
 ## Infrastructure as a Service (IaaS)
 
-The core BOSH engine is abstracted away from any particular
-Infrastructure as a Service (IaaS), such as VMware vSphere, AWS or
-OpenStack. The interface to thse is implemented as plugins to BOSH. At
-the time of writing only the vSphere implementation is fully featured.
+The core BOSH engine is abstracted away from any particular Infrastructure as a Service (IaaS), such as VMware vSphere, AWS or OpenStack. The interface to these is implemented as plugins to BOSH. Currently, BOSH supports both VMware vSphere and Amazon Web Services. Virtual Machines (VMs) are created and destroyed through workers, which are sent instructions from the Director. Those VMs are created based on a **Stemcell** that is uploaded to BOSH's Blobstore through the Command Line Interface (CLI).
 
 ## Cloud Provider Interface (CPI)
 
-As a user of BOSH you're not directly exposed to the the BOSH Cloud
-Provider Interface, but it can be helpful to understand it's primitives
-when learning how BOSH works.
+As a user of BOSH you're not directly exposed to the the BOSH Cloud Provider Interface, but it can be helpful to understand it's primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following: 
 
-create_stemcell
-delete_stemcell
-create_vm
-delete_vm
-configure_networks
-create_disk
-delete_disk
-attach_disk
-detach_disk
+* create_stemcell
+* delete_stemcell
+* create_vm
+* delete_vm
+* reboot_vm
+* configure_networks
+* create_disk
+* delete_disk
+* attach_disk
+* detach_disk
 
-Please refer to the API documentation +director/lib/director/cloud.rb+
-for a detailed explanation of the CPI primitives.
+In addition to these methods are others specific to each cloud interface. For example, the Amazon Web Services interface includes methods for elastic block storage, which are unnecessary on vSphere. Please refer to the API documentation in the files listed above for a detailed explanation of the CPI primitives.
 
-The CPI is used primarily to do low level creation and management of
-resources in an IaaS, once a resouce is up and running command and
-control is handed over to the higher level BOSH Director-Agent
-interaction.
+The CPI is used primarily to do low level creation and management of resources in an IaaS, once a resource is up and running,command and control is handed over to the higher level BOSH Director-Agent interaction.
 
 ## BOSH Director
 
-The Director is the core orchestrating component in BOSH which controls
-creation of VMs, deployment and other life cycle events of software and
-services.
+The Director is the core orchestrating component in BOSH which controls creation of VMs, deployment and other life cycle events of software and services.
 
 ## BOSH CLI
 
-TODO
+The BOSH Command Line Interface is the mechansim for users to interact with BOSH using a terminal session. BOSH commands follow the format shown below:
 
-## BOSH Agent
+	$bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR>]
+            [--force] [--no-color] [--skip-director-checks] [--quiet]
+            [--non-interactive]
 
-Every VM created by BOSH includes a an Agent, which does initial
-configuration of a system once the Director has created it through the
-CPI and further install software and services, once the Director
-instructs it to apply a Job.
+A full overview of BOSH commands and installation appears in the [BOSH CLI][bosh_cli] and [BOSH installation][bosh_install] sections.
 
-##Stemcells
+## Stemcells
 
-A BOSH stemcell is typically a simple VM template with an embedded BOSH
-Agent. These are uploaded using the BOSH CLI and used by the Director
-when creating VMs through the CPI. When the Director create a VM through
-the CPI, it will pass along configurations for networking and storage as
-well as the location and credentials for the BOSH Message Bus and the
-BOSH Blobstore.
+A BOSH stemcell is a VM template with an embedded BOSH Agent. The stemcell used for Cloud Foundry is a standard Ubuntu distribution, and only the .These are uploaded using the BOSH CLI and used by the Director when creating VMs through the CPI. When the Director create a VM through the CPI, it will pass along configurations for networking and storage as well as the location and credentials for the BOSH Message Bus and the BOSH Blobstore.
 
 ## Releases
 
-A Release in BOSH is a packaged bundle of service descriptors (known as
-Jobs in BOSH), a collection of software bits and configurations. A
-release contains all the static bits (source or binary) required to have
-BOSH manage an application or a distributed service. A Release is
-typcially not restricted to any particular environment an as such it can
-be re-used across clusters handling different stages in a service life
-cycle, such as development, QA, staging or production. The BOSH CLI
-manages both the creation of releases and the deployments into specific
-environment.
+A Release in BOSH is a packaged bundle of service descriptors (known as Jobs in BOSH), a collection of software bits and configurations. A release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service. A Release is typcially not restricted to any particular environment an as such it can be re-used across clusters handling different stages in a service life cycle, such as development, QA, staging or production. The BOSH CLI manages both the creation of releases and the deployments into specific environment.
 
 ## Deployments
 
-While BOSH Stemcells and Releases are static compnents, we say that they
-are bound together into a Deployment by what we call a Deployment
-Manifest. In the Deployment Manifest you declare pools of VMs, which
-networks they live on, which Jobs (service componens) from the Release
-you want to activate. Job configuration specify life cycle parameters,
-the number instances of a Job, as well as network and storage
-requirements. In the Deployment Manifest you can also speficy properties
-at various levels used to paramaterize configuration templates contained
-in the Release.
+While BOSH Stemcells and Releases are static compnents, we say that they are bound together into a Deployment by what we call a Deployment Manifest. In the Deployment Manifest you declare pools of VMs, which networks they live on, which Jobs (service componens) from the Release you want to activate. Job configuration specify life cycle parameters, the number instances of a Job, as well as network and storage requirements. In the Deployment Manifest you can also speficy properties at various levels used to paramaterize configuration templates contained in the Release.
 
-Using the BOSH CLI you specify a Deployment Manifest and perform a
-Deploy operation (+bosh deploy+), which will take this specification and
-go out to your cluster and either create or update resources in
-accordance to the specification.
-
+Using the BOSH CLI you specify a Deployment Manifest and perform a Deploy operation (+bosh deploy+), which will take this specification and go out to your cluster and either create or update resources in accordance to the specification.
 
 ## Blobstore
 
@@ -118,8 +67,9 @@ accordance to the specification.
 
 ## Message bus
 
+# Using BOSH
 
-# Installing BOSH
+# Installation[bosh_install]
 
 TODO: replace this with gem install of cli gem
 TODO: remove this section when we don't need chef_deployer anymore
@@ -155,7 +105,7 @@ TODO: check if we can provide vm_builder instructions for creating and
 	cd ~/projects/bosh/release
 	chef_deployer deploy ~/projects/deployments/mycloud/cloud
 
-# BOSH CLI
+# BOSH CLI [bosh_cli]
 
 Go Oleg
 
