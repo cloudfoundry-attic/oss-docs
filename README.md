@@ -1,7 +1,7 @@
-# BOSH Docs
+# Cloud Foundry Docs
 © VMWare 2012
 
-The BOSH Docs are written in MultiMarkdown (MMD). If you want to install the MultiMarkdown tools, you can read about that here: [MultiMarkdown](https://github.com/fletcher/peg-multimarkdown) 
+The Cloud Foundry Docs are written in MultiMarkdown (MMD). If you want to install the MultiMarkdown tools, you can read about that here: [MultiMarkdown](https://github.com/fletcher/peg-multimarkdown) 
 
 To create a PDF from a MMD document you need both MultiMarkdown and LaTeX on your system. You can read about how to do this here: [LaTeX Home Page](http://www.latex-project.org/)
 
@@ -21,7 +21,7 @@ You can create a nicely formatted PDF like this…
 4. At the top of your MMD document, create metadata such as:
 
 		latex input:	mmd-article-header
-		Title:	BOSH Technical Overview 
+		Title:	Cloud Foundry Technical Overview 
 		Author:	VMware 2012 - Cloud Foundry
 		Base Header Level:	2  
 		LaTeX Mode:	memoir  
