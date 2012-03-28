@@ -15,9 +15,6 @@ This tutorial will guide you through the process of deploying a multi-tier WordP
 Prerequisites
 ==========
 
--  A running development environment with a BOSH Director and an uploaded stemcell.
--  Access to the BOSH Gerrit server
--  A clean Ubuntu 10.04 LTS running in VMWare Fusion
 
 # Installing BOSH on an Ubuntu VM
 
