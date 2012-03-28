@@ -222,6 +222,8 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 
 1. Change directories into the release directory.
 
+**NOTE: This is not correct yet - Get correct locations and names from Oleg**
+
 		cd ~/release
 	
 	This directory contains the Cloud Foundry deployment and release files.
