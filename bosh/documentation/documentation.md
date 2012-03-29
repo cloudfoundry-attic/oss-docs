@@ -8,7 +8,7 @@ BOSH introduces a fairly prescriptive way of managing systems and services. It w
 
 ## Fig 1. Interaction of BOSH Components
 
-![Figure 1](fig1.pdf)
+![Figure 1](fig1.png)
 
 ## Infrastructure as a Service (IaaS)
 
