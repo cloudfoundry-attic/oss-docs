@@ -209,7 +209,7 @@ With a fully configured environment, we can begin deploying the sample applicati
 
 1. Complete the form to install your WordPress blog
 
-![Deployed Wordpress](deployed.png)
+![Deployed Wordpress](https://github.com/vmware-ac/doxa/raw/master/bosh/tutorial/deployed.png)
 
 ## Appendix ##
 
