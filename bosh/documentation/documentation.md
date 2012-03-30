@@ -12,7 +12,7 @@ BOSH introduces a fairly prescriptive way of managing systems and services. It w
 
 ## Infrastructure as a Service (IaaS)
 
-The core BOSH engine is abstracted away from any particular Infrastructure as a Service (IaaS), such as VMware vSphere, AWS or OpenStack. The interface to these is implemented as plugins to BOSH. Currently, BOSH supports both VMware vSphere and Amazon Web Services. Virtual Machines (VMs) are created and destroyed through workers, which are sent instructions from the Director. Those VMs are created based on a **Stemcell** that is uploaded to BOSH's Blobstore through the Command Line Interface (CLI).
+The core BOSH engine is abstracted away from any particular Infrastructure as a Service (IaaS), such as VMware vSphere, AWS or OpenStack. IaaS interfaces are implemented as plugins to BOSH. Currently, BOSH supports both VMware vSphere and Amazon Web Services. Virtual Machines (VMs) are created and destroyed through Workers, which are sent instructions from the Director. Those VMs are created based on a **Stemcell** that is uploaded to BOSH's Blobstore through the Command Line Interface (CLI).
 
 ## Cloud Provider Interface (CPI)
 
@@ -29,17 +29,17 @@ As a user of BOSH you're not directly exposed to the the BOSH Cloud Provider Int
 * attach_disk
 * detach_disk
 
-In addition to these methods are others specific to each cloud interface. For example, the Amazon Web Services interface includes methods for elastic block storage, which are unnecessary on vSphere. Please refer to the API documentation in the files listed above for a detailed explanation of the CPI primitives.
+In addition to these methods are others specific to each cloud interface. For example, the Amazon Web Services interface includes methods for Elastic Block Store, which are unnecessary on vSphere. Please refer to the API documentation in the files listed above for a detailed explanation of the CPI primitives.
 
-The CPI is used primarily to do low level creation and management of resources in an IaaS, once a resource is up and running,command and control is handed over to the higher level BOSH Director-Agent interaction.
+The CPI is used primarily to do low level creation and management of resources in an IaaS. Once a resource is up and running, command and control is handed over to the higher level BOSH Director-Agent interaction.
 
 ## BOSH Director
 
-The Director is the core orchestrating component in BOSH which controls creation of VMs, deployment and other life cycle events of software and services.
+The Director is the core orchestrating component in BOSH which controls creation of VMs, deployment, and other life cycle events of software and services.
 
 ## BOSH CLI
 
-The BOSH Command Line Interface is the mechansim for users to interact with BOSH using a terminal session. BOSH commands follow the format shown below:
+The BOSH Command Line Interface is the mechanism for users to interact with BOSH using a terminal session. BOSH commands follow the format shown below:
 
 	$bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR>]
             [--force] [--no-color] [--skip-director-checks] [--quiet]
@@ -49,7 +49,7 @@ A full overview of BOSH commands and installation appears in the [BOSH CLI][bosh
 
 ## Stemcells
 
-A BOSH stemcell is a VM template with an embedded BOSH Agent. The stemcell used for Cloud Foundry is a standard Ubuntu distribution, and only the .These are uploaded using the BOSH CLI and used by the Director when creating VMs through the CPI. When the Director create a VM through the CPI, it will pass along configurations for networking and storage as well as the location and credentials for the BOSH Message Bus and the BOSH Blobstore.
+A BOSH Stemcell is a VM template with an embedded BOSH Agent. The Stemcell used for Cloud Foundry is a standard Ubuntu distribution. Stemcells are uploaded using the BOSH CLI and used by the Director when creating VMs through the CPI. When the Director creates a VM through the CPI, it will pass along configurations for networking and storage, as well as the location and credentials for the BOSH Message Bus and the BOSH Blobstore.
 
 ## Releases
 
