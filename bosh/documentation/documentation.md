@@ -53,7 +53,9 @@ A BOSH Stemcell is a VM template with an embedded BOSH Agent. The Stemcell used 
 
 ## Releases
 
-A Release in BOSH is a packaged bundle of service descriptors (known as Jobs in BOSH), a collection of software bits and configurations. A release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service. A Release is typically not restricted to any particular environment an as such it can be re-used across clusters handling different stages in a service life cycle, such as development, QA, staging or production. The BOSH CLI manages both the creation of releases and the deployments into specific environment.
+A Release in BOSH is a packaged bundle of service descriptors known as Jobs. Jobs are collections of software bits and configurations. Any given Release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service. 
+
+A Release is typically not restricted to any particular environment. As such, it can be re-used across clusters handling different stages in a service life cycle, such as Development, QA, Staging, or Production. The BOSH CLI manages both the creation of Releases and their deployments into specific environments.
 
 ## Deployments
 
