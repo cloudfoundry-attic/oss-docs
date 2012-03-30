@@ -12,7 +12,7 @@ BOSH introduces a fairly prescriptive way of managing systems and services. It w
 
 ## Infrastructure as a Service (IaaS)
 
-The core BOSH engine is abstracted away from any particular Infrastructure as a Service (IaaS), such as VMware vSphere, AWS or OpenStack. The interface to these is implemented as plugins to BOSH. Currently, BOSH supports both VMware vSphere and Amazon Web Services. Virtual Machines (VMs) are created and destroyed through workers, which are sent instructions from the Director. Those VMs are created based on a **Stemcell** that is uploaded to BOSH's Blobstore through the Command Line Interface (CLI).
+The core BOSH engine is abstracted away from any particular Infrastructure as a Service (IaaS), such as VMware vSphere, AWS or OpenStack. The interface to these is implemented as plugins to BOSH. Currently, BOSH supports both VMware vSphere and Amazon Web Services. Virtual Machines (VMs) are created and destroyed through Workers, which are sent instructions from the Director. Those VMs are created based on a **Stemcell** that is uploaded to BOSH's Blobstore through the Command Line Interface (CLI).
 
 ## Cloud Provider Interface (CPI)
 
