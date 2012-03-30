@@ -35,11 +35,11 @@ The CPI is used primarily to do low level creation and management of resources i
 
 ## BOSH Director
 
-The Director is the core orchestrating component in BOSH which controls creation of VMs, deployment and other life cycle events of software and services.
+The Director is the core orchestrating component in BOSH which controls creation of VMs, deployment, and other life cycle events of software and services.
 
 ## BOSH CLI
 
-The BOSH Command Line Interface is the mechansim for users to interact with BOSH using a terminal session. BOSH commands follow the format shown below:
+The BOSH Command Line Interface is the mechanism for users to interact with BOSH using a terminal session. BOSH commands follow the format shown below:
 
 	$bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR>]
             [--force] [--no-color] [--skip-director-checks] [--quiet]
@@ -49,7 +49,7 @@ A full overview of BOSH commands and installation appears in the [BOSH CLI][bosh
 
 ## Stemcells
 
-A BOSH stemcell is a VM template with an embedded BOSH Agent. The stemcell used for Cloud Foundry is a standard Ubuntu distribution, and only the .These are uploaded using the BOSH CLI and used by the Director when creating VMs through the CPI. When the Director create a VM through the CPI, it will pass along configurations for networking and storage as well as the location and credentials for the BOSH Message Bus and the BOSH Blobstore.
+A BOSH Stemcell is a VM template with an embedded BOSH Agent. The Stemcell used for Cloud Foundry is a standard Ubuntu distribution. Stemcells are uploaded using the BOSH CLI and used by the Director when creating VMs through the CPI. When the Director creates a VM through the CPI, it will pass along configurations for networking and storage, as well as the location and credentials for the BOSH Message Bus and the BOSH Blobstore.
 
 ## Releases
 
