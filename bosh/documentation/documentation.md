@@ -29,7 +29,7 @@ As a user of BOSH you're not directly exposed to the the BOSH Cloud Provider Int
 * attach_disk
 * detach_disk
 
-In addition to these methods are others specific to each cloud interface. For example, the Amazon Web Services interface includes methods for elastic block storage, which are unnecessary on vSphere. Please refer to the API documentation in the files listed above for a detailed explanation of the CPI primitives.
+In addition to these methods are others specific to each cloud interface. For example, the Amazon Web Services interface includes methods for Elastic Block Store, which are unnecessary on vSphere. Please refer to the API documentation in the files listed above for a detailed explanation of the CPI primitives.
 
 The CPI is used primarily to do low level creation and management of resources in an IaaS, once a resource is up and running,command and control is handed over to the higher level BOSH Director-Agent interaction.
 
