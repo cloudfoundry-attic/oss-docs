@@ -63,7 +63,7 @@ Using the BOSH CLI you specify a Deployment Manifest and perform a Deploy operat
 
 ## Blobstore
 
-## BOSH Monitor
+## Health Monitor
 
 ## Message bus
 
@@ -116,9 +116,7 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. If you do not run Ubun
 
 ### Install Local BOSH and BOSH Releases
 
-1. Sign up for the Cloud Foundry Gerrit server at [http://cloudfoundry-codereview.qa.mozycloud.com/gerrit](http://cloudfoundry-codereview.qa.mozycloud.com/gerrit)
-
-**NOTE: PUBLIC GERRIT IN FINAL DRAFT**
+1. Sign up for the Cloud Foundry Gerrit server at [http://review.cloudfoundry.com](http://review.cloudfoundry.com)
 
 1. Set up your ssh public key (accept all defaults)
 
@@ -423,7 +421,7 @@ TODO: check if we can provide vm_builder instructions for creating and
 
 Go Oleg
 
-# Some section that has stemcells + releases / Director interaction
+# Stemcells + releases / Director interaction
 
 upload
 
@@ -460,7 +458,6 @@ TODO: package specs
 ## Building Releases
 
 ## Final Releases
-
 
 # BOSH Deployments
 
