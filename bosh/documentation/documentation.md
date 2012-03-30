@@ -59,9 +59,9 @@ A Release is typically not restricted to any particular environment. As such, it
 
 ## Deployments
 
-While BOSH Stemcells and Releases are static components, we say that they are bound together into a Deployment by what we call a Deployment Manifest. In the Deployment Manifest you declare pools of VMs, which networks they live on, which Jobs (service components) from the Release you want to activate. Job configuration specify life cycle parameters, the number instances of a Job, as well as network and storage requirements. In the Deployment Manifest you can also specify properties at various levels used to paramaterize configuration templates contained in the Release.
+While BOSH Stemcells and Releases are static components, we say that they are bound together into a Deployment by what we call a Deployment Manifest. In the Deployment Manifest, you declare pools of VMs, which networks they live on, and which Jobs (service components) from the Release you want to activate. Job configurations specify life cycle parameters, the number of instances of a Job, and network and storage requirements. Furthermore, the Deployment Manifest allows you to specify properties used to parameterize configuration templates contained in the Release.
 
-Using the BOSH CLI you specify a Deployment Manifest and perform a Deploy operation (+bosh deploy+), which will take this specification and go out to your cluster and either create or update resources in accordance to the specification.
+Using the BOSH CLI, you specify a Deployment Manifest and perform a Deploy operation (+bosh deploy+), which creates or updates resources on your cluster according to your specifications.
 
 ## Blobstore
 
