@@ -53,13 +53,15 @@ A BOSH Stemcell is a VM template with an embedded BOSH Agent. The Stemcell used 
 
 ## Releases
 
-A Release in BOSH is a packaged bundle of service descriptors (known as Jobs in BOSH), a collection of software bits and configurations. A release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service. A Release is typically not restricted to any particular environment an as such it can be re-used across clusters handling different stages in a service life cycle, such as development, QA, staging or production. The BOSH CLI manages both the creation of releases and the deployments into specific environment.
+A Release in BOSH is a packaged bundle of service descriptors known as Jobs. Jobs are collections of software bits and configurations. Any given Release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service. 
+
+A Release is typically not restricted to any particular environment. As such, it can be re-used across clusters handling different stages in a service life cycle, such as Development, QA, Staging, or Production. The BOSH CLI manages both the creation of Releases and their deployments into specific environments.
 
 ## Deployments
 
-While BOSH Stemcells and Releases are static components, we say that they are bound together into a Deployment by what we call a Deployment Manifest. In the Deployment Manifest you declare pools of VMs, which networks they live on, which Jobs (service components) from the Release you want to activate. Job configuration specify life cycle parameters, the number instances of a Job, as well as network and storage requirements. In the Deployment Manifest you can also specify properties at various levels used to paramaterize configuration templates contained in the Release.
+While BOSH Stemcells and Releases are static components, we say that they are bound together into a Deployment by what we call a Deployment Manifest. In the Deployment Manifest, you declare pools of VMs, which networks they live on, and which Jobs (service components) from the Release you want to activate. Job configurations specify life cycle parameters, the number of instances of a Job, and network and storage requirements. Furthermore, the Deployment Manifest allows you to specify properties used to parameterize configuration templates contained in the Release.
 
-Using the BOSH CLI you specify a Deployment Manifest and perform a Deploy operation (+bosh deploy+), which will take this specification and go out to your cluster and either create or update resources in accordance to the specification.
+Using the BOSH CLI, you specify a Deployment Manifest and perform a Deploy operation (+bosh deploy+), which creates or updates resources on your cluster according to your specifications.
 
 ## Blobstore
 
