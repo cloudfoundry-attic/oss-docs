@@ -79,7 +79,7 @@ Before we can use BOSH we need to install the BOSH CLI. Also, make sure that you
 
 ## Installing BOSH Command Line Interface ##
 
-The following steps install BOSH CLI on Ubuntu 10.04 LTS. If you do not run Ubuntu, it is recommended that you install it on a a local Virtual Machine.
+The following steps install BOSH CLI on Ubuntu 10.04 LTS. If you do not run Ubuntu, it is recommended that you install it on a local Virtual Machine.
 
 ### Install Ruby via rbenv
 
@@ -171,7 +171,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 
 ### Point BOSH at a Target and Clean your Environment ###
 
-1. Target your director (this IP is an example) **NOTE: EXAMPLE WORKS FOR INTERNAL USE (u: admin / p: admin)**
+1. Target your Director (this IP is an example) **NOTE: EXAMPLE WORKS FOR INTERNAL USE (u: admin / p: admin)**
 
 		bosh target 172.23.128.219:25555 
 
@@ -186,7 +186,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 		User           admin
 		Deployment     not set
 
-1. List any previous deployments (we will remove them in a moment). If this is your first deployment, there will be none listed.
+1. List any previous Deployments (we will remove them in a moment). If this is your first Deployment, there will be none listed.
     
 		bosh deployments
 
@@ -198,13 +198,13 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 		| dev48 |
 		+-------+
 
-1. Delete the existing deployments (ex: dev48) 
+1. Delete the existing Deployments (ex: dev48) 
 
 		bosh delete deployment dev48
 
 1. Answer `yes` to the prompt and wait for the deletion to complete
 
-1. List previous releases (we will remove them in a moment). If this is your first deployment, there will be non listed.
+1. List previous Releases (we will remove them in a moment). If this is your first Deployment, there will be none listed.
 
 		`bosh releases`
 
