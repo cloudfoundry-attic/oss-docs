@@ -65,6 +65,10 @@ Using the BOSH CLI, you specify a Deployment Manifest and perform a Deploy opera
 
 ## Blobstore
 
+The BOSH Blobstore is used to store the content of Releases (BOSH Jobs and Packages in their source form as well as the compiled image of BOSH Packages). Releases are uploaded by the BOSH CLI and inserted into the blobstore by the BOSH Director. When you deploy a Release, BOSH will orchestrate compilation of packages and store the result as well in the blobstoroe. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the blobstore.
+
+BOSH also uses the blobstore as an intermediate store for large payload, such as log files (see bosh logs) and output from the BOSH Agent that exceeds the max size for messages over the message bus.
+
 ## Health Monitor
 
 ## Message bus
@@ -151,7 +155,7 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. If you do not run Ubun
 1. Clone BOSH repositories from Gerrit
 
 		git gerrit-clone ssh://cloudfoundry-codereview.qa.mozycloud.com:29418/release.git
-		git gerrit-clone ssh://cloudfoundry-codereview.qa.mozycloud.com:29418/bos.git
+		git gerrit-clone ssh://cloudfoundry-codereview.qa.mozycloud.com:29418/bosh.git
 		
 1. Run some rake tasks to install the BOSH CLI
 
