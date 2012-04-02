@@ -650,11 +650,11 @@ To ssh to a running Job, first find the name and index of it.  Use `bosh vms` to
 
 ## BOSH Logs
 
-When troubleshooting BOSH or BOSH deployments, it's important to read log files so that problems can be narrowed down.  There are a two types of logs.
+When troubleshooting BOSH or BOSH deployments, it's important to read log files so that problems can be narrowed down.  There are three types of logs.
 
 1. BOSH Director logs, via `bosh task <task_number>`
 
-    This contains the output from the BOSH Director whenever a BOSH command is run on it.  If there is an issue when running a BOSH command, these logs are where you should start.  For instance, if you run `bosh deploy` and it fails, then the BOSH Director will have a log of where things went wrong.  To access these logs, find the task number of the failed command by running `bosh tasks recent`.  Then, run `bosh task <task_number>`.  The Director's logger writes to the logs:
+    This contains the output from the BOSH Director whenever a BOSH command is run on it.  If there is an issue when running a BOSH command, these logs are where you should start.  For instance, if you run `bosh deploy` and it fails, then the BOSH Director will have a log of where things went wrong.  To access these logs, find the task number of the failed command by running `bosh tasks recent`.  Then, run `bosh task <task_number>`.  The Director's logger writes to the logs.
 
 1. Agent logs, in `/var/vcap/bosh/log` or via `bosh logs`
 
