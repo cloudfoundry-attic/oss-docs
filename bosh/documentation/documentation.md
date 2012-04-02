@@ -634,7 +634,25 @@ TODO: package specs
 
 # BOSH Deployments
 
-TODO: capture all the steps that the deployment does
+## Steps of a Deployment
+Here are the steps that take place in a BOSH deployment.
+
+1. Preparing deployment
+    1. binding deployment - Creates an entry in the Director's database for the deployment if it doesn't exist.
+    1. binding release - Makes sure the release specified in deployment configuration exists then locks it from being deleted.
+    1. binding existing deployment - Takes existing VMs and sets them up to be used for the deployment.
+    1. binding resource pools - Gives idle VMs network reservations.
+    1. binding stemcells - Makes sure the stemcell specified has been uploaded and then locks it from being deleted.
+    1. binding templates - Sets up internal data objects to track packages and their pre-reqs for installation.
+    1. binding unallocated VMs - For each job instance required it determines whether a VM running the instance already exists and assigns one if not.
+    1. binding instance networks - Reserves networks for each VM that doesn't have one.
+1. Compiling packages - Calculates all packages and their dependencies that need to be compiled.  It then begins compiling the packages and storing their output in the blobstore.  The number of `workers` specified in the deployment configuration determines how many VMs can be created at once for compiling.
+1. Preparing DNS - Creates DNS entry if it doesn't exist.
+1. Creating bound missing VMs - Creates new VMs, deletes extra/oudated/idle VMs.
+1. Binding instance VMs - Any unbound VMs are setup for the deployment.
+1. Preparing configuration - Pulls in the configurations for each job to be run.
+1. Updating/deleting jobs - Deletes unneeded instances, creates needed instances, updates existing instances if they are not already updated.  This is the step where things get pushed live.
+1. Refilling resource pools - Creates missing VMs across resource pools after all instance updaters are finished to create additional VMs in order to balance resource pools.
 
 ## BOSH Property Store
 
