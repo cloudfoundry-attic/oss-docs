@@ -71,7 +71,11 @@ BOSH also uses the blobstore as an intermediate store for large payload, such as
 
 ## Health Monitor
 
+The BOSH (Health) Monitor receives health status and life cycle events from the BOSH Agents and can through notification plugins (such as email), notify if components are in an unexpected state. It has a simple awareness of events in the system, no as to not alert if a component is updated.
+
 ## Message bus
+
+BOSH uses the [NATS][http://github.com/dcollison/nats] message bus for command and control.
 
 # Using BOSH
 
@@ -173,7 +177,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 1. Target your Director (this IP is an example.) **NOTE: EXAMPLE WORKS FOR INTERNAL USE (u: admin / p: admin)**
 
-		bosh target 172.23.128.219:25555 
+		bosh target 11.23.128.219:25555 
 
 1. Check the state of your BOSH settings.
 
@@ -181,7 +185,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 		
 1. The result of your status will be akin to:
 
-		Target         dev48 (http://172.23.128.219:25555) Ver: 0.3.12 (01169817)
+		Target         dev48 (http://11.23.128.219:25555) Ver: 0.3.12 (01169817)
 		UUID           4a8a029c-f0ae-49a2-b016-c8f47aa1ac85
 		User           admin
 		Deployment     not set
@@ -350,7 +354,7 @@ The status command will show the persisted state for a given micro bosh instance
 		VM CID         vm-9cc859a4-2d51-43ca-8dd5-220425518fd8
 		Disk CID       1
 		Deployment     /var/vcap/deployments/dev33/micro_bosh.yml
-		Target         micro (http://172.23.194.100:25555) Ver: 0.3.12 (00000000)
+		Target         micro (http://11.23.194.100:25555) Ver: 0.3.12 (00000000)
 
 ## Listing Deployments ##
 
@@ -379,15 +383,15 @@ Example:
 
 		$ bosh micro status
 		...
-		Target         micro (http://172.23.194.100:25555) Ver: 0.3.12 (00000000)
+		Target         micro (http://11.23.194.100:25555) Ver: 0.3.12 (00000000)
 
-		$ bosh target http://172.23.194.100:25555
-		Target set to 'micro (http://172.23.194.100:25555) Ver: 0.3.12 (00000000)'
+		$ bosh target http://11.23.194.100:25555
+		Target set to 'micro (http://11.23.194.100:25555) Ver: 0.3.12 (00000000)'
 
 		$ bosh status
 		Updating director data... done
 
-		Target         micro (http://172.23.194.100:25555) Ver: 0.3.12 (00000000)
+		Target         micro (http://11.23.194.100:25555) Ver: 0.3.12 (00000000)
 		UUID           b599c640-7351-4717-b23c-532bb35593f0
 		User           admin
 		Deployment     not set
