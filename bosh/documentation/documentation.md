@@ -305,7 +305,7 @@ Once you have installed micro bosh, you will see some extra commands appear afte
 
 ## Configuration ##
 
-For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than ‘BOSH_Disks’ is required if your vCenter hosts other directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your deployment name. 
+For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than ‘BOSH_Disks’ is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your Deployment name. 
 
 For example:
 
@@ -314,11 +314,11 @@ For example:
 		deployments/dev32/micro_bosh.yml
 		deployments/dev33/micro_bosh.yml
 
-Deployment state is persisted to deployments/bosh-deployments.yml
+Deployment state is persisted to deployments/bosh-deployments.yml.
 
 ## Deployment ##
 
-1. Set the micro bosh deployment using:
+1. Set the micro bosh Deployment using:
 
 		% bosh micro deployment dev33
 		Deployment set to '/var/vcap/deployments/dev33/micro_bosh.yml'
@@ -334,7 +334,7 @@ Deployment state is persisted to deployments/bosh-deployments.yml
 
 ## Deleteing a micro BOSH deploy ##
 
-The `delete` command will delete the VM, stemcell and persistent disk.
+The `delete` command will delete the VM, Stemcell and persistent disk.
 
 Example:
 
@@ -360,13 +360,13 @@ The `deployments` command prints a table view of deployments/bosh-deployments.ym
 
 ## Applying a specification
 
-The micro-bosh-stemcell includes an embedded `apply_spec.yml`. This command can be used to apply a different spec to an existing instance. The `apply_spec.yml` properties are merged with your deployment’s network.ip and cloud.properties.vcenters properties.
+The micro-bosh-stemcell includes an embedded `apply_spec.yml`. This command can be used to apply a different spec to an existing instance. The `apply_spec.yml` properties are merged with your Deployment’s network.ip and cloud.properties.vcenters properties.
 
 		% bosh micro apply apply_spec.yml
 
 ## Sending messages to the micro BOSH agent ##
 
-The cli can send  messages over HTTP to the agent using the `agent` command
+The CLI can send  messages over HTTP to the agent using the `agent` command.
 
 Example:
 
@@ -375,7 +375,7 @@ Example:
 
 ## Deploying production BOSH through micro BOSH ##
 
-1. Once your micro BOSH instance is deployed, you can target its director:
+1. Once your micro BOSH instance is deployed, you can target its Director:
 
 		$ bosh micro status
 		...
@@ -435,7 +435,7 @@ upload
 
 ## Release Repository
 
-A BOSH release is built from a directory tree following a structure
+A BOSH Release is built from a directory tree following a structure
 described in this section:
 
 ## Jobs
