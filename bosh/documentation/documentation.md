@@ -59,7 +59,7 @@ A Release is typically not restricted to any particular environment. As such, it
 
 ## Deployments
 
-While BOSH Stemcells and Releases are static components, we say that they are bound together into a Deployment by what we call a Deployment Manifest. In the Deployment Manifest, you declare pools of VMs, which networks they live on, and which Jobs (service components) from the Release you want to activate. Job configurations specify life cycle parameters, the number of instances of a Job, and network and storage requirements. Furthermore, the Deployment Manifest allows you to specify properties used to parameterize configuration templates contained in the Release.
+While BOSH Stemcells and Releases are static components, we say that they are bound together into a Deployment by a Deployment Manifest. In the Deployment Manifest, you declare pools of VMs, which networks they live on, and which Jobs (service components) from the Release you want to activate. Job configurations specify life cycle parameters, the number of instances of a Job, and network and storage requirements. Furthermore, the Deployment Manifest allows you to specify properties used to parameterize configuration templates contained in the Release.
 
 Using the BOSH CLI, you specify a Deployment Manifest and perform a Deploy operation (+bosh deploy+), which creates or updates resources on your cluster according to your specifications.
 
@@ -75,11 +75,11 @@ BOSH also uses the blobstore as an intermediate store for large payload, such as
 
 # Using BOSH
 
-Before we can use BOSH we need to install the BOSH CLI. Also, make sure that you have a running development environment with an uploaded Stemcell. You can learn about those steps in the [BOSH Installation][] section.
+Before we can use BOSH we need to install the BOSH CLI. You will need a running development environment with an uploaded Stemcell. You can learn about those steps in the [BOSH Installation][] section.
 
 ## Installing BOSH Command Line Interface ##
 
-The following steps install BOSH CLI on Ubuntu 10.04 LTS. If you do not run Ubuntu, it is recommended that you install it on a local Virtual Machine.
+The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on either a physical or Virtual Machine.
 
 ### Install Ruby via rbenv
 
@@ -167,11 +167,11 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. If you do not run Ubun
 
 ### Deploy to your BOSH Environment
 
-With a fully configured environment, we can begin deploying a Cloud Foundry release to our environment. As listed in the prerequisites, you should already have an environment running, as well as the IP address of the BOSH Director. To set this up, skip to the [BOSH Installation][] section.
+With a fully configured environment, we can begin deploying a Cloud Foundry Release to our environment. As listed in the prerequisites, you should already have an environment running, as well as the IP address of the BOSH Director. To set this up, skip to the [BOSH Installation][] section.
 
 ### Point BOSH at a Target and Clean your Environment ###
 
-1. Target your Director (this IP is an example) **NOTE: EXAMPLE WORKS FOR INTERNAL USE (u: admin / p: admin)**
+1. Target your Director (this IP is an example.) **NOTE: EXAMPLE WORKS FOR INTERNAL USE (u: admin / p: admin)**
 
 		bosh target 172.23.128.219:25555 
 
@@ -198,11 +198,11 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 		| dev48 |
 		+-------+
 
-1. Delete the existing Deployments (ex: dev48) 
+1. Delete the existing Deployments (ex: dev48.) 
 
 		bosh delete deployment dev48
 
-1. Answer `yes` to the prompt and wait for the deletion to complete
+1. Answer `yes` to the prompt and wait for the deletion to complete.
 
 1. List previous Releases (we will remove them in a moment). If this is your first Deployment, there will be none listed.
 
@@ -216,11 +216,11 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 		| cloudfoundry	| 47, 55, 58 	|
 		+---------------+---------------+
 		
-1. Delete the existing releases (ex: cloudfoundry) 
+1. Delete the existing Releases (ex: cloudfoundry) 
 
 		bosh delete release cloudfoundry
 
-1. Answer `yes` to the prompt and wait for the deletion to complete
+1. Answer `yes` to the prompt and wait for the deletion to complete.
 
 ### Create a Release ###
 
@@ -238,7 +238,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 
 1. Answer `yes` to the prompt and wait for the environment to be reset
 
-1. Create a release
+1. Create a Release
 
 		bosh create release –force –with-tarball
 		
@@ -246,19 +246,19 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 
 1. Your terminal will display information about the release including the Release Manifest, Packages, Jobs, and tarball location.
 
-1. Open `bosh-sample-release/cloudfoundry.yml` in your favorite text editor and confirm that `name` is `cloudfoundry` and `version` matches the version that was displayed in your terminal (if this is your first release, this will be version 1).
+1. Open `bosh-sample-release/cloudfoundry.yml` in your favorite text editor and confirm that `name` is `cloudfoundry` and `version` matches the version that was displayed in your terminal (if this is your first release, this will be version 1.)
 
 ### Deploy the Release ###
 
-1. Upload the cloudfoundry release to your Environment
+1. Upload the cloudfoundry Release to your Environment.
 
 		bosh upload release dev_releases/cloudfoundry-1.tgz
 		
 1. Your terminal will display information about the upload, and an upload progress bar will reach 100% after a few minutes.
 
-1. Open `releases/cloudfoundry.yml` and make sure that your networking and IP addresses match the environment that you were given.
+1. Open `releases/cloudfoundry.yml` and make sure that your network settings match the environment that you were given.
 
-1. Deploy the Release
+1. Deploy the Release.
 
 		bosh deploy
 		
@@ -268,19 +268,19 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 
 # BOSH Installation #
 
-Deploying BOSH is a two step process. First, The BOSH Deployer is used to deploy a micro BOSH, which will live in a single virtual machine. The second step is to use the micro BOSH as means to deploy the final, distributed, production BOSH on multiple VMs. The graphic below illustrates this two step process.
+Deploying BOSH is a two step process. First, The BOSH Deployer is used to deploy a micro BOSH, which will live in a single virtual machine. The second step is to use the micro BOSH as a means to deploy the final, distributed production BOSH on multiple VMs. The graphic below illustrates this two step process.
 
 **NOTE: Matt will create a graphic for this**
 
 ## Prerequisites ##
 
-1. It is recommend that you install into an empty gemset (or similar).
+1. It is recommend that you install into an empty gemset (or similar.)
 
-1. Install some core packages on Ubuntu
+1. Install some core packages on Ubuntu.
 
 		% apt-get -y install libsqlite3-dev genisoimage
 
-1. Build the BOSH deployer
+1. Build the BOSH Deployer.
 
 		% cd bosh/deployer && rake install
 
