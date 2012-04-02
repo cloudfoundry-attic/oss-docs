@@ -354,7 +354,7 @@ Example:
 
 ## Checking Status of a micro BOSH deploy ##
 
-The status command will show the persisted state for a given micro bosh instance.
+The status command will show the persisted state for a given micro BOSH instance.
 
 		% bosh micro status
 		Stemcell CID   sc-f2430bf9-666d-4034-9028-abf9040f0edf
