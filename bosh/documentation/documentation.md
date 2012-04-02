@@ -1,6 +1,6 @@
 # Introduction
 
-BOSH is a framework and tool-chain for release engineering, deployment and life cycle management of distributed services, particularly Cloud Foundry. In this manual we describe the architecture, topology, configuration and use of BOSH, as well as the structure and conventions used in packaging and deployment.
+BOSH is a framework and tool-chain for release engineering, deployment, and life cycle management of distributed services, particularly Cloud Foundry. In this manual we describe the architecture, topology, configuration, and use of BOSH, as well as the structure and conventions used in packaging and deployment.
 
 BOSH introduces a fairly prescriptive way of managing systems and services. It was originally developed in the context of the Cloud Foundry Application Platform as a Service, but even if this has been the primary consumer, the framework is general purpose and can be used to deploy other distributed services on top of a Cloud Provider Interface (CPI) provided by VMware vSphere, Amazon Web Services, or OpenStack.
 
@@ -59,7 +59,7 @@ A Release is typically not restricted to any particular environment. As such, it
 
 ## Deployments
 
-While BOSH Stemcells and Releases are static components, we say that they are bound together into a Deployment by what we call a Deployment Manifest. In the Deployment Manifest, you declare pools of VMs, which networks they live on, and which Jobs (service components) from the Release you want to activate. Job configurations specify life cycle parameters, the number of instances of a Job, and network and storage requirements. Furthermore, the Deployment Manifest allows you to specify properties used to parameterize configuration templates contained in the Release.
+While BOSH Stemcells and Releases are static components, we say that they are bound together into a Deployment by a Deployment Manifest. In the Deployment Manifest, you declare pools of VMs, which networks they live on, and which Jobs (service components) from the Release you want to activate. Job configurations specify life cycle parameters, the number of instances of a Job, and network and storage requirements. Furthermore, the Deployment Manifest allows you to specify properties used to parameterize configuration templates contained in the Release.
 
 Using the BOSH CLI, you specify a Deployment Manifest and perform a Deploy operation (+bosh deploy+), which creates or updates resources on your cluster according to your specifications.
 
@@ -75,11 +75,11 @@ BOSH also uses the blobstore as an intermediate store for large payload, such as
 
 # Using BOSH
 
-Before we can use BOSH we need to install the BOSH CLI. Also, make sure that you have a running development environment with an uploaded stemcell. You can learn about those steps in the [BOSH Installation][] section.
+Before we can use BOSH we need to install the BOSH CLI. You will need a running development environment with an uploaded Stemcell. You can learn about those steps in the [BOSH Installation][] section.
 
 ## Installing BOSH Command Line Interface ##
 
-The following steps install BOSH CLI on Ubuntu 10.04 LTS. If you do not run Ubuntu, it is recommended that you install it on a a local Virtual Machine.
+The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on either a physical or Virtual Machine.
 
 ### Install Ruby via rbenv
 
@@ -167,11 +167,11 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. If you do not run Ubun
 
 ### Deploy to your BOSH Environment
 
-With a fully configured environment, we can begin deploying a Cloud Foundry release to our environment. As listed in the prerequisites, you should already have an environment running, as well as the IP address of the BOSH Director. To set this up, skip to the [BOSH Installation][] section.
+With a fully configured environment, we can begin deploying a Cloud Foundry Release to our environment. As listed in the prerequisites, you should already have an environment running, as well as the IP address of the BOSH Director. To set this up, skip to the [BOSH Installation][] section.
 
 ### Point BOSH at a Target and Clean your Environment ###
 
-1. Target your director (this IP is an example) **NOTE: EXAMPLE WORKS FOR INTERNAL USE (u: admin / p: admin)**
+1. Target your Director (this IP is an example.) **NOTE: EXAMPLE WORKS FOR INTERNAL USE (u: admin / p: admin)**
 
 		bosh target 172.23.128.219:25555 
 
@@ -186,7 +186,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 		User           admin
 		Deployment     not set
 
-1. List any previous deployments (we will remove them in a moment). If this is your first deployment, there will be none listed.
+1. List any previous Deployments (we will remove them in a moment). If this is your first Deployment, there will be none listed.
     
 		bosh deployments
 
@@ -198,13 +198,13 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 		| dev48 |
 		+-------+
 
-1. Delete the existing deployments (ex: dev48) 
+1. Delete the existing Deployments (ex: dev48.) 
 
 		bosh delete deployment dev48
 
-1. Answer `yes` to the prompt and wait for the deletion to complete
+1. Answer `yes` to the prompt and wait for the deletion to complete.
 
-1. List previous releases (we will remove them in a moment). If this is your first deployment, there will be non listed.
+1. List previous Releases (we will remove them in a moment). If this is your first Deployment, there will be none listed.
 
 		`bosh releases`
 
@@ -216,11 +216,11 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 		| cloudfoundry	| 47, 55, 58 	|
 		+---------------+---------------+
 		
-1. Delete the existing releases (ex: cloudfoundry) 
+1. Delete the existing Releases (ex: cloudfoundry) 
 
 		bosh delete release cloudfoundry
 
-1. Answer `yes` to the prompt and wait for the deletion to complete
+1. Answer `yes` to the prompt and wait for the deletion to complete.
 
 ### Create a Release ###
 
@@ -238,7 +238,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 
 1. Answer `yes` to the prompt and wait for the environment to be reset
 
-1. Create a release
+1. Create a Release
 
 		bosh create release –force –with-tarball
 		
@@ -246,19 +246,19 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 
 1. Your terminal will display information about the release including the Release Manifest, Packages, Jobs, and tarball location.
 
-1. Open `bosh-sample-release/cloudfoundry.yml` in your favorite text editor and confirm that `name` is `cloudfoundry` and `version` matches the version that was displayed in your terminal (if this is your first release, this will be version 1).
+1. Open `bosh-sample-release/cloudfoundry.yml` in your favorite text editor and confirm that `name` is `cloudfoundry` and `version` matches the version that was displayed in your terminal (if this is your first release, this will be version 1.)
 
 ### Deploy the Release ###
 
-1. Upload the cloudfoundry release to your Environment
+1. Upload the cloudfoundry Release to your Environment.
 
 		bosh upload release dev_releases/cloudfoundry-1.tgz
 		
 1. Your terminal will display information about the upload, and an upload progress bar will reach 100% after a few minutes.
 
-1. Open `releases/cloudfoundry.yml` and make sure that your networking and IP addresses match the environment that you were given.
+1. Open `releases/cloudfoundry.yml` and make sure that your network settings match the environment that you were given.
 
-1. Deploy the Release
+1. Deploy the Release.
 
 		bosh deploy
 		
@@ -268,19 +268,19 @@ With a fully configured environment, we can begin deploying a Cloud Foundry rele
 
 # BOSH Installation #
 
-Deploying BOSH is a two step process. First, The BOSH Deployer is used to deploy a micro BOSH, which will live in a single virtual machine. The second step is to use the micro BOSH as means to deploy the final, distributed, production BOSH on multiple VMs. The graphic below illustrates this two step process.
+Deploying BOSH is a two step process. First, The BOSH Deployer is used to deploy a micro BOSH, which will live in a single virtual machine. The second step is to use the micro BOSH as a means to deploy the final, distributed production BOSH on multiple VMs. The graphic below illustrates this two step process.
 
 **NOTE: Matt will create a graphic for this**
 
 ## Prerequisites ##
 
-1. It is recommend that you install into an empty gemset (or similar).
+1. It is recommend that you install into an empty gemset (or similar.)
 
-1. Install some core packages on Ubuntu
+1. Install some core packages on Ubuntu.
 
 		% apt-get -y install libsqlite3-dev genisoimage
 
-1. Build the BOSH deployer
+1. Build the BOSH Deployer.
 
 		% cd bosh/deployer && rake install
 
@@ -305,7 +305,7 @@ Once you have installed micro bosh, you will see some extra commands appear afte
 
 ## Configuration ##
 
-For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than ‘BOSH_Disks’ is required if your vCenter hosts other directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your deployment name. 
+For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than ‘BOSH_Disks’ is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your Deployment name. 
 
 For example:
 
@@ -314,11 +314,11 @@ For example:
 		deployments/dev32/micro_bosh.yml
 		deployments/dev33/micro_bosh.yml
 
-Deployment state is persisted to deployments/bosh-deployments.yml
+Deployment state is persisted to deployments/bosh-deployments.yml.
 
 ## Deployment ##
 
-1. Set the micro bosh deployment using:
+1. Set the micro bosh Deployment using:
 
 		% bosh micro deployment dev33
 		Deployment set to '/var/vcap/deployments/dev33/micro_bosh.yml'
@@ -334,7 +334,7 @@ Deployment state is persisted to deployments/bosh-deployments.yml
 
 ## Deleteing a micro BOSH deploy ##
 
-The `delete` command will delete the VM, stemcell and persistent disk.
+The `delete` command will delete the VM, Stemcell and persistent disk.
 
 Example:
 
@@ -360,13 +360,13 @@ The `deployments` command prints a table view of deployments/bosh-deployments.ym
 
 ## Applying a specification
 
-The micro-bosh-stemcell includes an embedded `apply_spec.yml`. This command can be used to apply a different spec to an existing instance. The `apply_spec.yml` properties are merged with your deployment’s network.ip and cloud.properties.vcenters properties.
+The micro-bosh-stemcell includes an embedded `apply_spec.yml`. This command can be used to apply a different spec to an existing instance. The `apply_spec.yml` properties are merged with your Deployment’s network.ip and cloud.properties.vcenters properties.
 
 		% bosh micro apply apply_spec.yml
 
 ## Sending messages to the micro BOSH agent ##
 
-The cli can send  messages over HTTP to the agent using the `agent` command
+The CLI can send  messages over HTTP to the agent using the `agent` command.
 
 Example:
 
@@ -375,7 +375,7 @@ Example:
 
 ## Deploying production BOSH through micro BOSH ##
 
-1. Once your micro BOSH instance is deployed, you can target its director:
+1. Once your micro BOSH instance is deployed, you can target its Director:
 
 		$ bosh micro status
 		...
@@ -435,7 +435,7 @@ upload
 
 ## Release Repository
 
-A BOSH release is built from a directory tree following a structure
+A BOSH Release is built from a directory tree following a structure
 described in this section:
 
 ## Jobs
