@@ -130,7 +130,7 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on eit
 		
 1. Copy your key from `~/.ssh/id_rsa.pub` into your Gerrit account
  
-1.Create ~/.gitconfig as follows (Make sure that the email specified is registered with gerrit):
+1. Create ~/.gitconfig as follows (Make sure that the email specified is registered with gerrit):
 		
 		[user]
 		name = YOUR_NAME
@@ -476,6 +476,21 @@ TODO: options global/job propertes
 TODO: cloud_properties for the cli
 
 # BOSH Troubleshooting
+## BOSH Logs
+
+When troubleshooting BOSH or BOSH deployments it's important to read log files so that problems can be narrowed down.  There are a two types of logs.
+
+1. BOSH director logs, via `bosh task <task_number>`
+
+    This contains the output from the BOSH director whenever a bosh command is run on it.  If there is an issue when running a bosh command, these logs are where you should start.  For instance, if you run `bosh deploy` and it fails then the BOSH director will have a log of where things went wrong.  To access these logs, find the task number of the failed command by running `bosh tasks recent`.  Then, run `bosh task <task_number>`.  The logs are written to by the director's logger.
+
+1. Agent logs, in `/var/vcap/bosh/log`
+
+    These logs contain the output from the agents.  When an issue with VM setup is suspected, these logs are useful.  They will show the actions of the agent, such as setting up network, disks, and running the job.  If a `bosh deploy` fails because one of the VMs is having a problem, you will want to use the BOSH director logs to find which machine it was, then ssh to it and use the agent logs to further diagnose what happened.
+
+1. Service logs
+
+    These are the logs produced by the actual jobs running on VMs.  These may be logs produced by Redis, or a webserver, etc.  These logs will vary because it is up to the deployment to configure where they are output to.  Typically, the output path is defined in a config file in `release/jobs/<job_name>/templates/<config_file>`.  For Cloud Foundry, our jobs are typically configured to log to `/var/vcap/sys/log/<job_name>/<job_name>.log`
+
 TODO: cloud check
 TODO: BOSH SSH
-TODO: logs
