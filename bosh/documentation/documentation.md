@@ -476,6 +476,11 @@ TODO: options global/job propertes
 TODO: cloud_properties for the cli
 
 # BOSH Troubleshooting
+
+## BOSH ssh
+
+To ssh to a running job, first find the name and index of it.  Use `bosh vms` to display a list of the VMs that are running and what job is on each.  To ssh to it run `bosh ssh <job_name> <index>`.  The password is whatever is set in the stemcell.  For default stemcells it is ca$hc0w.
+
 ## BOSH Logs
 
 When troubleshooting BOSH or BOSH deployments it's important to read log files so that problems can be narrowed down.  There are a two types of logs.
@@ -493,4 +498,3 @@ When troubleshooting BOSH or BOSH deployments it's important to read log files s
     These are the logs produced by the actual jobs running on VMs.  These may be logs produced by Redis, or a webserver, etc.  These logs will vary because it is up to the deployment to configure where they are output to.  Typically, the output path is defined in a config file in `release/jobs/<job_name>/templates/<config_file>`.  For Cloud Foundry, our jobs are typically configured to log to `/var/vcap/sys/log/<job_name>/<job_name>.log`
 
 TODO: cloud check
-TODO: BOSH SSH
