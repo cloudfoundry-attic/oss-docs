@@ -65,9 +65,17 @@ Using the BOSH CLI, you specify a Deployment Manifest and perform a Deploy opera
 
 ## Blobstore
 
-The BOSH Blobstore is used to store the content of Releases (BOSH Jobs and Packages in their source form as well as the compiled image of BOSH Packages). Releases are uploaded by the BOSH CLI and inserted into the blobstore by the BOSH Director. When you deploy a Release, BOSH will orchestrate compilation of packages and store the result as well in the blobstoroe. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the blobstore.
+The BOSH Blobstore is used to store the content of Releases (BOSH [Jobs][jobs] and [Packages][packages] in their source form as well as the compiled image of BOSH Packages). [Releases][releases] are uploaded by the BOSH CLI and inserted into the blobstore by the BOSH Director. When you deploy a Release, BOSH will orchestrate compilation of packages and store the result as well in the blobstore. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the blobstore.
 
 BOSH also uses the blobstore as an intermediate store for large payload, such as log files (see bosh logs) and output from the BOSH Agent that exceeds the max size for messages over the message bus.
+
+There are currently three blobstores supported in BOSH:
+
+1. [Atmos](http://www.emc.com/storage/atmos/atmos.htm)
+1. [S3](http://aws.amazon.com/s3/)
+1. [simpe blobstore server](https://github.com/cloudfoundry/bosh/tree/master/simple_blobstore_server)
+
+The default BOSH configuration uses the simple blobstore server, as the load is very light and low latency is preferred.
 
 ## Health Monitor
 
