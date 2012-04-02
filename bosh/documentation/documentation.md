@@ -501,4 +501,6 @@ When troubleshooting BOSH or BOSH deployments it's important to read log files s
 
     These are the logs produced by the actual jobs running on VMs.  These may be logs produced by Redis, or a webserver, etc.  These logs will vary because it is up to the deployment to configure where they are output to.  Typically, the output path is defined in a config file in `release/jobs/<job_name>/templates/<config_file>`.  For Cloud Foundry, our jobs are typically configured to log to `/var/vcap/sys/log/<job_name>/<job_name>.log`.  These logs can also be accessed via `bosh logs <job_name> <index>`.
 
-TODO: cloud check
+## BOSH Cloud Check
+
+BOSH cloud check is a BOSH command line utility that automatically checks for problems in VMs and jobs that have been deployed.  It checks for things such as unresponsive/out-of-sync VMs, unbound disks, etc.  To use it run `bosh cck` and it will prompt you for actions to take if there are any problems found.
