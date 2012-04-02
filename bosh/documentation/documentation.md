@@ -488,13 +488,13 @@ When troubleshooting BOSH or BOSH deployments it's important to read log files s
 
     This contains the output from the BOSH director whenever a bosh command is run on it.  If there is an issue when running a bosh command, these logs are where you should start.  For instance, if you run `bosh deploy` and it fails then the BOSH director will have a log of where things went wrong.  To access these logs, find the task number of the failed command by running `bosh tasks recent`.  Then, run `bosh task <task_number>`.  The logs are written to by the director's logger.
 
-1. Agent logs, in `/var/vcap/bosh/log`
+1. Agent logs, in `/var/vcap/bosh/log` or via `bosh logs`
 
-    These logs contain the output from the agents.  When an issue with VM setup is suspected, these logs are useful.  They will show the actions of the agent, such as setting up network, disks, and running the job.  If a `bosh deploy` fails because one of the VMs is having a problem, you will want to use the BOSH director logs to find which machine it was, then ssh to it and use the agent logs to further diagnose what happened.
+    These logs contain the output from the agents.  When an issue with VM setup is suspected, these logs are useful.  They will show the actions of the agent, such as setting up network, disks, and running the job.  If a `bosh deploy` fails because one of the VMs is having a problem, you will want to use the BOSH director logs to find which machine it was then either ssh and access `/var/vcap/bosh/log` or use `bosh logs <job_name> <index> --agent`.
 
 1. Service logs
 
-    These are the logs produced by the actual jobs running on VMs.  These may be logs produced by Redis, or a webserver, etc.  These logs will vary because it is up to the deployment to configure where they are output to.  Typically, the output path is defined in a config file in `release/jobs/<job_name>/templates/<config_file>`.  For Cloud Foundry, our jobs are typically configured to log to `/var/vcap/sys/log/<job_name>/<job_name>.log`
+    These are the logs produced by the actual jobs running on VMs.  These may be logs produced by Redis, or a webserver, etc.  These logs will vary because it is up to the deployment to configure where they are output to.  Typically, the output path is defined in a config file in `release/jobs/<job_name>/templates/<config_file>`.  For Cloud Foundry, our jobs are typically configured to log to `/var/vcap/sys/log/<job_name>/<job_name>.log`.  These logs can also be accessed via `bosh logs <job_name> <index>`.
 
 TODO: cloud check
 TODO: BOSH SSH
