@@ -113,6 +113,7 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on eit
 		echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
 
 1. Download Ruby 1.9.2
+_Note: You can also build ruby using ruby-build plugin for rbenv. See https://github.com/sstephenson/ruby-build_
 
 		wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz
 
@@ -132,9 +133,14 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on eit
 
 		rbenv global 1.9.2-p290
 
+_Note: After installing gems with gem install or bundle install run rbenv rehash to add a shim_
+
+                gem install bundler
+                rbenv rehash
+
 ### Install Local BOSH and BOSH Releases
 
-1. Sign up for the Cloud Foundry Gerrit server at [http://review.cloudfoundry.com](http://review.cloudfoundry.com)
+1. Sign up for the Cloud Foundry Gerrit server at [http://reviews.cloudfoundry.com](http://reviews.cloudfoundry.com)
 
 1. Set up your ssh public key (accept all defaults)
 
@@ -166,8 +172,8 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on eit
 
 1. Clone BOSH repositories from Gerrit
 
-		git gerrit-clone ssh://cloudfoundry-codereview.qa.mozycloud.com:29418/release.git
-		git gerrit-clone ssh://cloudfoundry-codereview.qa.mozycloud.com:29418/bosh.git
+		git gerrit-clone ssh://reviews.cloudfoundry.com:29418/release.git
+		git gerrit-clone ssh://reviews.cloudfoundry.com:29418/bosh.git
 		
 1. Run some rake tasks to install the BOSH CLI
 
@@ -176,6 +182,10 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on eit
 		cd cli
 		bundle exec rake build
 		gem install pkg/bosh_cli-x.x.x.gem
+
+_Note: If the previous steps fail due to a rake 0.8.7 related issue, try running_
+
+                gem pristine rake
 
 ### Deploy to your BOSH Environment
 
@@ -218,7 +228,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 1. List previous Releases (we will remove them in a moment). If this is your first Deployment, there will be none listed.
 
-		`bosh releases`
+		bosh releases
 
 1. The result of `bosh releases` should be akin to:
 
