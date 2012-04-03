@@ -61,7 +61,7 @@ A Release is typically not restricted to any particular environment. As such, it
 
 While BOSH Stemcells and Releases are static components, we say that they are bound together into a Deployment by a Deployment Manifest. In the Deployment Manifest, you declare pools of VMs, which networks they live on, and which Jobs (service components) from the Release you want to activate. Job configurations specify life cycle parameters, the number of instances of a Job, and network and storage requirements. Furthermore, the Deployment Manifest allows you to specify properties used to parameterize configuration templates contained in the Release.
 
-Using the BOSH CLI, you specify a Deployment Manifest and perform a Deploy operation (+bosh deploy+), which creates or updates resources on your cluster according to your specifications.
+Using the BOSH CLI, you specify a Deployment Manifest and perform a Deploy operation (`bosh deploy`), which creates or updates resources on your cluster according to your specifications.
 
 ## Blobstore
 
@@ -83,7 +83,7 @@ The BOSH (Health) Monitor receives health status and life cycle events from the 
 
 ## Message bus
 
-BOSH uses the [NATS][http://github.com/dcollison/nats] message bus for command and control.
+BOSH uses the [NATS](http://github.com/dcollison/nats) message bus for command and control.
 
 # Using BOSH
 
@@ -252,7 +252,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 1. Create a Release
 
-		bosh create release –force –with-tarball
+		bosh create release --force --with-tarball
 		
 1. Answer `cloudfoundry` to the `release name` prompt
 
@@ -317,7 +317,7 @@ Once you have installed micro bosh, you will see some extra commands appear afte
 
 ## Configuration ##
 
-For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than ‘BOSH_Disks’ is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your Deployment name. 
+For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your Deployment name. 
 
 For example:
 
@@ -338,7 +338,7 @@ Deployment state is persisted to deployments/bosh-deployments.yml.
 1. Deploy a new micro BOSH instance and create a new persistent disk.
 
 		% bosh micro deploy ~/cf/stemcells/micro-bosh-stemcell-0.4.2.tgz
-		deploy –update
+		deploy --update
 
 1. Update an existing micro BOSH instance. The existing persistent disk will be attached to the new VM.
 
@@ -372,7 +372,7 @@ The `deployments` command prints a table view of deployments/bosh-deployments.ym
 
 ## Applying a specification
 
-The micro-bosh-stemcell includes an embedded `apply_spec.yml`. This command can be used to apply a different spec to an existing instance. The `apply_spec.yml` properties are merged with your Deployment’s network.ip and cloud.properties.vcenters properties.
+The micro-bosh-stemcell includes an embedded `apply_spec.yml`. This command can be used to apply a different spec to an existing instance. The `apply_spec.yml` properties are merged with your Deployment's network.ip and cloud.properties.vcenters properties.
 
 		% bosh micro apply apply_spec.yml
 
@@ -413,7 +413,7 @@ Someone write this eh?
 # Configure BOSH Director
 
 [NOTE]
-The current +chef-solo+ based installer is being re-written as a
+The current `chef-solo` based installer is being re-written as a
 mini-bosh instance.
 
 To install BOSH into an infrastructure we currently assume that the
@@ -684,4 +684,4 @@ When troubleshooting BOSH or BOSH deployments, it's important to read log files 
 
 ## BOSH Cloud Check
 
-BOSH cloud check is a BOSH command line utility that automatically checks for problems in VMs and Jobs that have been deployed.  It checks for things such as unresponsive/out-of-sync VMs, unbound disks, etc….  To use it, run `bosh cck` and it will prompt you for actions to take if there are any problems found.
+BOSH cloud check is a BOSH command line utility that automatically checks for problems in VMs and Jobs that have been deployed.  It checks for things such as unresponsive/out-of-sync VMs, unbound disks, etc.  To use it, run `bosh cck` and it will prompt you for actions to take if there are any problems found.
