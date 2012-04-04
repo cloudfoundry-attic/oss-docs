@@ -16,7 +16,7 @@ The core BOSH engine is abstracted away from any particular Infrastructure as a 
 
 ## Cloud Provider Interface (CPI)
 
-As a user of BOSH you're not directly exposed to the the BOSH Cloud Provider Interface, but it can be helpful to understand it's primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following: 
+As a user of BOSH you're not directly exposed to the the BOSH Cloud Provider Interface, but it can be helpful to understand its primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following: 
 
 * create_stemcell
 * delete_stemcell
@@ -140,7 +140,7 @@ _Note: After installing gems with gem install or bundle install run rbenv rehash
 
 ### Install Local BOSH and BOSH Releases
 
-1. Sign up for the Cloud Foundry Gerrit server at [http://reviews.cloudfoundry.com](http://reviews.cloudfoundry.com)
+1. Sign up for the Cloud Foundry Gerrit server at [http://reviews.cloudfoundry.org](http://reviews.cloudfoundry.org)
 
 1. Set up your ssh public key (accept all defaults)
 
@@ -172,8 +172,8 @@ _Note: After installing gems with gem install or bundle install run rbenv rehash
 
 1. Clone BOSH repositories from Gerrit
 
-		git gerrit-clone ssh://reviews.cloudfoundry.com:29418/release.git
-		git gerrit-clone ssh://reviews.cloudfoundry.com:29418/bosh.git
+		git gerrit-clone ssh://reviews.cloudfoundry.org:29418/release.git
+		git gerrit-clone ssh://reviews.cloudfoundry.org:29418/bosh.git
 		
 1. Run some rake tasks to install the BOSH CLI
 
