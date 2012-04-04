@@ -45,7 +45,7 @@ The BOSH Command Line Interface is the mechanism for users to interact with BOSH
             [--force] [--no-color] [--skip-director-checks] [--quiet]
             [--non-interactive]
 
-A full overview of BOSH commands and installation appears in the [BOSH CLI](#bosh_cli) and [BOSH installation](#bosh_install) sections.
+A full overview of BOSH commands and installation appears in the [BOSH CLI][bosh_cli] and [BOSH installation][bosh_install] sections.
 
 ## Stemcells
 
@@ -65,7 +65,7 @@ Using the BOSH CLI, you specify a Deployment Manifest and perform a Deploy opera
 
 ## Blobstore
 
-The BOSH Blobstore is used to store the content of Releases (BOSH [Jobs](#jobs) and [Packages](#packages) in their source form as well as the compiled image of BOSH Packages). [Releases][releases] are uploaded by the BOSH CLI and inserted into the blobstore by the BOSH Director. When you deploy a Release, BOSH will orchestrate compilation of packages and store the result as well in the blobstore. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the blobstore.
+The BOSH Blobstore is used to store the content of Releases (BOSH [Jobs][jobs] and [Packages][packages] in their source form as well as the compiled image of BOSH Packages). [Releases][releases] are uploaded by the BOSH CLI and inserted into the blobstore by the BOSH Director. When you deploy a Release, BOSH will orchestrate compilation of packages and store the result as well in the blobstore. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the blobstore.
 
 BOSH also uses the blobstore as an intermediate store for large payload, such as log files (see bosh logs) and output from the BOSH Agent that exceeds the max size for messages over the message bus.
 
@@ -89,7 +89,7 @@ BOSH uses the [NATS](http://github.com/dcollison/nats) message bus for command a
 
 Before we can use BOSH we need to install the BOSH CLI. You will need a running development environment with an uploaded Stemcell. You can learn about those steps in the [BOSH Installation][] section.
 
-## <a id="bosh_install"/>Installing BOSH Command Line Interface ##
+## Installing BOSH Command Line Interface [bosh_install] ##
 
 The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on either a physical or Virtual Machine.
 
@@ -445,7 +445,7 @@ TODO: check if we can provide vm_builder instructions for creating and
 	cd ~/projects/bosh/release
 	chef_deployer deploy ~/projects/deployments/mycloud/cloud
 
-# <a id="bosh_cli"/>BOSH CLI
+# BOSH CLI [bosh_cli]
 
 The BOSH command line interface is used to interact with the BOSH director to perform actions on the cloud.  For the most recent documentation on its functions, [install bosh][bosh_install] and simply type `bosh`.  Usage:
 
@@ -615,14 +615,14 @@ upload
 A BOSH Release is built from a directory tree following a structure
 described in this section:
 
-## <a id="jobs"/>Jobs
+## Jobs
 TODO: job templates
 TODO: use of properties
 TODO: "the job of a vm"
 TODO: monitrc (gonit)
 TODO: DNS support
 
-## <a id="packages"/>Packages
+## Packages
 TODO: ishisness!
 TODO: compilation
 TOOD: dependencies
