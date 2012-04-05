@@ -179,15 +179,12 @@ _Note: You can also build ruby using ruby-build plugin for rbenv. See https://gi
 1. Run some rake tasks to install the BOSH CLI
 
 		cd ~/bosh
-		rake bundle_install
+		rake bundle_install (Note: if this fails run 'gem pristine rake' and retry)
 		cd cli
 		bundle exec rake build
 		gem install pkg/bosh_cli-x.x.x.gem
 		rbenv rehash
 
-_Note: If the previous steps fail due to a rake 0.8.7 related issue, try running_
-
-                gem pristine rake
 
 ### Deploy to your BOSH Environment
 
@@ -306,7 +303,9 @@ Deploying BOSH is a two step process. First, The BOSH Deployer is used to deploy
 
 1. Build the BOSH Deployer.
 
-		% cd bosh/deployer && rake install
+		% cd bosh/deployer
+		% bundle install
+		% rake install
 
 Once you have installed micro bosh, you will see some extra commands appear after typing BOSH on your command line. 
 
