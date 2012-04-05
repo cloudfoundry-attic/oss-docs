@@ -133,10 +133,11 @@ _Note: You can also build ruby using ruby-build plugin for rbenv. See https://gi
 
 		rbenv global 1.9.2-p290
 
-_Note: After installing gems with gem install or bundle install run rbenv rehash to add a shim_
+1. Update rubygems and install bundler. _Note: After installing gems (`gem install` or `bundle install`) run `rbenv rehash` to add new shims_
 
-                gem install bundler
-                rbenv rehash
+		gem update --system
+		gem install bundler
+		rbenv rehash
 
 ### Install Local BOSH and BOSH Releases
 
@@ -182,6 +183,7 @@ _Note: After installing gems with gem install or bundle install run rbenv rehash
 		cd cli
 		bundle exec rake build
 		gem install pkg/bosh_cli-x.x.x.gem
+		rbenv rehash
 
 _Note: If the previous steps fail due to a rake 0.8.7 related issue, try running_
 
