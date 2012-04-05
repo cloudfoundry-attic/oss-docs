@@ -300,7 +300,7 @@ Deploying BOSH is a two step process. First, The BOSH Deployer is used to deploy
 
 1. Install some core packages on Ubuntu.
 
-		% apt-get -y install libsqlite3-dev genisoimage
+		% sudo apt-get -y install libsqlite3-dev genisoimage
 
 1. Build the BOSH Deployer.
 
