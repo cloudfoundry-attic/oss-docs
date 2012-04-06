@@ -79,7 +79,7 @@ The default BOSH configuration uses the simple blobstore server, as the load is 
 
 ## Health Monitor
 
-The BOSH (Health) Monitor receives health status and life cycle events from the BOSH Agents and can through notification plugins (such as email), notify if components are in an unexpected state. It has a simple awareness of events in the system, no as to not alert if a component is updated.
+The BOSH (Health) Monitor receives health status and life cycle events from the BOSH Agents and can through notification plugins (such as email), notify if components are in an unexpected state. It has a simple awareness of events in the system, so as to not alert if a component is updated.
 
 ## Message bus
 
