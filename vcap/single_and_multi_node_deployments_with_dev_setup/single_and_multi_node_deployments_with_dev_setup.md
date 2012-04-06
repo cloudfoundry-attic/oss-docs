@@ -18,7 +18,7 @@ These scripts are tested with and assume a pristine Ubuntu 10.04 64-bit install.
 
 2. Clone VCAP repository
     
-    	$ git clone https://github.com/cloudfoundry/vcap.git**
+    	$ git clone https://github.com/cloudfoundry/vcap.git
 
 3. Tar up dev_setup directory
 
@@ -91,8 +91,7 @@ Also, you will see a `$HOME/cloudfoundry/.deployments` directory which will
 contain deployment configuration and software.
 
 We will invoke _bin/vcap_dev_setup_ script taking all the default options.
-This will use the [deployments/devbox.yml](https://github.com/cloudfoundry/vca
-p/blob/master/dev_setup/deployments/devbox.yml) deployment specification,
+This will use the [deployments/devbox.yml](https://github.com/cloudfoundry/vcap/blob/master/dev_setup/deployments/devbox.yml) deployment specification,
 which will install all the components in the local server.
 
 For example :
