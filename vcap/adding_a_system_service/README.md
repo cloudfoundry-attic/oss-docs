@@ -78,17 +78,17 @@ Here are the steps you need to execute:
 4. Create start scripts for '\_node' and '\_gateway' on the services host at
 `.../cloudfoundry/vcap/bin/services/`. These scripts just delegate to the real scripts provided with the service.
 
-   A. Content of 'echo_node':
+   1. Content of 'echo_node':
     
           #!/usr/bin/env ruby
            exec(File.expand_path("../../../services/echo/bin/echo_node", __FILE__), *ARGV)
 
-   B. Content of 'echo_gateway':
+   2. Content of 'echo_gateway':
     
           #!/usr/bin/env ruby
            exec(File.expand_path("../../../services/echo/bin/echo_gateway", __FILE__), *ARGV)
 
-   C. Make them executable:
+   3. Make them executable:
 
           $ chmod +x .../cloudfoundry/vcap/bin/services/echo_{node,gateway} 
 
