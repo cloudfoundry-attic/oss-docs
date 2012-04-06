@@ -307,7 +307,7 @@ Deploying BOSH is a two step process. First, The BOSH Deployer is used to deploy
 		% bundle install
 		% rake install
 
-Once you have installed micro bosh, you will see some extra commands appear after typing BOSH on your command line. 
+Once you have installed micro BOSH, you will see some extra commands appear after typing `bosh` on your command line. 
 
 **The `bosh micro` commands must also be run within the deployments directory**
 
@@ -341,21 +341,38 @@ Deployment state is persisted to deployments/bosh-deployments.yml.
 
 ## Deployment ##
 
-1. Set the micro bosh Deployment using:
+1. Download a micro BOSH stemcell:
 
+		% mkdir -p ~/stemcells
+		% cd stemcells
+		% bosh public stemcells
+		+-------------------------------+----------------------------------------------------+
+		| Name                          | Url                                                |
+		+-------------------------------+----------------------------------------------------+
+		| bosh-stemcell-0.4.7.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...h120= |
+		| micro-bosh-stemcell-0.1.0.tgz | https://blob.cfblob.com/rest/objects/4e4e7...5Mms= |
+		| bosh-stemcell-0.3.0.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...mw1w= |
+		| bosh-stemcell-0.4.4.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...r144= |
+		+-------------------------------+----------------------------------------------------+
+		To download use 'bosh download public stemcell <stemcell_name>'.
+		% bosh download public stemcell micro-bosh-stemcell-0.1.0.tgz
+		
+
+1. Set the micro BOSH Deployment using:
+
+		% cd /var/vcap/deployments
 		% bosh micro deployment dev33
 		Deployment set to '/var/vcap/deployments/dev33/micro_bosh.yml'
 
 1. Deploy a new micro BOSH instance and create a new persistent disk.
 
-		% bosh micro deploy ~/cf/stemcells/micro-bosh-stemcell-0.4.2.tgz
-		deploy --update
+		% bosh micro deploy ~/stemcells/micro-bosh-stemcell-0.1.0.tgz
 
 1. Update an existing micro BOSH instance. The existing persistent disk will be attached to the new VM.
 
-		% bosh micro deploy ~/cf/stemcells/micro-bosh-stemcell-0.4.5.tgz --update
+		% bosh micro deploy ~/stemcells/micro-bosh-stemcell-0.1.1.tgz --update
 
-## Deleteing a micro BOSH deploy ##
+## Deleting a micro BOSH deploy ##
 
 The `delete` command will delete the VM, Stemcell and persistent disk.
 
@@ -369,7 +386,7 @@ The status command will show the persisted state for a given micro BOSH instance
 
 		% bosh micro status
 		Stemcell CID   sc-f2430bf9-666d-4034-9028-abf9040f0edf
-		Stemcell name  micro-bosh-stemcell-0.4.5
+		Stemcell name  micro-bosh-stemcell-0.1.0
 		VM CID         vm-9cc859a4-2d51-43ca-8dd5-220425518fd8
 		Disk CID       1
 		Deployment     /var/vcap/deployments/dev33/micro_bosh.yml
