@@ -51,4 +51,4 @@ Or install the AppFog client gem `af`:
 
 ## **Sample Applications**
 
-1. _WordPress PHP App _: [https://github.com/phpfog/af-sample-wordpress](https://github.com/phpfog/af-sample-wordpress)
+1. WordPress PHP App: [https://github.com/phpfog/af-sample-wordpress](https://github.com/phpfog/af-sample-wordpress)
