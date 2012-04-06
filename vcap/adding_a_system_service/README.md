@@ -80,23 +80,23 @@ Here are the steps you need to execute:
 
    1. Content of 'echo_node':
     
-          #!/usr/bin/env ruby
-           exec(File.expand_path("../../../services/echo/bin/echo_node", __FILE__), *ARGV)
+           #!/usr/bin/env ruby
+            exec(File.expand_path("../../../services/echo/bin/echo_node", __FILE__), *ARGV)
 
    2. Content of 'echo_gateway':
     
-          #!/usr/bin/env ruby
-           exec(File.expand_path("../../../services/echo/bin/echo_gateway", __FILE__), *ARGV)
+           #!/usr/bin/env ruby
+            exec(File.expand_path("../../../services/echo/bin/echo_gateway", __FILE__), *ARGV)
 
    3. Make them executable:
 
-          $ chmod +x .../cloudfoundry/vcap/bin/services/echo_{node,gateway} 
+           $ chmod +x .../cloudfoundry/vcap/bin/services/echo_{node,gateway} 
 
 5. Download and extract the implementation of the [echo service provisioner](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/support/echo_sp.zip) to the services host. Then move the implementation files and config files to the appropriate locations:
 
-       $ unzip echo_sp.zip
-       $ cp -r echo .../cloudfoundry/vcap/services/
-       $ cp echo/config/echo_{gateway,node}.yml .../cloudfoundry/.deployments/devbox/config/
+        $ unzip echo_sp.zip
+        $ cp -r echo .../cloudfoundry/vcap/services/
+        $ cp echo/config/echo_{gateway,node}.yml .../cloudfoundry/.deployments/devbox/config/
 
 
    Ensure the echo_gateway and echo_node config files look like the following, with the appropriate IP address and port substitutions:
