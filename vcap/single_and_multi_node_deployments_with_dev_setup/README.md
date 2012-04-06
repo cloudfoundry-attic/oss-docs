@@ -678,7 +678,7 @@ We will create and bind a mysql service to the application
 
 ## Known Issues
 
-1. During vcap_dev_setup, `rack` installation may fail with _ArgumentError_. If you
+1. During vcap\_dev\_setup, `rack` installation may fail with _ArgumentError_. If you
 re-run the vcap_dev_setup script, the script continues successfully with
 installing rack. You may get the same error more than once; if so, please try re-running vcap_dev_setup again.
    
