@@ -1,12 +1,12 @@
 # Step-by-Step: Adding a System Service to OSS Cloud Foundry
 
-_Author: **Georgi Sabev **_
+_Author: **Georgi Sabev**_
 
 ## Overview
 
 This guide will walk you through the process of adding a new service to your
 Cloud Foundry landscape and will show you how to consume it from a web
-application. This tutorial is for a **dev_setup installation** of Cloud
+application. This tutorial is for a [dev_setup installation](https://github.com/vmware-ac/doxa/tree/master/vcap/single_and_multi_node_deployments_with_dev_setup) of Cloud
 Foundry. For the purpose of this guide we have provided a simple echo service
 and a simple consumer web application that sends messages to be echoed. Both
 are written in java, but you can write your own services in any language you
@@ -70,7 +70,7 @@ Here are the steps you need to execute:
           :mongodb => File.expand_path("../../mongodb/config/mongodb_gateway.yml", __FILE__),
           :redis => File.expand_path("../../redis/config/redis_gateway.yml", __FILE__),
           :mysql => File.expand_path("../../mysql/config/mysql_gateway.yml", __FILE__),
-          :neo4j   => File.expand_path("../../neo4j/config/neo4j_gateway.yml", __FILE__),
+          :neo4j => File.expand_path("../../neo4j/config/neo4j_gateway.yml", __FILE__),
           :echo => File.expand_path("../../echo/config/echo_gateway.yml", __FILE__),
         }
 
@@ -94,64 +94,64 @@ Here are the steps you need to execute:
 
 5. Download and extract the implementation of the [echo service provisioner](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/support/echo_sp.zip) to the services host. Then move the implementation files and config files to the appropriate locations:
 
-         $ unzip echo_sp.zip
-         $ cp -r echo .../cloudfoundry/vcap/services/
-         $ cp echo/config/echo_{gateway,node}.yml .../cloudfoundry/.deployments/devbox/config/
+        $ unzip echo_sp.zip
+        $ cp -r echo .../cloudfoundry/vcap/services/
+        $ cp echo/config/echo_{gateway,node}.yml .../cloudfoundry/.deployments/devbox/config/
 
 
-   Ensure the echo_gateway and echo_node config files look like the following, with the appropriate IP address and port substitutions:
+    Ensure the echo_gateway and echo_node config files look like the following, with the appropriate IP address and port substitutions:
 
-   `.../cloudfoundry/.deployments/devbox/config/echo_gateway.yml`
+    `.../cloudfoundry/.deployments/devbox/config/echo_gateway.yml`
 
-       ---  
-       cloud_controller_uri: api.vcap.me  
-       service:  
-         name: echo  
-         version: "1.0"  
-         description: 'Echo key-value store service'  
-         plans: ['free']  
-         tags: ['echo', 'echo-1.0', 'key-value', 'echobased']  
-       index: 0  
-       token: changeechotoken
-       logging:  
-         level: debug
-       mbus: nats://nats:nats@<nats_host>:<nats_port>
-       pid: /var/vcap/sys/run/echo_service.pid   
-       node_timeout: 2 
+        ---  
+         cloud_controller_uri: api.vcap.me  
+         service:  
+           name: echo  
+           version: "1.0"  
+           description: 'Echo key-value store service'  
+           plans: ['free']  
+           tags: ['echo', 'echo-1.0', 'key-value', 'echobased']  
+         index: 0  
+         token: changeechotoken
+         logging:  
+           level: debug
+         mbus: nats://nats:nats@<nats_host>:<nats_port>
+         pid: /var/vcap/sys/run/echo_service.pid   
+         node_timeout: 2 
 
 
-   `.../cloudfoundry/.deployments/devbox/config/echo_node.yml`
+    `.../cloudfoundry/.deployments/devbox/config/echo_node.yml`
 
-       ---  
-       local_db: sqlite3:/var/vcap/services/echo/echo_node.db  
-       mbus: nats://nats:nats@<nats_host>:<nats_port>
-        index: 0  
-       base_dir: /var/vcap/services/echo/  
-       ip_route: <services_host_ip>  
-       logging:  
-         level: debug  
-       pid: /var/vcap/sys/run/echo_node.pid  
-       available_memory: 4096  
-       node_id: echo_node_1  
-       port: <echo_service_port> # port where echo service listens  
-       host: <echo_service_host> # host where echo service resides. May be different from services host
+        ---  
+        local_db: sqlite3:/var/vcap/services/echo/echo_node.db  
+        mbus: nats://nats:nats@<nats_host>:<nats_port>
+         index: 0  
+        base_dir: /var/vcap/services/echo/  
+        ip_route: <services_host_ip>  
+        logging:  
+          level: debug  
+        pid: /var/vcap/sys/run/echo_node.pid  
+        available_memory: 4096  
+        node_id: echo_node_1  
+        port: <echo_service_port> # port where echo service listens  
+        host: <echo_service_host> # host where echo service resides. May be different from services host
 
-   **Prefer using real IP addresses over localhost as some of these variables may become part of environment on other hosts!**
+    **Prefer using real IP addresses over localhost as some of these variables may become part of environment on other hosts!**
 
 6. Bundle the necessary dependencies for the node and gateway:
 
-       $ cd .../cloudfoundry/vcap/services/echo
-       $ source $HOME/.cloudfoundry_deployment_profile && bundle package
+        $ cd .../cloudfoundry/vcap/services/echo
+        $ source $HOME/.cloudfoundry_deployment_profile && bundle package
 
 7. Restart cloud controller and services node:
 
-       $ .../cloudfoundry/vcap/dev_setup/bin/vcap_dev restart
+        $ .../cloudfoundry/vcap/dev_setup/bin/vcap_dev restart
    
-   This should reveal _echo_node_ and _echo_gateway_ running. To review their logs:
+    This should reveal _echo_node_ and _echo_gateway_ running. To review their logs:
    
-       $ cd .../cloudfoundry/.deployments/devbox/log && tail -f *.log
+        $ cd .../cloudfoundry/.deployments/devbox/log && tail -f *.log
 
-   Now execute the command `vmc services`. Our new echo service should be
+    Now execute the command `vmc services`. Our new echo service should be
 available in the upper table. Congratulations! You have just provided your
 first Cloud Foundry service! Now, let's do something with it!
 
@@ -159,19 +159,19 @@ first Cloud Foundry service! Now, let's do something with it!
 
 1. Provision an echo service by running `vmc create-service echo myecho`.
 
-   This will provision an echo service with the name of 'myecho'. This name will
+    This will provision an echo service with the name of 'myecho'. This name will
 be used by the test application later on to look up the host and port we
 configured fot the echo service. After you provision myecho execute `vmc
 services`. This will output something like this:
 
-   ![echo_service.png](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/images/echo_service.png)
+    ![echo_service.png](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/images/echo_service.png)
 
-   Now we have our service provisioned!
+    Now we have our service provisioned!
 
   
 2. Push a test application and bind the provisioned echo service.
 
-   Download the test application's [.war file](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/support/testapp.war), or compile from the [source code](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/support/testapp_src.zip). Place it in an empty folder and deploy with `vmc push`:
+    Download the test application's [.war file](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/support/testapp.war), or compile from the [source code](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/support/testapp_src.zip). Place it in an empty folder and deploy with `vmc push`:
 
         Would you like to deploy from the current directory? [Yn]:  
          Application Name: echotest  
@@ -194,23 +194,21 @@ services`. This will output something like this:
          Staging Application: OK  
          Starting Application: OK
 
-   **Note:** if you have other applications in the same directory vmc will sort them in lexicographical order and will opt for the first one. You can use `vmc push <app_name> --path <path_to_app>` instead.
+    **Note:** if you have other applications in the same directory vmc will sort them in lexicographical order and will opt for the first one. You can use `vmc push <app_name> --path <path_to_app>` instead.
 
   
 3. Start the echo service and access the application.
 
-   So far we have provided the echo service metadata to users and applications in Cloud Foundry, but we haven't started the program which provides the functionality of an echo service itself. The test application obtains the service IP and port from the
-environment variable `VCAP_SERVICES` &mdash; but it's our responsibility to ensure that there
+    So far we have provided the echo service metadata to users and applications in Cloud Foundry, but we haven't started the program which provides the functionality of an echo service itself. The test application obtains the service IP and port from the environment variable `VCAP_SERVICES` &mdash; but it's our responsibility to ensure that there
 really is a listening service. Without doing so the application will return an error when attemting to access the echo service. So let's start the service: download the [echo service jar](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/support/echo_service.jar) to the `host` listed in `echo_node.yml`, or compile it from the [source code](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/support/echo_service_src.zip). Then execute the following:
   
-      $ java -jar echo_service.jar -port <echo_service_port>
+        $ java -jar echo_service.jar -port <echo_service_port>
 
-   The port you pass as a parameter should be the same as the one you configured
-in `echo_node.yml` (port 5002 unless the parameter was modified).
+    The port you pass as a parameter should be the same as the one you configured in `echo_node.yml` (port 5002 unless the parameter was modified).
 
-   After you have started the service open your favorite web browser and go to
-**http://echotest.vcap.me** or the URI you have chosen when pushing. Enter
+    After you have started the service open your favorite web browser and go to
+http://echotest.vcap.me or the URI you have chosen when pushing. Enter
 some message in the text area and click on the _Echo message_ button. The echo
 service will echo your message:
 
-   ![helloworld.png](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/images/helloworld.png)
+    ![helloworld.png](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/images/helloworld.png)
