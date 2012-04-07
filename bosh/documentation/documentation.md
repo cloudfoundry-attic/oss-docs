@@ -51,6 +51,10 @@ A full overview of BOSH commands and installation appears in the [BOSH CLI][bosh
 
 A BOSH Stemcell is a VM template with an embedded BOSH Agent. The Stemcell used for Cloud Foundry is a standard Ubuntu distribution. Stemcells are uploaded using the BOSH CLI and used by the Director when creating VMs through the CPI. When the Director creates a VM through the CPI, it will pass along configurations for networking and storage, as well as the location and credentials for the BOSH Message Bus and the BOSH Blobstore.
 
+## Agent ##
+
+When a Stemcell is created, it is comprised of the barebones operating system (Ubuntu in the case of Cloud Foundry) and an Agent. The Agent listens for instructions from the Director and performs operations on the VM according to these instructions. A typical instruction would be to download and install new packages from the Blobstore.
+
 ## Releases
 
 A Release in BOSH is a packaged bundle of service descriptors known as Jobs. Jobs are collections of software bits and configurations. Any given Release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service. 
