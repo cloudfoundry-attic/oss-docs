@@ -33,7 +33,7 @@ In addition to these methods are others specific to each cloud interface. For ex
 
 The CPI is used primarily to do low level creation and management of resources in an IaaS. Once a resource is up and running, command and control is handed over to the higher level BOSH Director-Agent interaction.
 
-## BOSH Director
+## BOSH Director [director]
 
 The Director is the core orchestrating component in BOSH which controls creation of VMs, deployment, and other life cycle events of software and services.
 
@@ -652,6 +652,7 @@ described in this section:
 
 ## Jobs
 TODO: job templates
+TODO: prepare script
 TODO: use of properties
 TODO: "the job of a vm"
 TODO: monitrc (gonit)
@@ -659,9 +660,22 @@ TODO: DNS support
 
 ## Packages
 TODO: ishisness!
-TODO: compilation
-TOOD: dependencies
-TODO: package specs
+
+### Package Compilation
+
+Packages are compiled on demand during the deployment. The [director][director] first checks to see if there already is a compiled version of the package for the stemcell version it is being deployed to, and if it doesn't already exist a compiled version, the director will instantiate a compile VM (using the same stemcell version it is going to be deployed to) which will get the package source from the blobstore, compile it, and then package the resulting binaries and store it in the blobstore.
+
+To turn source code into binaries each package has a `packaging` script that is responsible for the compilation, and is run on the compile VM. The script gets two environment variables set from the BOSH agent which tells it where to install the files the package generates `BOSH_INSTALL_TARGET`, and the other is `BOSH_COMPILE_TARGET` which is the directory containing the source (which is the current directory when the `packaging` script is invoked). The `BOSH_INSTALL_TARGET` is set to `/var/vcap/data/packages/<package name>/<package version>`. When the package is installed a symlink is created from `/var/vcap/packages/<package name>` which points to the latest version of the package. This link should be used when refering to another package in the `pckaging` script.
+
+There is an optional `pre_packaging` script, which is run when the source of the package is assembled during the `bosh create release`. It can for instance be used to limit which parts of the source that get packages up and stored in the blobstore. It gets the environment variable `BUILD_DIR` set by the [BOSH cli][bosh_cli], which is the directory containing the source to be packaged.
+
+### Package specs
+
+### Dependencies
+
+The package `spec` file contains a section which lists other packages the current package depends on. These dependencies are compile time dependencies, as opposed to the job dependencies which are runtime dependencies.
+
+When the [director][director] plans the compilation of a package during a deployment, it first makes sure all dependencies are compiled before it proceeds to compile the current package, and prior to commencing the compilation all dependent packages are installed on the compilation VM.
 
 ## Sources
  final release
