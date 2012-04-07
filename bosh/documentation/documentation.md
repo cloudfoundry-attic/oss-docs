@@ -372,7 +372,7 @@ Deployment state is persisted to deployments/bosh-deployments.yml.
 
 		% bosh micro deploy ~/stemcells/micro-bosh-stemcell-0.1.1.tgz --update
 
-## Deleting a micro BOSH deploy ##
+## Deleting a micro BOSH deployment ##
 
 The `delete` command will delete the VM, Stemcell and persistent disk.
 
@@ -413,7 +413,9 @@ Example:
 		% bosh micro agent ping
 		"pong"
 
-## Deploying production BOSH through micro BOSH ##
+## Deploying Production BOSH through Micro BOSH ##
+
+**TODO: The steps below are only an outline. Need to expand on them.**
 
 1. Once your micro BOSH instance is deployed, you can target its Director:
 
@@ -432,7 +434,22 @@ Example:
 		User           admin
 		Deployment     not set
 
-**What is missing here?**
+2. Upload a stemcell. **NOTE** Do not use the micro bosh stemcell. Use bosh stemcell.
+
+3. Upload the BOSH release
+
+4. `bosh deployment` set to BOSH deployment
+
+5. `bosh deploy`
+
+6. Wait for successful deployment.
+
+7. Target the newly deployed BOSH Director.
+
+8. Your newly deployed Production BOSH is ready to use.
+
+9. _Optional_: Delete micro BOSH deployment
+                            
 
 ## vCenter Configuration ##
 
