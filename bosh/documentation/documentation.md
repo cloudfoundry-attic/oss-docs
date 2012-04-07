@@ -434,13 +434,13 @@ Example:
 		User           admin
 		Deployment     not set
 
-2. Upload a stemcell. **NOTE** Do not use the micro bosh stemcell. Use bosh stemcell.
+2. Upload a Stemcell. **NOTE** Do not use the micro BOSH Stemcell. Use a BOSH Stemcell.
 
-3. Upload the BOSH release
+3. Upload the BOSH release.
 
-4. `bosh deployment` set to BOSH deployment
+4. Ensure `bosh deployment` is set to the BOSH deployment.
 
-5. `bosh deploy`
+5. Run `bosh deploy`.
 
 6. Wait for successful deployment.
 
@@ -448,7 +448,7 @@ Example:
 
 8. Your newly deployed Production BOSH is ready to use.
 
-9. _Optional_: Delete micro BOSH deployment
+9. _Optional_: Delete micro BOSH deployment.
                             
 
 ## vCenter Configuration ##
