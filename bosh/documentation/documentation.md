@@ -65,15 +65,15 @@ Using the BOSH CLI, you specify a Deployment Manifest and perform a Deploy opera
 
 ## Blobstore
 
-The BOSH Blobstore is used to store the content of Releases (BOSH [Jobs][jobs] and [Packages][packages] in their source form as well as the compiled image of BOSH Packages). [Releases][releases] are uploaded by the BOSH CLI and inserted into the blobstore by the BOSH Director. When you deploy a Release, BOSH will orchestrate compilation of packages and store the result as well in the blobstore. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the blobstore.
+The BOSH Blobstore is used to store the content of Releases (BOSH [Jobs][jobs] and [Packages][packages] in their source form as well as the compiled image of BOSH Packages). [Releases][releases] are uploaded by the BOSH CLI and inserted into the Blobstore by the BOSH Director. When you deploy a Release, BOSH will orchestrate the compilation of packages and store the result in the Blobstore. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the Blobstore.
 
-BOSH also uses the blobstore as an intermediate store for large payload, such as log files (see bosh logs) and output from the BOSH Agent that exceeds the max size for messages over the message bus.
+BOSH also uses the Blobstore as an intermediate store for large payloads, such as log files (see BOSH logs) and output from the BOSH Agent that exceeds the max size for messages over the message bus.
 
-There are currently three blobstores supported in BOSH:
+There are currently three Blobstores supported in BOSH:
 
 1. [Atmos](http://www.emc.com/storage/atmos/atmos.htm)
 1. [S3](http://aws.amazon.com/s3/)
-1. [simpe blobstore server](https://github.com/cloudfoundry/bosh/tree/master/simple_blobstore_server)
+1. [simple blobstore server](https://github.com/cloudfoundry/bosh/tree/master/simple_blobstore_server)
 
 The default BOSH configuration uses the simple blobstore server, as the load is very light and low latency is preferred.
 
@@ -434,13 +434,13 @@ Example:
 		User           admin
 		Deployment     not set
 
-2. Upload a stemcell. **NOTE** Do not use the micro bosh stemcell. Use bosh stemcell.
+2. Upload a Stemcell. **NOTE** Do not use the micro BOSH Stemcell. Use a BOSH Stemcell.
 
-3. Upload the BOSH release
+3. Upload the BOSH release.
 
-4. `bosh deployment` set to BOSH deployment
+4. Ensure `bosh deployment` is set to the BOSH deployment.
 
-5. `bosh deploy`
+5. Run `bosh deploy`.
 
 6. Wait for successful deployment.
 
@@ -448,7 +448,7 @@ Example:
 
 8. Your newly deployed Production BOSH is ready to use.
 
-9. _Optional_: Delete micro BOSH deployment
+9. _Optional_: Delete micro BOSH deployment.
                             
 
 ## vCenter Configuration ##
