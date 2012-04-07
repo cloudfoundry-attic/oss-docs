@@ -1,0 +1,175 @@
+---
+name: bosh
+director_uuid: <YOUR_DIRECTOR_ID>
+release:
+  name: bosh
+  version: 1
+
+networks:
+- name: default
+  subnets:
+  - reserved:
+    - 192.0.2.2 - 192.0.2.32
+    - 192.0.2.64 - 172.31.143.254
+    static:
+    - 192.0.2.33 - 192.0.2.48
+    range: 192.0.2.0/21
+    gateway: 192.0.2.1
+    dns:
+    - 192.51.100.154
+    - 192.51.100.155
+    cloud_properties:
+      name: VLAN2136
+
+resource_pools:
+- name: small
+  stemcell:
+    name: bosh-stemcell
+    version: 0.4.7
+  network: default
+  size: 3
+  cloud_properties:
+    ram: 2048
+    disk: 8192
+    cpu: 1
+- name: medium
+  stemcell:
+    name: bosh-stemcell
+    version: 0.4.7
+  network: default
+  size: 3
+  cloud_properties:
+    ram: 4096
+    disk: 16384
+    cpu: 2
+- name: large
+  stemcell:
+    name: bosh-stemcell
+    version: 0.4.7
+  network: default
+  size: 0
+  cloud_properties:
+    ram: 8192
+    disk: 32768
+    cpu: 4
+
+compilation:
+  workers: 6
+  network: default
+  cloud_properties:
+    ram: 2048
+    disk: 4048
+    cpu: 4
+
+update:
+  canaries: 1
+  canary_watch_time: 60000
+  update_watch_time: 60000
+  max_in_flight: 1
+  max_errors: 1
+
+jobs:
+
+- name: nats
+  template: nats
+  instances: 1
+  resource_pool: small
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.33
+
+- name: postgres
+  template: postgres
+  instances: 1
+  resource_pool: medium
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.34
+
+- name: redis
+  template: redis
+  instances: 1
+  resource_pool: small
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.35
+
+- name: director
+  template: director
+  instances: 1
+  resource_pool: medium
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.36
+
+- name: blobstore
+  template: blobstore
+  instances: 1
+  resource_pool: medium
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.37
+
+properties:
+  env:
+    #http_proxy: "http://<proxy>"
+    #https_proxy: "http://<proxy>"
+    #no_proxy: ""
+
+  blobstore:
+    address: 192.0.2.37
+    port: 25251
+    backend_port: 25552
+    agent:
+      user: agent
+      password: agent
+    director:
+      user: director
+      password: director
+
+  networks:
+    apps: default
+    management: default
+
+  nats:
+    user: nats
+    password: nats
+    address: 192.0.2.33
+    port: 4222
+
+  postgres:
+    user: bosh
+    password: bosh
+    address:  192.0.2.34
+    port: 5432
+    database: bosh
+
+  redis:
+    address: 192.0.2.35
+    port: 25255
+    password: redis
+
+  director:
+    name: bosh_director
+    address: 192.0.2.36
+    port: 25555
+
+  vcenter:
+    address: 203.0.113.1
+    user: <vcenter_user>
+    password: <vcenter_pass>
+    datacenters:
+      - name: dc
+        vm_folder: BOSH_VMs
+        template_folder: BOSH_Templates
+        disk_path: BOSH_Disks
+        datastore_pattern: datastore-.*
+        persistent_datastore_pattern: datastore-.*
+        allow_mixed_datastores: true
+        clusters:
+        - CLUSTER01
