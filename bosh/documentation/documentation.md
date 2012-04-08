@@ -647,6 +647,17 @@ There is an optional `pre_packaging` script, which is run when the source of the
 
 ### Package specs
 
+The package contents are specified in the `spec` file, which has three sections:
+
+`name`
+: The name of the package.
+
+`dependencies`
+: An optional list of other packages this package depends on, [see below][Dependencies].
+
+`files`
+: A list of files this package contains, which can contain globs. A `*` matches any file and can be restricted by other values in the glob, e.g. `*.rb` only matches files ending with `.rb`. A `**` matches directories recursively.
+
 ### Dependencies
 
 The package `spec` file contains a section which lists other packages the current package depends on. These dependencies are compile time dependencies, as opposed to the job dependencies which are runtime dependencies.
@@ -666,32 +677,49 @@ For production releases you should use either the Atmos or S3 blobstore and conf
 
 ### Atmos
 
-To use Atmos, edit `config/final.tml` and add the following (replacing the `url`, `uid` and `secret` with your account information):
+To use Atmos, edit `config/final.tml` and `config/private.yml`, and add the following (replacing the `url`, `uid` and `secret` with your account information):
 
+File `config/final.yml`
+
+    ---
     blobstore:
       provider: atmos
       options:
         tag: BOSH
         url: https://blob.cfblob.com
         uid: 1876876dba98981ccd091981731deab2/user1
-        secret: ahye7dAS93kjWOIpqla9as8GBu1= # FIXME - private.yml
+
+File `config/private.yml`
+
+    ---
+    blobstore_secret: ahye7dAS93kjWOIpqla9as8GBu1=
 
 ### S3
 
-To use S3, edit `config/final.tml` and add the following (replacing the `access_key_id`, `bucket_name`, `encryption_key` and `secret_access_key` with your account information):
+To use S3, edit `config/final.tml` and `config/private.yml`, and add the following (replacing the `access_key_id`, `bucket_name`, `encryption_key` and `secret_access_key` with your account information):
 
+File `config/final.yml`
+
+    ---
     blobstore:
       provider: s3
       options:
         access_key_id: KIAK876234KJASDIUH32
         bucket_name: 87623bdc
         encryption_key: sp$abcd123$foobar1234
-        secret_access_key: kjhasdUIHIkjas765/kjahsIUH54asd/kjasdUSf
+
+File `config/private.yml`
+
+    ---
+    blobstore_secret: kjhasdUIHIkjas765/kjahsIUH54asd/kjasdUSf
 
 ### Local
 
 If you are just trying out BOSH and don't have an Atmos or S3 account, you can use the local blobstore provider (which stored the files on disk instead of a remote server).
 
+File `config/final.yml`
+
+    ---
     blobstore:
       provider: local
       options:
