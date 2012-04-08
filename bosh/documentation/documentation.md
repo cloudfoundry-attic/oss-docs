@@ -20,16 +20,10 @@ The core BOSH engine is abstracted away from any particular Infrastructure as a 
 
 As a user of BOSH you're not directly exposed to the the BOSH Cloud Provider Interface, but it can be helpful to understand its primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following: 
 
-* create_stemcell
-* delete_stemcell
-* create_vm
-* delete_vm
-* reboot_vm
-* configure_networks
-* create_disk
-* delete_disk
-* attach_disk
-* detach_disk
+	create_stemcell / delete_stemcell
+	create_vm  / delete_vm  / reboot_vm  
+	configure_networks
+	create_disk / delete_disk / attach_disk / detach_disk
 
 In addition to these methods are others specific to each cloud interface. For example, the Amazon Web Services interface includes methods for Elastic Block Store, which are unnecessary on vSphere. Please refer to the API documentation in the files listed above for a detailed explanation of the CPI primitives.
 
@@ -43,7 +37,7 @@ The Director is the core orchestrating component in BOSH which controls creation
 
 The BOSH Command Line Interface is the mechanism for users to interact with BOSH using a terminal session. BOSH commands follow the format shown below:
 
-	$bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR>]
+	$ bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR>]
             [--force] [--no-color] [--skip-director-checks] [--quiet]
             [--non-interactive]
 
@@ -55,7 +49,7 @@ A BOSH Stemcell is a VM template with an embedded BOSH Agent. The Stemcell used 
 
 ## Agent ##
 
-When a Stemcell is created, it is comprised of the barebones operating system (Ubuntu in the case of Cloud Foundry) and an Agent. The Agent listens for instructions from the Director and performs operations on the VM according to these instructions. A typical instruction would be to download and install new packages from the Blobstore.
+A Stemcell is is comprised of the barebones operating system (such as Ubuntu) and an Agent. The Agent listens for instructions from the Director and performs operations on the VM according to these instructions. A typical instruction would be to install service components (e.g a BOSH Job and Packages).
 
 ## Releases
 
@@ -103,7 +97,8 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on eit
 
 1. Bosh is written in Ruby. Let's install Ruby's dependencies
 
-		sudo apt-get install git-core build-essential libsqlite3-dev curl libmysqlclient-dev libxml2-dev libxslt-dev libpq-dev
+		sudo apt-get install git-core build-essential libsqlite3-dev curl \
+	    libmysqlclient-dev libxml2-dev libxslt-dev libpq-dev
 
 1. Get the latest version of rbenv
 
@@ -461,31 +456,6 @@ Example:
 
 Someone write this eh?
 
-# Configure BOSH Director
-
-[NOTE]
-The current `chef-solo` based installer is being re-written as a
-mini-bosh instance.
-
-To install BOSH into an infrastructure we currently assume that the
-target VMs have been created.
-
-TODO: check if we can provide vm_builder instructions for creating and
-//uploading these to IaaS.
-
-		~/projects/deployments/mycloud/cloud
-		  assets/
-		    director/
-		      director.yml.erb       	 <1>
-		      chef.rb                    <2>
-		      config.yml                 <3>
-
-	cd ~/projects/bosh/chef_deployer
-	rake install
-
-	cd ~/projects/bosh/release
-	chef_deployer deploy ~/projects/deployments/mycloud/cloud
-
 # BOSH CLI [bosh_cli]
 
 The BOSH command line interface is used to interact with the BOSH director to perform actions on the cloud.  For the most recent documentation on its functions, [install bosh][bosh_install] and simply type `bosh`.  Usage:
@@ -704,7 +674,7 @@ To use Atmos, edit `config/final.tml` and add the following (replacing the `url`
         tag: BOSH
         url: https://blob.cfblob.com
         uid: 1876876dba98981ccd091981731deab2/user1
-        secret: ahye7dAS93kjWOIpqla9as8GBu1=
+        secret: ahye7dAS93kjWOIpqla9as8GBu1= # FIXME - private.yml
 
 ### S3
 
