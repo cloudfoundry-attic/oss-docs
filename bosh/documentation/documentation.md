@@ -28,16 +28,10 @@ The core BOSH engine is abstracted away from any particular Infrastructure as a 
 
 As a user of BOSH you're not directly exposed to the the BOSH Cloud Provider Interface, but it can be helpful to understand its primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following: 
 
-* create_stemcell
-* delete_stemcell
-* create_vm
-* delete_vm
-* reboot_vm
-* configure_networks
-* create_disk
-* delete_disk
-* attach_disk
-* detach_disk
+	create_stemcell / delete_stemcell
+	create_vm  / delete_vm  / reboot_vm  
+	configure_networks
+	create_disk / delete_disk / attach_disk / detach_disk
 
 In addition to these methods are others specific to each cloud interface. For example, the Amazon Web Services interface includes methods for Elastic Block Store, which are unnecessary on vSphere. Please refer to the API documentation in the files listed above for a detailed explanation of the CPI primitives.
 
@@ -51,7 +45,7 @@ The Director is the core orchestrating component in BOSH which controls creation
 
 The BOSH Command Line Interface is the mechanism for users to interact with BOSH using a terminal session. BOSH commands follow the format shown below:
 
-	$bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR>]
+	$ bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR>]
             [--force] [--no-color] [--skip-director-checks] [--quiet]
             [--non-interactive]
 
@@ -63,7 +57,7 @@ A BOSH Stemcell is a VM template with an embedded BOSH Agent. The Stemcell used 
 
 ## Agent ##
 
-When a Stemcell is created, it is comprised of the barebones operating system (Ubuntu in the case of Cloud Foundry) and an Agent. The Agent listens for instructions from the Director and performs operations on the VM according to these instructions. A typical instruction would be to download and install new packages from the Blobstore.
+A Stemcell is is comprised of the barebones operating system (such as Ubuntu) and an Agent. The Agent listens for instructions from the Director and performs operations on the VM according to these instructions. A typical instruction would be to install service components (e.g a BOSH Job and Packages).
 
 ## Releases
 
@@ -111,7 +105,8 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on eit
 
 1. Bosh is written in Ruby. Let's install Ruby's dependencies
 
-		sudo apt-get install git-core build-essential libsqlite3-dev curl libmysqlclient-dev libxml2-dev libxslt-dev libpq-dev
+		sudo apt-get install git-core build-essential libsqlite3-dev curl \
+	    libmysqlclient-dev libxml2-dev libxslt-dev libpq-dev
 
 1. Get the latest version of rbenv
 
@@ -519,31 +514,6 @@ Example:
 
 Someone write this eh?
 
-# Configure BOSH Director
-
-[NOTE]
-The current `chef-solo` based installer is being re-written as a
-mini-bosh instance.
-
-To install BOSH into an infrastructure we currently assume that the
-target VMs have been created.
-
-TODO: check if we can provide vm_builder instructions for creating and
-//uploading these to IaaS.
-
-		~/projects/deployments/mycloud/cloud
-		  assets/
-		    director/
-		      director.yml.erb       	 <1>
-		      chef.rb                    <2>
-		      config.yml                 <3>
-
-	cd ~/projects/bosh/chef_deployer
-	rake install
-
-	cd ~/projects/bosh/release
-	chef_deployer deploy ~/projects/deployments/mycloud/cloud
-
 # BOSH CLI [bosh_cli]
 
 The BOSH command line interface is used to interact with the BOSH director to perform actions on the cloud.  For the most recent documentation on its functions, [install bosh][bosh_install] and simply type `bosh`.  Usage:
@@ -715,14 +685,55 @@ A BOSH Release is built from a directory tree following a structure
 described in this section:
 
 ## Jobs
-TODO: job templates
-TODO: prepare script
-TODO: use of properties
-TODO: "the job of a vm"
-TODO: monitrc (gonit)
-TODO: DNS support
+
+TBW
+
+### Prepare script
+
+TBW
+
+### Job templates
+
+The job templates are generalized configuration files and scripts for a job, which uses [ERB](http://ruby-doc.org/stdlib-1.9.3/libdoc/erb/rdoc/ERB.html) files to generate the final configuration files and scripts used when a Stemcell is turned into a job.
+
+When a confiuration file is turned into a template, instance specific information is abstracted into a property which later is provided when the [director][director] starts the job on a VM. E.g. which port the webserver should run on, or which username and password a databse should use.
+
+The files are located in the `templates` directory and the mapping between template file and its final location is provided in the job `spec` file in the templates section. E.g.
+
+    templates:
+	  foo_ctl.erb: bin/foo_ctl
+	  foo.yml.erb: config/foo.yml
+	  foo.txt: config/foo.txt
+
+### Use of properties
+
+The properties used for a job comes from the deployment manifest, which passes the instance specific information to the VM via the [agent][agent].
+
+### "the job of a vm"
+
+When a VM is first started, is a Stemcell, which can become any kind of job. It is first when the director instructs the VM to run a job as it will gets its *personality*.
+
+### Monitrc
+
+BOSH uses [monit](http://mmonit.com/monit/) to manage and monitor the process(es) for a job. The `monit` file describes how the BOSH [agent][agent] will stop and start the job, and it contains at least three sections:
+
+`with pidfile`
+: Where the process keeps its pid file
+
+`start program`
+: How monit should start the process
+
+`stop program`
+: How monit should stop the process
+
+Usually the `monit` file contain a script to invoke to start/stop the process, but it can invoke the binary directly.
+
+### DNS support
+
+TBW
 
 ## Packages
+
 TODO: ishisness!
 
 ### Package Compilation
@@ -734,6 +745,17 @@ To turn source code into binaries each package has a `packaging` script that is 
 There is an optional `pre_packaging` script, which is run when the source of the package is assembled during the `bosh create release`. It can for instance be used to limit which parts of the source that get packages up and stored in the blobstore. It gets the environment variable `BUILD_DIR` set by the [BOSH cli][bosh_cli], which is the directory containing the source to be packaged.
 
 ### Package specs
+
+The package contents are specified in the `spec` file, which has three sections:
+
+`name`
+: The name of the package.
+
+`dependencies`
+: An optional list of other packages this package depends on, [see below][Dependencies].
+
+`files`
+: A list of files this package contains, which can contain globs. A `*` matches any file and can be restricted by other values in the glob, e.g. `*.rb` only matches files ending with `.rb`. A `**` matches directories recursively.
 
 ### Dependencies
 
@@ -754,32 +776,49 @@ For production releases you should use either the Atmos or S3 blobstore and conf
 
 ### Atmos
 
-To use Atmos, edit `config/final.tml` and add the following (replacing the `url`, `uid` and `secret` with your account information):
+To use Atmos, edit `config/final.tml` and `config/private.yml`, and add the following (replacing the `url`, `uid` and `secret` with your account information):
 
+File `config/final.yml`
+
+    ---
     blobstore:
       provider: atmos
       options:
         tag: BOSH
         url: https://blob.cfblob.com
         uid: 1876876dba98981ccd091981731deab2/user1
-        secret: ahye7dAS93kjWOIpqla9as8GBu1=
+
+File `config/private.yml`
+
+    ---
+    blobstore_secret: ahye7dAS93kjWOIpqla9as8GBu1=
 
 ### S3
 
-To use S3, edit `config/final.tml` and add the following (replacing the `access_key_id`, `bucket_name`, `encryption_key` and `secret_access_key` with your account information):
+To use S3, edit `config/final.tml` and `config/private.yml`, and add the following (replacing the `access_key_id`, `bucket_name`, `encryption_key` and `secret_access_key` with your account information):
 
+File `config/final.yml`
+
+    ---
     blobstore:
       provider: s3
       options:
         access_key_id: KIAK876234KJASDIUH32
         bucket_name: 87623bdc
         encryption_key: sp$abcd123$foobar1234
-        secret_access_key: kjhasdUIHIkjas765/kjahsIUH54asd/kjasdUSf
+
+File `config/private.yml`
+
+    ---
+    blobstore_secret: kjhasdUIHIkjas765/kjahsIUH54asd/kjasdUSf
 
 ### Local
 
 If you are just trying out BOSH and don't have an Atmos or S3 account, you can use the local blobstore provider (which stored the files on disk instead of a remote server).
 
+File `config/final.yml`
+
+    ---
     blobstore:
       provider: local
       options:
@@ -817,11 +856,117 @@ Here are the steps that take place in a BOSH deployment.
 1. Updating/deleting jobs - Deletes unneeded instances, creates needed instances, updates existing instances if they are not already updated.  This is the step where things get pushed live.
 1. Refilling resource pools - Creates missing VMs across resource pools after all instance updaters are finished to create additional VMs in order to balance resource pools.
 
+## BOSH Deployment Manifest
+
+Deployment manifest is a YAML file defining the layout and properties of the deployment. When BOSH user initiates a new deployment using CLI, BOSH Director receives a version of deployment manifest and creates a new deployment plan using this manifest (see [Steps of a Deployment][]). Manifest contains several sections:
+
+* `name` [String, required] Deployment name. Single BOSH Director can manage multiple deployments and distinguishes them by name.
+* `director_uuid` [String, required] Director UUID. Identifies BOSH Director that manages given deployment. A targeted Director UUID should match this property in order for BOSH CLI to allow any operations on the deployment.
+* `release` [Hash, required] Release properties.
+	* `name` [String, required] Release name. References a release name that wiill be used to resolve the components of the deployment (packages, jobs).
+	* `version` [String, required] Release version. Points to the exact release version to use.
+* `compilation` [Hash, required] Package compilation properties.
+	* `workers` [Integer, required] How many compilation VMs will be created to compile packages.
+	* `reuse_compilation_vms` [Boolean, optional] If set to true, compilation VMs will be re-used when compiling packages. If false, every time new package needs to be compiled (as a part of current deployment), a new worker VM will be created (up to a number of compilation workers) and it will be shut down after single package compilation is finished. Defaults to false. Recommended to set to true if IaaS takes a long time to create/delete VMs or to optimize package compilation cost (as compilation VMs are usually short-lived and some IaaS billing round up usage time to the hour).
+	* `network` [String, required] Network name, references a valid network name defined in `networks` section. Compilation VMs will be assigned all their network properties according to the type and other properties of that network.
+	* `cloud_properties` [Hash, required] Any IaaS-specific properties that will be used to create compilation VMs.
+* `update` [Hash, required] Instance update properties. These control how job instances will be updated during the deployment.
+	* `canaries` [Integer, required] Number of canary instances. Canary instances are being updated before other instances and any update error for canary instance means the deployment should stop. This prevents a buggy package or job from taking over all job instances, as only canaries will be affected by a problematic code. After canaries are done, other instances of this job will be updated in parallel (respecting `max_in_flight` setting).
+	* `canary_watch_time` [Range<Integer>, Integer] How long to wait for canary update to declare job healthy or unhealthy. If Integer is given, director will sleep for that many seconds and check if job is healthy. If Range `lo..hi` is given it will wait for `lo` ms, see if job is healthy, and if it's not it will sleep some more, all up until `hi` ms have passed. If job is still unhealthy it will give up.
+	* `update_watch_time` [Range<Integer> Integer]: Semantically no different from `canary_watch_time`, used for regular (non-canary) updates.
+	* `max_in_flight` [Integer, required] Maximum number of non-canary instance updates that can happen in parallel.
+* `networks` [Hash<Array>, required] Describes the networks used by deployment. See [nework_spec] for details.
+* `resource_pools` [Hash<Array>, required] Describes resource pools used by deployment. See [resource_pool_spec] for details.
+* `jobs` [Hash<Array>, required] Lists jobs included in into this deployment. See [job_spec] for details.
+* `properties` [Hash, required] Global deployment properties. See [job_cloud_properties] for details.
+
+### Network spec [network spec]
+
+Network spec specifies a network configuration that can be referenced by jobs. Different environments have very different networking capabilities, so there are several network types. Each type has a required `name` property that identifies the network within BOSH and has to be unique.
+
+The more details network type description follows:
+
+1. `dynamic` The network is not managed by Bosh. VMs using this network are expected to get their IP addresses and other network configuration from DHCP server or some other way, BOSH will trust each VM to report its current IP address as a part of its `get_state` response. The only extra property this network supports is `cloud_properties`, containing any IaaS-specific network details for CPI.
+2. `manual` The network is completely managed by BOSH. Ranges are provided for dynamic, static and reserved IP pools, DNS servers. Manually managed networks can be further divided into subnets. When using this type of network BOSH takes care of assigning IP addresses, making network-related sanity checks and telling VMs which network configuration they are meant to use. This type of network has only one extra property `subnets`, an array of Hashes, where each hash is a subnet spec, containing the following properties):
+	* `range` [String, required] Subnet IP range (as defined by Ruby NetAddr::CIDR.create semantics) that includes all IPs from this subnet.
+	* `gateway` [String, optional] Subnet gateway IP.
+	* `dns` [Array<String>, optional] DNS IP addresses for this subnet.
+	* `cloud_properties` opaque IaaS-specific details passed on to CPI.
+	* `reserved` [String, optional] Reserved IP range. IPs from that range will never be assigned to BOSH-managed VMs, these are supposed to be managed outside of BOSH completely.
+	* `static` [String, optional] Static IP range. When jobs request static IPs, they all should be coming from some subnet static IP pool.
+3. `vip` The network is just a collection of virtual IPs (e.g. EC2 elastic IPs) and each job spec will provide a range of IPs it supposed to have. Actual VMs are not aware of these IPs. The only extra property this network supports is `cloud_properties`, containing any IaaS-specific network details for CPI.
+
+### Resource pool spec [resource_pool_spec]
+
+Resource pool spec is essentially a blueprint for VMs created and managed by BOSH. There might be multiple resource pools within a deployment manifest, `name` is used to identify and reference them, so it needs to be unique. Resource pool VMs are created within a deployment and later jobs are applied to these VMs. Jobs might override some of the resource pool settings (i.e. networks) but in general resource pools are a good vehicle to partition jobs according to capacity and IaaS configuration needs. The resource pool spec properties are:
+
+* `name`[String, required] Unique resource pool name.
+* `network` [String, required] References a network name (see [network_spec] for details). Idle resource pool VMs will use this network configuration. Later, when the job is being applied to these resource pool VMs, networks might be reconfigured to meet job's needs.
+* `size` [Integer, required] Number of VMs in the resource pool. Resource pool should be at least as big as the total number of job instances using it. There might be extra VMs as well, these will be idle until more jobs are added to fill them in.
+* `stemcell` [Hash, required] Stemcell used to run resource pool VMs.
+	* `name` [String, required] Stemcell name.
+	* `version` [String, required] Stemcell version.
+* `cloud_properties` [Hash, required] IaaS-specific resource pool properties (see [job_cloud_properties]).
+* `env` [Hash, optional] VM environment. Used to provide specific VM environment to CPI `create_stemcell` call. This data will be available to BOSH Agent as VM settings. Default is {} (empty Hash).
+
+### Job spec [job_spec]
+
+Job is one or more VMs (called instances) running the same software and essentially representing some role. Job uses job template, which is a part of a release, to populate VM with packages, configuration files and control scripts that tell BOSH Agent what is to run on a particular VM. The most commonly used job properties are:
+
+* `name` [String, required] Unique job name.
+* `template` [String, required] Job template. Job templates are a part of a release and usually contained (in the raw form ) in release 'jobs' directory in release repo and get uploaded to BOSH Director as a part of a release bundle.
+* `persistent_disk` [Integer, optional] Persistent disk size. If it's a positive integer, persistent disk will be created and attached to each job instance VM. Defaults to 0 (no persistent disk).
+* `properties` [Hash, optional] Job properties. See [job_cloud_properties] for details.
+* `resource_pool` [String, required] Resource pool to run job instances. References a valid resource pool name in `resource_pool` section.
+* `update` [Hash, optional] Job-specific update settings. This allows overriding global job update settings on a per-job settings (similar to `properties`).
+* `instances` [Integer, required] Number of job instances. Each instance is a VM running this particular job.
+* `networks` [Array<Hash>] Networks required by this job. For each network the following properties can be specified:
+	* `name` [String, required] Specifies network name in `networks` section.
+	* `static_ips` [Range, optional] Specifies the range of IP addresses job supposed to reserve from that network.
+	* `default` [Array, optional] Specifies which of default network components (dns, gateway) are populated from this network (this only makes sense if there are multiple networks).
+
+### Job properties and cloud properties [job_cloud_properties]
+
+There are two kinds of properties that can be featured in the deployment manifest.
+
+1. cloud_properties: an opaque Hash that is being passed (usually "as-is") to CPI. Usually it controls some IaaS-specific properties (such as VM configuration parameters, network VLAN names etc). CPI is up to validate if these properties are correct.
+2. job properties. Almost any non-trivial job needs some properties filled in, so it can understand how to talk to other jobs and what non-default settings to use. BOSH allows to list global deployment properties in a properties section of the deployment manifest. All this properties are recursively converted by director from Hash to a Ruby OpenStruct object, so they can be accessed by using original Hash key names as method names. The resulting OpenStruct is exposed under `properties` name and can be addressed in any job configuration template (using ERB syntax). Here's an example of de
+fining and using a property:
+
+File `deployment_manifest.yml`
+
+	…
+	properties:
+	  foo:
+	    bar:
+	      baz
+
+File	`jobs/foobar_manager/templates/config.yml.erb`
+
+	---
+	bar_value: <%= properties.foo.bar %>
+
+Global properties are available to any job. In addition every job can define it's own `properties` section, these properties are only accessible within configuration templates of that job. Local job properties are being recursively merged into global job properties, so accessing them requires exactly the same syntax. Note that this can also be used to override global properties on per-job basis.
+
+### Instance spec ###
+
+Instance spec is a special object accessible to any job configuration file, similar to `properties` (actually `properties` is just a shortcut for `spec.properties`, so they are just a small part of spec). It contains a number of properties that can be used by job creator to access the details of a particular job instance environment and potentially make runtime-based decisions at the time of creating a job.
+
+Two important parts of the instance spec are `job` and `index`. `job` contains job name and `index` contains 0-based instance index. This index is important if you want to only perform some actions (i.e. database migrations) on a particular job instance or want to test a new feature only on several instances but not all of them. Other things available through this spec are `networks` and  `resource_pool` which might be useful to get some data about job whereabouts.
+
 ## BOSH Property Store
 
-## BOSH Deployment Manifest
-TODO: options global/job propertes
-TODO: cloud_properties for the cli
+Deployment manifest is a YAML file but it gets processed by ERB before being actually used, thus it might contain ERB expressions. This allows BOSH Director to substitute some properties saved in its database, so that sensitive or volatile data is only set at the time of deployment but not by manifest author at the time of creating the actual manifest.
+
+BOSH CLI has several commands allowing property management:
+
+	set property <name> <value>
+	get property <name>
+	unset property <name>
+	properties
+
+You can set the property using `bosh set property <name> <value>` and then reference it in the deployment manifest using `<%= property(name) %>` syntax.
+
 
 # BOSH Troubleshooting
 
