@@ -290,7 +290,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 # BOSH Installation #
 
-Deploying BOSH is a two step process. First, The BOSH Deployer is used to deploy a micro BOSH, which will live in a single virtual machine. The second step is to use the micro BOSH as a means to deploy the final, distributed production BOSH on multiple VMs. The graphic below illustrates this two step process.
+Deploying BOSH is a two-step process. First, The BOSH Deployer is used to deploy a micro BOSH, which will live in a single virtual machine. The second step is to use the micro BOSH as a means to deploy the final, distributed production BOSH on multiple VMs. The graphic below illustrates this two-step process.
 
 **NOTE: Matt will create a graphic for this**
 
@@ -329,7 +329,7 @@ Once you have installed micro BOSH, you will see some extra commands appear afte
 
 ## Configuration ##
 
-For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your Deployment name. 
+For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other BOSH Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdirectory containing `micro_bosh.yml`, where `name` is your Deployment name. 
 
 For example:
 
@@ -342,7 +342,7 @@ Deployment state is persisted to deployments/bosh-deployments.yml.
 
 ## Deployment ##
 
-1. Download a micro BOSH stemcell:
+1. Download a micro BOSH Stemcell:
 
 		% mkdir -p ~/stemcells
 		% cd stemcells
@@ -375,7 +375,7 @@ Deployment state is persisted to deployments/bosh-deployments.yml.
 
 ## Deleting a micro BOSH deployment ##
 
-The `delete` command will delete the VM, Stemcell and persistent disk.
+The `delete` command will delete the VM, Stemcell, and persistent disk.
 
 Example:
 
@@ -407,7 +407,7 @@ The micro-bosh-stemcell includes an embedded `apply_spec.yml`. This command can 
 
 ## Sending messages to the micro BOSH agent ##
 
-The CLI can send  messages over HTTP to the agent using the `agent` command.
+The CLI can send messages over HTTP to the agent using the `agent` command.
 
 Example:
 
@@ -458,7 +458,7 @@ Someone write this eh?
 
 # BOSH CLI [bosh_cli]
 
-The BOSH command line interface is used to interact with the BOSH director to perform actions on the cloud.  For the most recent documentation on its functions, [install bosh][bosh_install] and simply type `bosh`.  Usage:
+The BOSH command line interface is used to interact with the BOSH director to perform actions on the cloud.  For the most recent documentation on its functions, install BOSH and simply type `bosh`.  Usage:
 
     bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR]
          [--force] [--no-color] [--skip-director-checks] [--quiet]
