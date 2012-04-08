@@ -22,7 +22,7 @@ BOSH was originally developed in the context of the Cloud Foundry Application Pl
 \begin{figure}[htbp]
 \centering
 \includegraphics[keepaspectratio,width=\textwidth,height=0.75\textheight]{fig1.png}
-\caption{Figure 1}
+\caption{Interaction of BOSH Components}
 \label{}
 \end{figure}
 
@@ -466,9 +466,93 @@ bosh deploy
 \chapter{BOSH Installation}
 \label{boshinstallation}
 
-Deploying BOSH is a two step process. First, The BOSH Deployer is used to deploy a micro BOSH, which will live in a single virtual machine. The second step is to use the micro BOSH as a means to deploy the final, distributed production BOSH on multiple VMs. The graphic below illustrates this two step process.
+There are 2 ways to deploy and use BOSH.
 
-\textbf{NOTE: Matt will create a graphic for this}
+\begin{enumerate}
+\item Use BOSH Deployer to deploy a micro BOSH, which is all the BOSH components packaged in a single VM. For dev setups where you want to play with BOSH and manage a few applications, this micro BOSH should suffice. If you want to use BOSH in production or want to use BOSH to manage a large number of applications then you need to follow the next step.
+
+\item Deploy BOSH as an application using micro BOSH. So as in step 1, use BOSH deployer to deploiy micro BOSH, then use the micro BOSH as a means to deploy the final, distributed production BOSH on multiple VMs. The graphic below illustrates this two step process.
+
+\end{enumerate}
+
+\section{Deploy BOSH as an application using micro BOSH.}
+\label{deployboshasanapplicationusingmicrobosh.}
+
+\begin{enumerate}
+\item Deploy micro BOSH. See the steps in the previous section. 
+
+\item Target micro BOSH e.g from the previous section, micro BOSH had the ip 11.23.194.100, so you would target it as bosh target http:/\slash 11.23.194.100:25555
+
+\end{enumerate}
+
+\subsection{Download a BOSH stemcell}
+\label{downloadaboshstemcell}
+
+\begin{enumerate}
+\item List public stemcells with bosh public stemcells
+
+\end{enumerate}
+
++-------------------------------+----------------------------------------------------+
+\textbar{} Name \textbar{} Url \textbar{}
++-------------------------------+----------------------------------------------------+
+\textbar{} bosh-stemcell--0.4.7.tgz \textbar{} https:/\slash blob.cfblob.com\slash rest\slash objects\slash 4e4e7{\ldots}h120= \textbar{}
+\textbar{} micro-bosh-stemcell--0.1.0.tgz \textbar{} https:/\slash blob.cfblob.com\slash rest\slash objects\slash 4e4e7{\ldots}5Mms= \textbar{}
+\textbar{} bosh-stemcell--0.3.0.tgz \textbar{} https:/\slash blob.cfblob.com\slash rest\slash objects\slash 4e4e7{\ldots}mw1w= \textbar{}
+\textbar{} bosh-stemcell--0.4.4.tgz \textbar{} https:/\slash blob.cfblob.com\slash rest\slash objects\slash 4e4e7{\ldots}r144= \textbar{}
++-------------------------------+----------------------------------------------------+
+
+\begin{enumerate}
+\item Download a public stemcell. \emph{NOTE, in this case you do not use the micro bosh stemcell.}
+
+\begin{verbatim}
+bosh download public stemcell bosh-stemcell-0.1.0.tgz
+\end{verbatim}
+
+
+\item Upload the downloaded stemcell to micro BOSH. bosh upload stemcell bosh-stemcell--0.1.0.tgz
+
+\end{enumerate}
+
+\subsection{Upload a BOSH release.}
+\label{uploadaboshrelease.}
+
+\begin{enumerate}
+\item You can create a BOSH release or use one of the public releases. The following steps show the use of a public release. 
+
+\begin{verbatim}
+cd /home/bosh_user gerrit-clone ssh://reviews.cloudfoundry.org:29418/bosh-release.git
+\end{verbatim}
+
+
+\item Upload a public release from bosh-release 
+
+\begin{verbatim}
+cd /home/bosh_user/bosh-release/releases/
+bosh upload release bosh-1.yml
+\end{verbatim}
+
+
+\item Create and setup a BOSH deployment manifest. Look at the sample BOSH manifest in \texttt{\slash bosh\slash samples\slash bosh.yml}. Assuming you have created a \texttt{bosh.yml} in \texttt{\slash home\slash bosh\_user}.
+
+\begin{verbatim}
+cd /home/bosh_user
+bosh deployment ./bosh.yml
+\end{verbatim}
+
+
+\item Deploy BOSH
+
+\begin{verbatim}
+bosh deploy.
+\end{verbatim}
+
+
+\item Target the newly deployed bosh director. In the sample \texttt{bosh.yml}, the bosh director has the ip address 192.0.2.36. If you target this director with \texttt{bosh target http:/\slash 192.0.2.36:25555} where 25555 is the default BOSH director port.
+
+\end{enumerate}
+
+Your newly installed BOSH instance is now ready for use.
 
 \section{Prerequisites}
 \label{prerequisites}
@@ -496,7 +580,7 @@ Deploying BOSH is a two step process. First, The BOSH Deployer is used to deploy
 
 Once you have installed micro BOSH, you will see some extra commands appear after typing \texttt{bosh} on your command line. 
 
-\textbf{The \texttt{bosh micro} commands must also be run within the deployments directory}
+\textbf{The \texttt{bosh micro} commands must be run within the deployments directory}
 
 \begin{adjustwidth}{2.5em}{2.5em}
 \begin{verbatim}
@@ -664,8 +748,6 @@ Example:
 
 \section{Deploying Production BOSH through Micro BOSH}
 \label{deployingproductionboshthroughmicrobosh}
-
-\textbf{TODO: The steps below are only an outline. Need to expand on them.}
 
 \begin{enumerate}
 \item Once your micro BOSH instance is deployed, you can target its Director:
@@ -960,7 +1042,7 @@ There is an optional \texttt{pre\_packaging} script, which is run when the sourc
 
 The package \texttt{spec} file contains a section which lists other packages the current package depends on. These dependencies are compile time dependencies, as opposed to the job dependencies which are runtime dependencies.
 
-When the director plans the compilation of a package during a deployment, it first makes sure all dependencies are compiled before it proceeds to compile the current package, and prior to commencing the compilation all dependent packages are installed on the compilation VM.
+When the director (\autoref{director}) plans the compilation of a package during a deployment, it first makes sure all dependencies are compiled before it proceeds to compile the current package, and prior to commencing the compilation all dependent packages are installed on the compilation VM.
 
 \section{Sources}
 \label{sources}
