@@ -1,3 +1,11 @@
+latex input:	mmd-article-header
+Title:	Cloud Foundry Technical Overview 
+Author:	VMware 2012 - Cloud Foundry
+Base Header Level:	2  
+LaTeX Mode:	memoir  
+latex input:        mmd-article-begin-doc
+latex footer:       mmd-memoir-footer
+
 # Introduction #
 
 Cloud Foundry BOSH is an open source tool chain for release engineering, deployment and life cycle management of cloud-scale distributed services. In this manual we describe the architecture, topology, configuration, and use of BOSH, as well as the structure and conventions used in packaging and deployment.
@@ -295,9 +303,61 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 # BOSH Installation #
 
-Deploying BOSH is a two step process. First, The BOSH Deployer is used to deploy a micro BOSH, which will live in a single virtual machine. The second step is to use the micro BOSH as a means to deploy the final, distributed production BOSH on multiple VMs. The graphic below illustrates this two step process.
+There are 2 ways to deploy and use BOSH.
 
-**NOTE: Matt will create a graphic for this**
+1. Use BOSH Deployer to deploy a micro BOSH, which is all the BOSH components packaged in a single VM. For dev setups where you want to play with BOSH and manage a few applications, this micro BOSH should suffice. If you want to use BOSH in production or want to use BOSH to manage a large number of applications then you need to follow the next step.
+
+1. Deploy BOSH as an application using micro BOSH. So as in step 1, use BOSH deployer to deploiy micro BOSH, then use the micro BOSH as a means to deploy the final, distributed production BOSH on multiple VMs. The graphic below illustrates this two step process.
+
+
+## Deploy BOSH as an application using micro BOSH. ##
+
+1. Deploy micro BOSH. See the steps in the previous section. 
+
+1. Target micro BOSH e.g from the previous section, micro BOSH had the ip 11.23.194.100, so you would target it as bosh target http://11.23.194.100:25555
+
+### Download a BOSH stemcell 
+
+1. List public stemcells with bosh public stemcells
+
++-------------------------------+----------------------------------------------------+
+| Name                       | Url                		                         |
++-------------------------------+----------------------------------------------------+
+| bosh-stemcell-0.4.7.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...h120= |
+| micro-bosh-stemcell-0.1.0.tgz | https://blob.cfblob.com/rest/objects/4e4e7...5Mms= |
+| bosh-stemcell-0.3.0.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...mw1w= |
+| bosh-stemcell-0.4.4.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...r144= |
++-------------------------------+----------------------------------------------------+
+
+1. Download a public stemcell. *NOTE, in this case you do not use the micro bosh stemcell.*
+
+		bosh download public stemcell bosh-stemcell-0.1.0.tgz
+
+1. Upload the downloaded stemcell to micro BOSH. bosh upload stemcell bosh-stemcell-0.1.0.tgz
+
+### Upload a BOSH release.
+
+1. You can create a BOSH release or use one of the public releases. The following steps show the use of a public release. 
+
+		cd /home/bosh_user gerrit-clone ssh://reviews.cloudfoundry.org:29418/bosh-release.git
+
+1. Upload a public release from bosh-release 
+
+		cd /home/bosh_user/bosh-release/releases/
+		bosh upload release bosh-1.yml
+
+1. Create and setup a BOSH deployment manifest. Look at the sample BOSH manifest in `/bosh/samples/bosh.yml`. Assuming you have created a `bosh.yml` in `/home/bosh_user`.
+
+		cd /home/bosh_user
+		bosh deployment ./bosh.yml
+
+1. Deploy BOSH
+
+		bosh deploy.
+
+8. Target the newly deployed bosh director. In the sample `bosh.yml`, the bosh director has the ip address 192.0.2.36. If you target this director with `bosh target http://192.0.2.36:25555` where 25555 is the default BOSH director port.
+
+Your newly installed BOSH instance is now ready for use.
 
 ## Prerequisites ##
 
@@ -315,7 +375,7 @@ Deploying BOSH is a two step process. First, The BOSH Deployer is used to deploy
 
 Once you have installed micro BOSH, you will see some extra commands appear after typing `bosh` on your command line. 
 
-**The `bosh micro` commands must also be run within the deployments directory**
+**The `bosh micro` commands must be run within the deployments directory**
 
 		% bosh help
 		...
@@ -420,8 +480,6 @@ Example:
 		"pong"
 
 ## Deploying Production BOSH through Micro BOSH ##
-
-**TODO: The steps below are only an outline. Need to expand on them.**
 
 1. Once your micro BOSH instance is deployed, you can target its Director:
 
