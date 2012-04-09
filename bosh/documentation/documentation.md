@@ -1,10 +1,18 @@
+latex input:	mmd-article-header
+Title:	Cloud Foundry Technical Overview
+Author:	VMware 2012 - Cloud Foundry
+Base Header Level:	2
+LaTeX Mode:	memoir
+latex input:        mmd-article-begin-doc
+latex footer:       mmd-memoir-footer
+
 # Introduction #
 
 Cloud Foundry BOSH is an open source tool chain for release engineering, deployment and life cycle management of cloud-scale distributed services. In this manual we describe the architecture, topology, configuration, and use of BOSH, as well as the structure and conventions used in packaging and deployment.
 
 # Managing Distributed Services #
 
-BOSH was originally developed in the context of the Cloud Foundry Application Platform as a Service, but even if this has been the primary consumer, the framework is general purpose and can be used to deploy other distributed services on top of a Cloud Provider Interface (CPI) provided by VMware vSphere, Amazon Web Services, or OpenStack. 
+BOSH was originally developed in the context of the Cloud Foundry Application Platform as a Service, but even if this has been the primary consumer, the framework is general purpose and can be used to deploy other distributed services on top of a Cloud Provider Interface (CPI) provided by VMware vSphere, Amazon Web Services, or OpenStack.
 
 # BOSH Components #
 
@@ -18,10 +26,10 @@ The core BOSH engine is abstracted away from any particular Infrastructure as a 
 
 ## Cloud Provider Interface (CPI)
 
-As a user of BOSH you're not directly exposed to the the BOSH Cloud Provider Interface, but it can be helpful to understand its primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following: 
+As a user of BOSH you're not directly exposed to the the BOSH Cloud Provider Interface, but it can be helpful to understand its primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following:
 
 	create_stemcell / delete_stemcell
-	create_vm  / delete_vm  / reboot_vm  
+	create_vm  / delete_vm  / reboot_vm
 	configure_networks
 	create_disk / delete_disk / attach_disk / detach_disk
 
@@ -37,9 +45,9 @@ The Director is the core orchestrating component in BOSH which controls creation
 
 The BOSH Command Line Interface is the mechanism for users to interact with BOSH using a terminal session. BOSH commands follow the format shown below:
 
-	$ bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR>]
-            [--force] [--no-color] [--skip-director-checks] [--quiet]
-            [--non-interactive]
+    $ bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR>]
+           [--force] [--no-color] [--skip-director-checks] [--quiet]
+           [--non-interactive]
 
 A full overview of BOSH commands and installation appears in the [BOSH CLI][bosh_cli] and [BOSH installation][bosh_install] sections.
 
@@ -53,7 +61,7 @@ A Stemcell is is comprised of the barebones operating system (such as Ubuntu) an
 
 ## Releases
 
-A Release in BOSH is a packaged bundle of service descriptors known as Jobs. Jobs are collections of software bits and configurations. Any given Release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service. 
+A Release in BOSH is a packaged bundle of service descriptors known as Jobs. Jobs are collections of software bits and configurations. Any given Release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service.
 
 A Release is typically not restricted to any particular environment. As such, it can be re-used across clusters handling different stages in a service life cycle, such as Development, QA, Staging, or Production. The BOSH CLI manages both the creation of Releases and their deployments into specific environments.
 
@@ -87,7 +95,7 @@ BOSH uses the [NATS](http://github.com/dcollison/nats) message bus for command a
 
 # Using BOSH
 
-Before we can use BOSH we need to install the BOSH CLI. You will need a running development environment with an uploaded Stemcell. You can learn about those steps in the [BOSH Installation][] section.
+Before we can use BOSH we need to install the BOSH CLI. You will need a running development environment with an uploaded Stemcell. You can learn about those steps in the [BOSH Installation][bosh_install] section.
 
 ## Installing BOSH Command Line Interface [bosh_install] ##
 
@@ -120,11 +128,11 @@ _Note: You can also build ruby using ruby-build plugin for rbenv. See https://gi
 
 1. Unpack and install Ruby
 
-		 tar xvfz ruby-1.9.2-p290.tar.gz
-		 cd ruby-1.9.2-p290
-		 ./configure --prefix=$HOME/.rbenv/versions/1.9.2-p290
-		 make
-		 make install
+    tar xvfz ruby-1.9.2-p290.tar.gz
+    cd ruby-1.9.2-p290
+    ./configure --prefix=$HOME/.rbenv/versions/1.9.2-p290
+    make
+    make install
 
 1. Restart your shell so the path changes take effect
 
@@ -149,7 +157,7 @@ _Note: You can also build ruby using ruby-build plugin for rbenv. See https://gi
 		ssh-keygen -t rsa
 		
 1. Copy your key from `~/.ssh/id_rsa.pub` into your Gerrit account
- 
+
 1. Create ~/.gitconfig as follows (Make sure that the email specified is registered with gerrit):
 		
 		[user]
@@ -195,7 +203,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 1. Target your Director (this IP is an example.) **NOTE: EXAMPLE WORKS FOR INTERNAL USE (u: admin / p: admin)**
 
-		bosh target 11.23.128.219:25555 
+		bosh target 11.23.128.219:25555
 
 1. Check the state of your BOSH settings.
 
@@ -220,7 +228,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 		| dev48 |
 		+-------+
 
-1. Delete the existing Deployments (ex: dev48.) 
+1. Delete the existing Deployments (ex: dev48.)
 
 		bosh delete deployment dev48
 
@@ -233,12 +241,12 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 1. The result of `bosh releases` should be akin to:
 
 		+---------------+---------------+
-		| Name	   		| Versions		|
+		| Name          | Versions      |
 		+---------------+---------------+
-		| cloudfoundry	| 47, 55, 58 	|
+		| cloudfoundry	| 47, 55, 58    |
 		+---------------+---------------+
 		
-1. Delete the existing Releases (ex: cloudfoundry) 
+1. Delete the existing Releases (ex: cloudfoundry)
 
 		bosh delete release cloudfoundry
 
@@ -290,9 +298,61 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 # BOSH Installation #
 
-Deploying BOSH is a two-step process. First, The BOSH Deployer is used to deploy a micro BOSH, which will live in a single virtual machine. The second step is to use the micro BOSH as a means to deploy the final, distributed production BOSH on multiple VMs. The graphic below illustrates this two-step process.
+There are 2 ways to deploy and use BOSH.
 
-**NOTE: Matt will create a graphic for this**
+1. Use BOSH Deployer to deploy a micro BOSH, which is all the BOSH components packaged in a single VM. For dev setups where you want to play with BOSH and manage a few applications, this micro BOSH should suffice. If you want to use BOSH in production or want to use BOSH to manage a large number of applications then you need to follow the next step.
+
+1. Deploy BOSH as an application using micro BOSH. So as in step 1, use BOSH deployer to deploiy micro BOSH, then use the micro BOSH as a means to deploy the final, distributed production BOSH on multiple VMs. The graphic below illustrates this two step process.
+
+
+## Deploy BOSH as an application using micro BOSH. ##
+
+1. Deploy micro BOSH. See the steps in the previous section.
+
+1. Target micro BOSH e.g from the previous section, micro BOSH had the ip 11.23.194.100, so you would target it as bosh target http://11.23.194.100:25555
+
+### Download a BOSH stemcell 
+
+1. List public stemcells with bosh public stemcells
+
+    +-------------------------------+----------------------------------------------------+
+    | Name                          | Url                                                |
+    +-------------------------------+----------------------------------------------------+
+    | bosh-stemcell-0.4.7.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...h120= |
+    | micro-bosh-stemcell-0.1.0.tgz | https://blob.cfblob.com/rest/objects/4e4e7...5Mms= |
+    | bosh-stemcell-0.3.0.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...mw1w= |
+    | bosh-stemcell-0.4.4.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...r144= |
+    +-------------------------------+----------------------------------------------------+
+
+1. Download a public stemcell. *NOTE, in this case you do not use the micro bosh stemcell.*
+
+		bosh download public stemcell bosh-stemcell-0.1.0.tgz
+
+1. Upload the downloaded stemcell to micro BOSH. bosh upload stemcell bosh-stemcell-0.1.0.tgz
+
+### Upload a BOSH release.
+
+1. You can create a BOSH release or use one of the public releases. The following steps show the use of a public release.
+
+		cd /home/bosh_user gerrit-clone ssh://reviews.cloudfoundry.org:29418/bosh-release.git
+
+1. Upload a public release from bosh-release
+
+		cd /home/bosh_user/bosh-release/releases/
+		bosh upload release bosh-1.yml
+
+1. Create and setup a BOSH deployment manifest. Look at the sample BOSH manifest in `/bosh/samples/bosh.yml`. Assuming you have created a `bosh.yml` in `/home/bosh_user`.
+
+		cd /home/bosh_user
+		bosh deployment ./bosh.yml
+
+1. Deploy BOSH
+
+		bosh deploy.
+
+8. Target the newly deployed bosh director. In the sample `bosh.yml`, the bosh director has the ip address 192.0.2.36. If you target this director with `bosh target http://192.0.2.36:25555` where 25555 is the default BOSH director port.
+
+Your newly installed BOSH instance is now ready for use.
 
 ## Prerequisites ##
 
@@ -308,9 +368,9 @@ Deploying BOSH is a two-step process. First, The BOSH Deployer is used to deploy
 		% bundle install
 		% rake install
 
-Once you have installed micro BOSH, you will see some extra commands appear after typing `bosh` on your command line. 
+Once you have installed micro BOSH, you will see some extra commands appear after typing `bosh` on your command line.
 
-**The `bosh micro` commands must also be run within the deployments directory**
+**The `bosh micro` commands must be run within the deployments directory**
 
 		% bosh help
 		...
@@ -329,7 +389,7 @@ Once you have installed micro BOSH, you will see some extra commands appear afte
 
 ## Configuration ##
 
-For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other BOSH Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdirectory containing `micro_bosh.yml`, where `name` is your Deployment name. 
+For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your Deployment name.
 
 For example:
 
@@ -416,8 +476,6 @@ Example:
 
 ## Deploying Production BOSH through Micro BOSH ##
 
-**TODO: The steps below are only an outline. Need to expand on them.**
-
 1. Once your micro BOSH instance is deployed, you can target its Director:
 
 		$ bosh micro status
@@ -450,7 +508,7 @@ Example:
 8. Your newly deployed Production BOSH is ready to use.
 
 9. _Optional_: Delete micro BOSH deployment.
-                            
+
 
 ## vCenter Configuration ##
 
@@ -468,151 +526,151 @@ The BOSH command line interface is used to interact with the BOSH director to pe
 Currently available bosh commands are:
 
     Deployment
-      deployment [<name>]       Choose deployment to work with (it also updates 
-                                current target) 
-      delete deployment <name>  Delete deployment 
-                                --force    ignore all errors while deleting 
-                                           parts of the deployment 
-      deployments               Show the list of available deployments 
-      deploy                    Deploy according to the currently selected 
-                                deployment manifest 
-                                --recreate recreate all VMs in deployment 
-      diff [<template_file>]    Diffs your current BOSH deployment 
-                                configuration against the specified BOSH 
-                                deployment configuration template so that you 
-                                can keep your deployment configuration file up to 
-                                date. A dev template can be found in deployments 
-                                repos. 
+      deployment [<name>]       Choose deployment to work with (it also updates
+                                current target)
+      delete deployment <name>  Delete deployment
+                                --force    ignore all errors while deleting
+                                           parts of the deployment
+      deployments               Show the list of available deployments
+      deploy                    Deploy according to the currently selected
+                                deployment manifest
+                                --recreate recreate all VMs in deployment
+      diff [<template_file>]    Diffs your current BOSH deployment
+                                configuration against the specified BOSH
+                                deployment configuration template so that you
+                                can keep your deployment configuration file up to
+                                date. A dev template can be found in deployments
+                                repos.
 
     Release management
-      create release            Create release (assumes current directory to be a 
-                                release repository) 
-                                --force    bypass git dirty state check 
-                                --final    create production-ready release 
-                                           (stores artefacts in blobstore, 
-                                           bumps final version) 
-                                --with-tarball 
-                                           create full release tarball(by 
-                                           default only manifest is created) 
-                                --dry-run  stop before writing release manifest 
-                                           (for diagnostics) 
-      delete release <name> [<version>] 
-                                Delete release (or a particular release version) 
-                                --force    ignore errors during deletion 
-      verify release <path>     Verify release 
-      upload release [<path>]   Upload release (<path> can point to tarball or 
-                                manifest, defaults to the most recently created 
-                                release) 
-      releases                  Show the list of available releases 
-      reset release             Reset release development environment (deletes 
-                                all dev artifacts) 
+      create release            Create release (assumes current directory to be a
+                                release repository)
+                                --force    bypass git dirty state check
+                                --final    create production-ready release
+                                           (stores artefacts in blobstore,
+                                           bumps final version)
+                                --with-tarball
+                                           create full release tarball(by
+                                           default only manifest is created)
+                                --dry-run  stop before writing release manifest
+                                           (for diagnostics)
+      delete release <name> [<version>]
+                                Delete release (or a particular release version)
+                                --force    ignore errors during deletion
+      verify release <path>     Verify release
+      upload release [<path>]   Upload release (<path> can point to tarball or
+                                manifest, defaults to the most recently created
+                                release)
+      releases                  Show the list of available releases
+      reset release             Reset release development environment (deletes
+                                all dev artifacts)
 
-      init release [<path>]     Initialize release directory 
-      generate package <name>   Generate package template 
-      generate job <name>       Generate job template 
+      init release [<path>]     Initialize release directory
+      generate package <name>   Generate package template
+      generate job <name>       Generate job template
 
     Stemcells
-      upload stemcell <path>    Upload the stemcell 
-      verify stemcell <path>    Verify stemcell 
-      stemcells                 Show the list of available stemcells 
-      delete stemcell <name> <version> 
-                                Delete the stemcell 
-      public stemcells          Show the list of publicly available stemcells for 
-                                download. 
-      download public stemcell <stemcell_name> 
-                                Downloads a stemcell from the public blobstore. 
+      upload stemcell <path>    Upload the stemcell
+      verify stemcell <path>    Verify stemcell
+      stemcells                 Show the list of available stemcells
+      delete stemcell <name> <version>
+                                Delete the stemcell
+      public stemcells          Show the list of publicly available stemcells for
+                                download.
+      download public stemcell <stemcell_name>
+                                Downloads a stemcell from the public blobstore.
 
     User management
-      create user [<name>] [<password>] 
-                                Create user 
+      create user [<name>] [<password>]
+                                Create user
 
     Job management
-      start <job> [<index>]     Start job/instance 
-      stop <job> [<index>]      Stop job/instance 
-                                --soft     stop process only 
-                                --hard     power off VM 
-      restart <job> [<index>]   Restart job/instance (soft stop + start) 
-      recreate <job> [<index>]  Recreate job/instance (hard stop + start) 
+      start <job> [<index>]     Start job/instance
+      stop <job> [<index>]      Stop job/instance
+                                --soft     stop process only
+                                --hard     power off VM
+      restart <job> [<index>]   Restart job/instance (soft stop + start)
+      recreate <job> [<index>]  Recreate job/instance (hard stop + start)
 
     Log management
-      logs <job> <index>        Fetch job (default) or agent (if option provided) 
-                                logs 
-                                --agent    fetch agent logs 
-                                --only <filter1>[...] 
-                                           only fetch logs that satisfy given 
-                                           filters (defined in job spec) 
-                                --all      fetch all files in the job or agent log 
-                                           directory 
+      logs <job> <index>        Fetch job (default) or agent (if option provided)
+                                logs
+                                --agent    fetch agent logs
+                                --only <filter1>[...]
+                                           only fetch logs that satisfy given
+                                           filters (defined in job spec)
+                                --all      fetch all files in the job or agent log
+                                           directory
 
     Task management
-      tasks                     Show the list of running tasks 
-      tasks recent [<number>]   Show <number> recent tasks 
-      task [<task_id>|last]     Show task status and start tracking its output 
-                                --no-cache don't cache output locally 
-                                --event|--soap|--debug 
-                                           different log types to track 
-                                --raw      don't beautify log 
-      cancel task <id>          Cancel task once it reaches the next cancel 
-                                checkpoint 
+      tasks                     Show the list of running tasks
+      tasks recent [<number>]   Show <number> recent tasks
+      task [<task_id>|last]     Show task status and start tracking its output
+                                --no-cache don't cache output locally
+                                --event|--soap|--debug
+                                           different log types to track
+                                --raw      don't beautify log
+      cancel task <id>          Cancel task once it reaches the next cancel
+                                checkpoint
 
     Property management
-      set property <name> <value> 
-                                Set deployment property 
-      get property <name>       Get deployment property 
-      unset property <name>     Unset deployment property 
-      properties                List current deployment properties 
-                                --terse    easy to parse output 
+      set property <name> <value>
+                                Set deployment property
+      get property <name>       Get deployment property
+      unset property <name>     Unset deployment property
+      properties                List current deployment properties
+                                --terse    easy to parse output
 
     Maintenance
-      cleanup                   Remove all but several recent stemcells and 
-                                releases from current director (stemcells and 
-                                releases currently in use are NOT deleted) 
-      cloudcheck                Cloud consistency check and interactive repair 
-                                --auto     resolve problems automatically (not 
-                                           recommended for production) 
-                                --report   generate report only, don't attempt 
-                                           to resolve problems 
+      cleanup                   Remove all but several recent stemcells and
+                                releases from current director (stemcells and
+                                releases currently in use are NOT deleted)
+      cloudcheck                Cloud consistency check and interactive repair
+                                --auto     resolve problems automatically (not
+                                           recommended for production)
+                                --report   generate report only, don't attempt
+                                           to resolve problems
 
     Misc
-      status                    Show current status (current target, user, 
-                                deployment info etc.) 
-      vms [<deployment>]        List all VMs that supposed to be in a deployment 
-      target [<name>] [<alias>] Choose director to talk to (optionally creating 
-                                an alias). If no arguments given, show currently 
-                                targeted director 
-      login [<name>] [<password>] 
-                                Provide credentials for the subsequent 
-                                interactions with targeted director 
-      logout                    Forget saved credentials for targeted director 
-      purge                     Purge local manifest cache 
+      status                    Show current status (current target, user,
+                                deployment info etc.)
+      vms [<deployment>]        List all VMs that supposed to be in a deployment
+      target [<name>] [<alias>] Choose director to talk to (optionally creating
+                                an alias). If no arguments given, show currently
+                                targeted director
+      login [<name>] [<password>]
+                                Provide credentials for the subsequent
+                                interactions with targeted director
+      logout                    Forget saved credentials for targeted director
+      purge                     Purge local manifest cache
 
     Remote access
-      ssh <job> [index] [<options>] [command] 
-                                Given a job, execute the given command or start an 
-                                interactive session 
-                                --public_key <file> 
-                                --gateway_host <host> 
-                                --gateway_user <user> 
-                                --default_password 
-                                           Use default ssh password. Not 
-                                           recommended. 
-      scp <job> <--upload | --download> [options] /path/to/source /path/to/destination 
-                                upload/download the source file to the given job. 
-                                Note: for dowload /path/to/destination is a 
-                                directory 
-                                --index <job_index> 
-                                --public_key <file> 
-                                --gateway_host <host> 
-                                --gateway_user <user> 
-      ssh_cleanup <job> [index] Cleanup SSH artifacts 
+      ssh <job> [index] [<options>] [command]
+                                Given a job, execute the given command or start an
+                                interactive session
+                                --public_key <file>
+                                --gateway_host <host>
+                                --gateway_user <user>
+                                --default_password
+                                           Use default ssh password. Not
+                                           recommended.
+      scp <job> <--upload | --download> [options] /path/to/source /path/to/destination
+                                upload/download the source file to the given job.
+                                Note: for dowload /path/to/destination is a
+                                directory
+                                --index <job_index>
+                                --public_key <file>
+                                --gateway_host <host>
+                                --gateway_user <user>
+      ssh_cleanup <job> [index] Cleanup SSH artifacts
 
     Blob
-      upload blob <blobs>       Upload given blob to the blobstore 
-                                --force    bypass duplicate checking 
-      sync blobs                Sync blob with the blobstore 
-                                --force    overwrite all local copies with the 
-                                           remote blob 
-      blobs                     Print blob status 
+      upload blob <blobs>       Upload given blob to the blobstore
+                                --force    bypass duplicate checking
+      sync blobs                Sync blob with the blobstore
+                                --force    overwrite all local copies with the
+                                           remote blob
+      blobs                     Print blob status
 
 
 # Stemcells + releases / Director interaction
@@ -621,31 +679,43 @@ upload
 
 # Releases
 
+A release is a collection of source code, configuration files and startup scripts used to run services, along with a version number that uniquely identifies the components. When creating a new release, you should use a source code manager (like [git](http://git-scm.com/)) to manage new versions of the contained files.
+
 ## Release Repository
 
-A BOSH Release is built from a directory tree following a structure
-described in this section:
+A BOSH Release is built from a directory tree with the contents described in this section. A typical release repository has the following sub-directories:
+
+| Directory  | Contents |
+|------------|----------|
+| `jobs`     | job definitions |
+| `packages` | package definitions |
+| `config`   | release configuration files |
+| `releases` | final releases |
+| `src`      | source code for packages |
+| `blobs`    | large source code bundles |
 
 ## Jobs
 
-TBW
+Jobs are realization of packages, i.e. running one or more processes from a package. A job contains the configuration files and startup scripts to run the binaries from a package.
+
+There is a *one to many* mapping between jobs and VMs - only one job can run in any given VM, but many VMs can run the same job. E.g. there can be four VMs running the Cloud Controller job, but the Cloud Controller job and the DEA job can not run on the same VM. If you need to run two different processes (from two different packages) on the same VM, you need to create a job which starts both processes.
 
 ### Prepare script
 
-TBW
+If a job needs to assemble itself from other jobs (like a super-job) a `prepare` script can be used, which is run before the job is packaged up, and can create, copy or modify files.
 
 ### Job templates
 
 The job templates are generalized configuration files and scripts for a job, which uses [ERB](http://ruby-doc.org/stdlib-1.9.3/libdoc/erb/rdoc/ERB.html) files to generate the final configuration files and scripts used when a Stemcell is turned into a job.
 
-When a confiuration file is turned into a template, instance specific information is abstracted into a property which later is provided when the [director][director] starts the job on a VM. E.g. which port the webserver should run on, or which username and password a databse should use.
+When a configuration file is turned into a template, instance specific information is abstracted into a property which later is provided when the [director][director] starts the job on a VM. E.g. which port the webserver should run on, or which username and password a databse should use.
 
 The files are located in the `templates` directory and the mapping between template file and its final location is provided in the job `spec` file in the templates section. E.g.
 
     templates:
-	  foo_ctl.erb: bin/foo_ctl
-	  foo.yml.erb: config/foo.yml
-	  foo.txt: config/foo.txt
+      foo_ctl.erb: bin/foo_ctl
+      foo.yml.erb: config/foo.yml
+      foo.txt: config/foo.txt
 
 ### Use of properties
 
@@ -676,7 +746,7 @@ TBW
 
 ## Packages
 
-TODO: ishisness!
+A package is a collection of source code along with a script that contains instruction how to compile it to binary format and install it, with optional dependencies on other pre-requisite packages.
 
 ### Package Compilation
 
@@ -706,7 +776,10 @@ The package `spec` file contains a section which lists other packages the curren
 When the [director][director] plans the compilation of a package during a deployment, it first makes sure all dependencies are compiled before it proceeds to compile the current package, and prior to commencing the compilation all dependent packages are installed on the compilation VM.
 
 ## Sources
- final release
+
+The `src` directory contains the source code for the packages.
+
+If you are using a source code repository to manage your release, you should avoid storing large objects in it (like source code tar-balls in the `src` directory), and instead use the [blobs][blobs] described below.
 
 ## Blobs
 
@@ -768,13 +841,51 @@ File `config/final.yml`
 
 Note that local should **only** be used for testing purposes as it can't be shared with others (unless they run on the same system).
 
-## Versioning schemes
-
 ## Configuring Releases
+
+Initial release configuration can be performed using `bosh init release command` in an empty git repo. This will create a number of directories that can be used to keep jobs, packages and sources.
 
 ## Building Releases
 
-## Final Releases
+`bosh create release` command attempts to create a new release from the contents of release repo. Here's what happens:
+
+1. BOSH CLI identifies it's in a release repo directory and tries to find all jobs and packages in that repo. Then, for each artifact (package/job):
+	1. The fingerprint is built using artifact contents, file permissions and some other trackable data.
+	2. BOSH CLI tries to find the 'final' version of the artifact matching that fingerprint. All 'final' versions are supposed to be shared through a blobstore, with blobstore id being tracked in release repo. Once required blobstore id is found, CLI tries to either find the actual artifact in a local cache, and if it's missing or has a checksum mismatch, it fetches it from the blobstore (saving in a local cache afterwards).
+	3. If no final version is found, CLI tries to find dev version in a local cache. Dev versions are specific to a local copy of a release repo on a developer box, so no downloads are attempted, it's either available locally or not.
+	4. If the artifact (either dev or final) has been found, CLI uses the version associated with that artifact. The whole process in steps 1-4 is then essentially a lookup of the tarball and its version by a calculated fingerprint. Any change in package/job is supposed to change its fingerprint and this trigger step 5 (generating a new version).
+	5. If new artifact version needs to be generated, CLI uses its spec file to understand what needs to be included into the resulting tarball. For packages it resolves dependencies, copies matched files and runs `pre_packaging` script if available. For jobs it checks that all included packages and configurations templates are present. If all checks have passed, CLI generates and packs a new artifact tarball and assigns it a new version (see release versioning below).
+2. At this point all packages and jobs have been generated and CLI has references to them. The only remaining step is to generate a release manifest, binding all these jobs and packages together. The resulting YAML file is saved and path is provided to CLI user. This path can be used with `bosh upload release`  command to upload release to BOSH Director.
+
+## Final Releases, release versioning
+
+The final release can be created once all the changes are tested and it's time to actually deploy a release to production. The are there main criteria differentiating final releases from dev releases:
+
+1. Versioning scheme: final releases are version independently. Every time new final release is generated its version is a simple increment of the previous final release version, no matter how many dev releases have been created in between. Same is true for individual release artifacts, their final versions are independent from dev versions.
+2. Blobs sharing: package and job tarballs included into the final release are also being uploaded to a blobstore, so any person who attempts create release in the same release repo in the future will be using same actual bits instead of generating them locally. This is important for consistency and for being able to generate old versions of final releases if needed. 
+3. Only reusing components, not generating new ones: final release is supposed to include only previously generated artifacts. If the fingerprint calculated from the current state of the repo didn't match previously generated dev or final version, the error will be raised, telling CLI user to make sure to generate and test dev release first.
+ 
+Final release can be created by running `bosh create release --final`. Usually only people involved in updating production system should be generating final releases. There's also a `--dry-run` option to test out release creation without actually generating and uploading artifacts.
+
+By default all artifacts are stored in `.final_builds` directory inside the release repo, while release manifests are kept in `releases` directory. If the actual release tarball is required `bosh create release --with tarball` can be used. Also, `bosh create release /path/to/release_manifest.yml` can be used to recreate previously created release from its manifest. In both cases the output is a self-contained, ready-to-upload release tarball.
+
+Dev release artifacts versioning is slightly different from final: the latest generated final version of the artifact is used as major version of dev build, while the actual build revision is used as minor version.
+
+Let's see an example:
+
+1. There is a cloud_controller package in release repo: no dev version, no final version yet.
+2. `bosh create release` runs for the first time
+3. Now there is dev release 1, cloud_controller now has dev version 0.1, no final version yet
+4. `bosh create release` is a no-op now, unless we make some repo changes. 
+5. Someone edits one or more files matched by cloud_controller package.
+6. `bosh create release` now generates dev release 2, cloud_controller has dev version 0.2, no final version yet.
+7. `bosh create release --final` will now create final release 1, cloud_controller has dev version 0.2, which also gets rebranded as final version 1.
+8. Next edits to cloud_controller will subsequently generate dev version 1.1, 1.2 etc., until new final version is created
+
+The main point of this versioning scheme is to partition release engineering process between two audiences: 
+
+1. Developers who are quickly iterating on their changes and don't really care about keeping consistent versioning of Bosh Release, BOSH CLI takes care of all versioning details for them and prevents others from seeing all the work-in-progress releases.
+2. SREs who are actually building releases for production use and want them to be consistently versioned and source controlled.
 
 # BOSH Deployments
 
