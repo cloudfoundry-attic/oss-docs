@@ -1,79 +1,79 @@
 latex input:	mmd-article-header
-Title:	Cloud Foundry Technical Overview
+Title:	BOSH Documentation
 Author:	VMware 2012 - Cloud Foundry
 Base Header Level:	2
 LaTeX Mode:	memoir
-latex input:        mmd-article-begin-doc
-latex footer:       mmd-memoir-footer
+latex input:	mmd-article-begin-doc
+latex footer:	mmd-memoir-footer
 
 # Introduction #
 
-Cloud Foundry BOSH is an open source tool chain for release engineering, deployment and life cycle management of cloud-scale distributed services. In this manual we describe the architecture, topology, configuration, and use of BOSH, as well as the structure and conventions used in packaging and deployment.
+Cloud Foundry BOSH is an open source tool chain for release engineering, deployment and lifecycle management of large scale distributed services. In this manual we describe the architecture, topology, configuration, and use of BOSH, as well as the structure and conventions used in packaging and deployment.
 
 # Managing Distributed Services #
 
-BOSH was originally developed in the context of the Cloud Foundry Application Platform as a Service, but even if this has been the primary consumer, the framework is general purpose and can be used to deploy other distributed services on top of a Cloud Provider Interface (CPI) provided by VMware vSphere, Amazon Web Services, or OpenStack.
+BOSH was originally developed in the context of the Cloud Foundry Application Platform as a Service, but the framework is general purpose and can be used to deploy other distributed services on top of Infrastructure as a Service (IaaS)products such as VMware vSphere, Amazon Web Services, or OpenStack.
 
 # BOSH Components #
 
-## Fig 1. Interaction of BOSH Components
+## Fig 1. Interaction of BOSH Components ##
 
-![Figure 1](https://github.com/vmware-ac/doxa/raw/master/bosh/documentation/fig1.png)
+![Interaction of BOSH Components](fig1.png)
 
-## Infrastructure as a Service (IaaS)
+## Infrastructure as a Service (IaaS) ##
 
-The core BOSH engine is abstracted away from any particular Infrastructure as a Service (IaaS), such as VMware vSphere, AWS or OpenStack. IaaS interfaces are implemented as plugins to BOSH. Currently, BOSH supports both VMware vSphere and Amazon Web Services. Virtual Machines (VMs) are created and destroyed through Workers, which are sent instructions from the Director. Those VMs are created based on a **Stemcell** that is uploaded to BOSH's Blobstore through the Command Line Interface (CLI).
+The core BOSH engine is abstracted from any particular Infrastructure as a Service (IaaS). IaaS interfaces are implemented as plugins to BOSH. Currently, BOSH supports both VMware vSphere and Amazon Web Services.
 
-## Cloud Provider Interface (CPI)
+## Cloud Provider Interface (CPI) [cpi]##
 
-As a user of BOSH you're not directly exposed to the the BOSH Cloud Provider Interface, but it can be helpful to understand its primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following:
+The IaaS interface plugins communicate through a Cloud Provider Interface offered by the particular IaaS vendors such as VMware or Amazon. As a BOSH user there is no need to be concerned with the IaaS or CPI, but it can be helpful to understand its primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following:
 
 	create_stemcell / delete_stemcell
 	create_vm  / delete_vm  / reboot_vm
 	configure_networks
 	create_disk / delete_disk / attach_disk / detach_disk
 
-In addition to these methods are others specific to each cloud interface. For example, the Amazon Web Services interface includes methods for Elastic Block Store, which are unnecessary on vSphere. Please refer to the API documentation in the files listed above for a detailed explanation of the CPI primitives.
+Please refer to the API documentation in these files for further explanation of the CPI primitives.
 
-The CPI is used primarily to do low level creation and management of resources in an IaaS. Once a resource is up and running, command and control is handed over to the higher level BOSH Director-Agent interaction.
+## BOSH Director [director]##
 
-## BOSH Director [director]
+The Director is the core orchestrating component in BOSH which controls creation of VMs, deployment, and other life cycle events of software and services. Command and control is handed over to the the Director-Agent interaction after the CPI has created resources.
 
-The Director is the core orchestrating component in BOSH which controls creation of VMs, deployment, and other life cycle events of software and services.
+## BOSH Agent [Agent] ##
 
-## BOSH CLI
+BOSH Agents listen for instructions from the BOSH Director. Every VM contains an Agent. Through the Director-Agent interaction, a VM is given a [Job](Jobs), or role, within Cloud Foundry. If the VM's job is to run MySQL, for example, the Director will send instructions to the Agent about which packages must be installed and what the configurations for those packages are.
 
-The BOSH Command Line Interface is the mechanism for users to interact with BOSH using a terminal session. BOSH commands follow the format shown below:
+## BOSH CLI [bosh_cli_short] ##
+
+The BOSH Command Line Interface is how users interact with BOSH using a terminal session. BOSH commands follow the format shown below:
 
     $ bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR>]
            [--force] [--no-color] [--skip-director-checks] [--quiet]
            [--non-interactive]
 
-A full overview of BOSH commands and installation appears in the [BOSH CLI][bosh_cli] and [BOSH installation][bosh_install] sections.
+A full overview of BOSH commands and installation appears in the [BOSH CLI](bosh_cli) and [BOSH installation](bosh_install) sections.
 
-## Stemcells
+## Stemcells [stemcells ] ##
 
-A BOSH Stemcell is a VM template with an embedded BOSH Agent. The Stemcell used for Cloud Foundry is a standard Ubuntu distribution. Stemcells are uploaded using the BOSH CLI and used by the Director when creating VMs through the CPI. When the Director creates a VM through the CPI, it will pass along configurations for networking and storage, as well as the location and credentials for the BOSH Message Bus and the BOSH Blobstore.
+A Stemcell is a VM template with an embedded [Agent](agent). The Stemcell used for Cloud Foundry is a standard Ubuntu distribution. Stemcells are uploaded using the [BOSH CLI](bosh_cli) and used by the [Director](director) when creating VMs through the [CPI](dpi). When the Director creates a VM through the CPI, it will pass along configurations for networking and storage, as well as the location and credentials for the [Message Bus](message_bus) and the [Blobstore](blobstore).
 
-## Agent ##
-
-A Stemcell is is comprised of the barebones operating system (such as Ubuntu) and an Agent. The Agent listens for instructions from the Director and performs operations on the VM according to these instructions. A typical instruction would be to install service components (e.g a BOSH Job and Packages).
-
-## Releases
+## Releases [releases_short] ##
 
 A Release in BOSH is a packaged bundle of service descriptors known as Jobs. Jobs are collections of software bits and configurations. Any given Release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service.
 
-A Release is typically not restricted to any particular environment. As such, it can be re-used across clusters handling different stages in a service life cycle, such as Development, QA, Staging, or Production. The BOSH CLI manages both the creation of Releases and their deployments into specific environments.
+A Release is typically not restricted to any particular environment. As such, it can be re-used across clusters handling different stages in a service life cycle, such as Development, QA, Staging, or Production. The [BOSH CLI](bosh_cli) manages both the creation of Releases and their deployments into specific environments.
 
-## Deployments
+See the [Releases](releases) section for a deeper look at both Releases and [Jobs](jobs).
 
-While BOSH Stemcells and Releases are static components, we say that they are bound together into a Deployment by a Deployment Manifest. In the Deployment Manifest, you declare pools of VMs, which networks they live on, and which Jobs (service components) from the Release you want to activate. Job configurations specify life cycle parameters, the number of instances of a Job, and network and storage requirements. Furthermore, the Deployment Manifest allows you to specify properties used to parameterize configuration templates contained in the Release.
+## Deployments [deployments] ##
 
-Using the BOSH CLI, you specify a Deployment Manifest and perform a Deploy operation (`bosh deploy`), which creates or updates resources on your cluster according to your specifications.
+While BOSH [Stemcells](stemcells) and [Releases](releases_short) are static components, they are bound together into a Deployment by a [Deployment Manifest][deploy_manifest]. In the Deployment Manifest, you declare pools of VMs, which networks they live on, and which [Jobs](jobs) (service components) from the [Release](releases_short) you want to activate. Job configurations specify life cycle parameters, the number of instances of a Job, and network and storage requirements. Furthermore, the Deployment Manifest allows you to specify properties used to parameterize configuration templates contained in the Release.
 
-## Blobstore
+Using the [BOSH CLI](bosh_cli), you specify a [Deployment Manifest](deploy_manifest) and perform a Deploy operation (`bosh deploy`), which creates or updates resources on your cluster according to your specifications. Refer to the [Steps of a Deployment](deploy_steps) for examples.
 
-The BOSH Blobstore is used to store the content of Releases (BOSH [Jobs][jobs] and [Packages][packages] in their source form as well as the compiled image of BOSH Packages). [Releases][releases] are uploaded by the BOSH CLI and inserted into the Blobstore by the BOSH Director. When you deploy a Release, BOSH will orchestrate the compilation of packages and store the result in the Blobstore. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the Blobstore.
+## Blobstore [blobstore] ##
+
+The BOSH Blobstore is used to store the content of Releases (BOSH [Jobs](jobs) and [Packages](packages) in their source form as well as the compiled image of BOSH Packages). [Releases][releases] are uploaded by the [BOSH CLI](bosh_cli) and inserted into the Blobstore by the [BOSH Director](director). When you deploy a Release, BOSH will orchestrate the compilation of packages and store the result in the Blobstore. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the Blobstore.
 
 BOSH also uses the Blobstore as an intermediate store for large payloads, such as log files (see BOSH logs) and output from the BOSH Agent that exceeds the max size for messages over the message bus.
 
@@ -83,19 +83,19 @@ There are currently three Blobstores supported in BOSH:
 1. [S3](http://aws.amazon.com/s3/)
 1. [simple blobstore server](https://github.com/cloudfoundry/bosh/tree/master/simple_blobstore_server)
 
-The default BOSH configuration uses the simple blobstore server, as the load is very light and low latency is preferred.
+For example configurations of each Blobstore, see the [Blobs] section. The default BOSH configuration uses the simple blobstore server, as the load is very light and low latency is preferred.
 
-## Health Monitor
+## Health Monitor ##
 
-The BOSH (Health) Monitor receives health status and life cycle events from the BOSH Agents and can through notification plugins (such as email), notify if components are in an unexpected state. It has a simple awareness of events in the system, so as to not alert if a component is updated.
+The BOSH Health Monitor receives health status and life cycle events from the [BOSH Agents][agent] and can send alerts through notification plugins (such as email). The Health Monitor has a simple awareness of events in the system, so as not to alert if a component is updated.
 
-## Message bus
+## Message bus [message_bus] ##
 
 BOSH uses the [NATS](http://github.com/dcollison/nats) message bus for command and control.
 
-# Using BOSH
+# Using BOSH #
 
-Before we can use BOSH we need to install the BOSH CLI. You will need a running development environment with an uploaded Stemcell. You can learn about those steps in the [BOSH Installation][bosh_install] section.
+Before we can use BOSH we need to install the [BOSH CLI](bosh_cli_short). To continue with this section, you will need a running development environment with an uploaded Stemcell. If this is not the case, you can  [BOSH Installation](bosh_install) section.
 
 ## Installing BOSH Command Line Interface [bosh_install] ##
 
@@ -122,17 +122,18 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on eit
 		echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
 
 1. Download Ruby 1.9.2
+
 _Note: You can also build ruby using ruby-build plugin for rbenv. See https://github.com/sstephenson/ruby-build_
 
 		wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz
 
 1. Unpack and install Ruby
 
-    tar xvfz ruby-1.9.2-p290.tar.gz
-    cd ruby-1.9.2-p290
-    ./configure --prefix=$HOME/.rbenv/versions/1.9.2-p290
-    make
-    make install
+    		tar xvfz ruby-1.9.2-p290.tar.gz
+    		cd ruby-1.9.2-p290
+    		./configure --prefix=$HOME/.rbenv/versions/1.9.2-p290
+    		make
+    		make install
 
 1. Restart your shell so the path changes take effect
 
@@ -142,7 +143,9 @@ _Note: You can also build ruby using ruby-build plugin for rbenv. See https://gi
 
 		rbenv global 1.9.2-p290
 
-1. Update rubygems and install bundler. _Note: After installing gems (`gem install` or `bundle install`) run `rbenv rehash` to add new shims_
+1. Update rubygems and install bundler. 
+
+_Note: After installing gems (`gem install` or `bundle install`) run `rbenv rehash` to add new shims_
 
 		gem update --system
 		gem install bundler
@@ -158,32 +161,21 @@ _Note: You can also build ruby using ruby-build plugin for rbenv. See https://gi
 		
 1. Copy your key from `~/.ssh/id_rsa.pub` into your Gerrit account
 
-1. Create ~/.gitconfig as follows (Make sure that the email specified is registered with gerrit):
-		
-		[user]
-		name = YOUR_NAME
-		email = YOUR_EMAIL
-		[alias]
-		gerrit-clone = !bash -c 'gerrit-clone $@' -
-		
-1. Clone gerrit tools using git
-		
-		git clone git@github.com:vmware-ac/tools.git
-		
-**NOTE: PUBLIC TOOLS REPO IN FINAL DRAFT**
+1. Create and upload your public SSH key in your Gerrit account profile
 
-1. Add gerrit-clone to your path
+1. Set your name and email
 
-		echo 'export PATH="$HOME/tools/gerrit/:$PATH"' >> ~/.bash_profile
+		git config --global user.name "Firstname Lastname"
+		git config --global user.email "your_email@youremail.com"
+		
+1. Install out gerrit-cli gem	
 
- 1. Restart your shell so the path changes take effect
-
-		source ~/.bash_profile
+		gem install gerrit-cli
 
 1. Clone BOSH repositories from Gerrit
 
-		git gerrit-clone ssh://reviews.cloudfoundry.org:29418/release.git
-		git gerrit-clone ssh://reviews.cloudfoundry.org:29418/bosh.git
+		gerrit clone ssh://reviews.cloudfoundry.org:29418/release.git
+		gerrit clone ssh://reviews.cloudfoundry.org:29418/bosh.git
 		
 1. Run some rake tasks to install the BOSH CLI
 
@@ -296,8 +288,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 1. You may now target the Cloud Foundry deployment using VMC, as described in the Cloud Foundry documentation.
 
-# BOSH Installation #
-
+# BOSH Installation [bosh_install]#
 There are 2 ways to deploy and use BOSH.
 
 1. Use BOSH Deployer to deploy a micro BOSH, which is all the BOSH components packaged in a single VM. For dev setups where you want to play with BOSH and manage a few applications, this micro BOSH should suffice. If you want to use BOSH in production or want to use BOSH to manage a large number of applications then you need to follow the next step.
