@@ -402,7 +402,7 @@ Deployment state is persisted to deployments/bosh-deployments.yml.
 
 ## Deployment ##
 
-1. Download a micro BOSH stemcell:
+1. Download a micro BOSH Stemcell:
 
 		% mkdir -p ~/stemcells
 		% cd stemcells
@@ -435,7 +435,7 @@ Deployment state is persisted to deployments/bosh-deployments.yml.
 
 ## Deleting a micro BOSH deployment ##
 
-The `delete` command will delete the VM, Stemcell and persistent disk.
+The `delete` command will delete the VM, Stemcell, and persistent disk.
 
 Example:
 
@@ -467,7 +467,7 @@ The micro-bosh-stemcell includes an embedded `apply_spec.yml`. This command can 
 
 ## Sending messages to the micro BOSH agent ##
 
-The CLI can send  messages over HTTP to the agent using the `agent` command.
+The CLI can send messages over HTTP to the agent using the `agent` command.
 
 Example:
 
@@ -516,7 +516,7 @@ Someone write this eh?
 
 # BOSH CLI [bosh_cli]
 
-The BOSH command line interface is used to interact with the BOSH director to perform actions on the cloud.  For the most recent documentation on its functions, [install bosh][bosh_install] and simply type `bosh`.  Usage:
+The BOSH command line interface is used to interact with the BOSH director to perform actions on the cloud.  For the most recent documentation on its functions, install BOSH and simply type `bosh`.  Usage:
 
     bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR]
          [--force] [--no-color] [--skip-director-checks] [--quiet]
