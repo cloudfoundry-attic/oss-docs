@@ -45,9 +45,9 @@ The Director is the core orchestrating component in BOSH which controls creation
 
 The BOSH Command Line Interface is the mechanism for users to interact with BOSH using a terminal session. BOSH commands follow the format shown below:
 
-	$ bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR>]
-            [--force] [--no-color] [--skip-director-checks] [--quiet]
-            [--non-interactive]
+    $ bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR>]
+           [--force] [--no-color] [--skip-director-checks] [--quiet]
+           [--non-interactive]
 
 A full overview of BOSH commands and installation appears in the [BOSH CLI][bosh_cli] and [BOSH installation][bosh_install] sections.
 
@@ -95,7 +95,7 @@ BOSH uses the [NATS](http://github.com/dcollison/nats) message bus for command a
 
 # Using BOSH
 
-Before we can use BOSH we need to install the BOSH CLI. You will need a running development environment with an uploaded Stemcell. You can learn about those steps in the [BOSH Installation][] section.
+Before we can use BOSH we need to install the BOSH CLI. You will need a running development environment with an uploaded Stemcell. You can learn about those steps in the [BOSH Installation][bosh_install] section.
 
 ## Installing BOSH Command Line Interface [bosh_install] ##
 
@@ -315,14 +315,14 @@ There are 2 ways to deploy and use BOSH.
 
 1. List public stemcells with bosh public stemcells
 
-+-------------------------------+----------------------------------------------------+
-| Name                          | Url                                                |
-+-------------------------------+----------------------------------------------------+
-| bosh-stemcell-0.4.7.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...h120= |
-| micro-bosh-stemcell-0.1.0.tgz | https://blob.cfblob.com/rest/objects/4e4e7...5Mms= |
-| bosh-stemcell-0.3.0.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...mw1w= |
-| bosh-stemcell-0.4.4.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...r144= |
-+-------------------------------+----------------------------------------------------+
+    +-------------------------------+----------------------------------------------------+
+    | Name                          | Url                                                |
+    +-------------------------------+----------------------------------------------------+
+    | bosh-stemcell-0.4.7.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...h120= |
+    | micro-bosh-stemcell-0.1.0.tgz | https://blob.cfblob.com/rest/objects/4e4e7...5Mms= |
+    | bosh-stemcell-0.3.0.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...mw1w= |
+    | bosh-stemcell-0.4.4.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...r144= |
+    +-------------------------------+----------------------------------------------------+
 
 1. Download a public stemcell. *NOTE, in this case you do not use the micro bosh stemcell.*
 
