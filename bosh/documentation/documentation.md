@@ -1,8 +1,8 @@
 latex input:	mmd-article-header
-Title:	Cloud Foundry Technical Overview 
+Title:	Cloud Foundry Technical Overview
 Author:	VMware 2012 - Cloud Foundry
-Base Header Level:	2  
-LaTeX Mode:	memoir  
+Base Header Level:	2
+LaTeX Mode:	memoir
 latex input:        mmd-article-begin-doc
 latex footer:       mmd-memoir-footer
 
@@ -12,7 +12,7 @@ Cloud Foundry BOSH is an open source tool chain for release engineering, deploym
 
 # Managing Distributed Services #
 
-BOSH was originally developed in the context of the Cloud Foundry Application Platform as a Service, but even if this has been the primary consumer, the framework is general purpose and can be used to deploy other distributed services on top of a Cloud Provider Interface (CPI) provided by VMware vSphere, Amazon Web Services, or OpenStack. 
+BOSH was originally developed in the context of the Cloud Foundry Application Platform as a Service, but even if this has been the primary consumer, the framework is general purpose and can be used to deploy other distributed services on top of a Cloud Provider Interface (CPI) provided by VMware vSphere, Amazon Web Services, or OpenStack.
 
 # BOSH Components #
 
@@ -26,10 +26,10 @@ The core BOSH engine is abstracted away from any particular Infrastructure as a 
 
 ## Cloud Provider Interface (CPI)
 
-As a user of BOSH you're not directly exposed to the the BOSH Cloud Provider Interface, but it can be helpful to understand its primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following: 
+As a user of BOSH you're not directly exposed to the the BOSH Cloud Provider Interface, but it can be helpful to understand its primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following:
 
 	create_stemcell / delete_stemcell
-	create_vm  / delete_vm  / reboot_vm  
+	create_vm  / delete_vm  / reboot_vm
 	configure_networks
 	create_disk / delete_disk / attach_disk / detach_disk
 
@@ -61,7 +61,7 @@ A Stemcell is is comprised of the barebones operating system (such as Ubuntu) an
 
 ## Releases
 
-A Release in BOSH is a packaged bundle of service descriptors known as Jobs. Jobs are collections of software bits and configurations. Any given Release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service. 
+A Release in BOSH is a packaged bundle of service descriptors known as Jobs. Jobs are collections of software bits and configurations. Any given Release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service.
 
 A Release is typically not restricted to any particular environment. As such, it can be re-used across clusters handling different stages in a service life cycle, such as Development, QA, Staging, or Production. The BOSH CLI manages both the creation of Releases and their deployments into specific environments.
 
@@ -128,11 +128,11 @@ _Note: You can also build ruby using ruby-build plugin for rbenv. See https://gi
 
 1. Unpack and install Ruby
 
-		 tar xvfz ruby-1.9.2-p290.tar.gz
-		 cd ruby-1.9.2-p290
-		 ./configure --prefix=$HOME/.rbenv/versions/1.9.2-p290
-		 make
-		 make install
+    tar xvfz ruby-1.9.2-p290.tar.gz
+    cd ruby-1.9.2-p290
+    ./configure --prefix=$HOME/.rbenv/versions/1.9.2-p290
+    make
+    make install
 
 1. Restart your shell so the path changes take effect
 
@@ -157,7 +157,7 @@ _Note: You can also build ruby using ruby-build plugin for rbenv. See https://gi
 		ssh-keygen -t rsa
 		
 1. Copy your key from `~/.ssh/id_rsa.pub` into your Gerrit account
- 
+
 1. Create ~/.gitconfig as follows (Make sure that the email specified is registered with gerrit):
 		
 		[user]
@@ -203,7 +203,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 1. Target your Director (this IP is an example.) **NOTE: EXAMPLE WORKS FOR INTERNAL USE (u: admin / p: admin)**
 
-		bosh target 11.23.128.219:25555 
+		bosh target 11.23.128.219:25555
 
 1. Check the state of your BOSH settings.
 
@@ -228,7 +228,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 		| dev48 |
 		+-------+
 
-1. Delete the existing Deployments (ex: dev48.) 
+1. Delete the existing Deployments (ex: dev48.)
 
 		bosh delete deployment dev48
 
@@ -241,12 +241,12 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 1. The result of `bosh releases` should be akin to:
 
 		+---------------+---------------+
-		| Name	   		| Versions		|
+		| Name          | Versions      |
 		+---------------+---------------+
-		| cloudfoundry	| 47, 55, 58 	|
+		| cloudfoundry	| 47, 55, 58    |
 		+---------------+---------------+
 		
-1. Delete the existing Releases (ex: cloudfoundry) 
+1. Delete the existing Releases (ex: cloudfoundry)
 
 		bosh delete release cloudfoundry
 
@@ -307,7 +307,7 @@ There are 2 ways to deploy and use BOSH.
 
 ## Deploy BOSH as an application using micro BOSH. ##
 
-1. Deploy micro BOSH. See the steps in the previous section. 
+1. Deploy micro BOSH. See the steps in the previous section.
 
 1. Target micro BOSH e.g from the previous section, micro BOSH had the ip 11.23.194.100, so you would target it as bosh target http://11.23.194.100:25555
 
@@ -316,7 +316,7 @@ There are 2 ways to deploy and use BOSH.
 1. List public stemcells with bosh public stemcells
 
 +-------------------------------+----------------------------------------------------+
-| Name                       | Url                		                         |
+| Name                          | Url                                                |
 +-------------------------------+----------------------------------------------------+
 | bosh-stemcell-0.4.7.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...h120= |
 | micro-bosh-stemcell-0.1.0.tgz | https://blob.cfblob.com/rest/objects/4e4e7...5Mms= |
@@ -332,11 +332,11 @@ There are 2 ways to deploy and use BOSH.
 
 ### Upload a BOSH release.
 
-1. You can create a BOSH release or use one of the public releases. The following steps show the use of a public release. 
+1. You can create a BOSH release or use one of the public releases. The following steps show the use of a public release.
 
 		cd /home/bosh_user gerrit-clone ssh://reviews.cloudfoundry.org:29418/bosh-release.git
 
-1. Upload a public release from bosh-release 
+1. Upload a public release from bosh-release
 
 		cd /home/bosh_user/bosh-release/releases/
 		bosh upload release bosh-1.yml
@@ -368,7 +368,7 @@ Your newly installed BOSH instance is now ready for use.
 		% bundle install
 		% rake install
 
-Once you have installed micro BOSH, you will see some extra commands appear after typing `bosh` on your command line. 
+Once you have installed micro BOSH, you will see some extra commands appear after typing `bosh` on your command line.
 
 **The `bosh micro` commands must be run within the deployments directory**
 
@@ -389,7 +389,7 @@ Once you have installed micro BOSH, you will see some extra commands appear afte
 
 ## Configuration ##
 
-For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your Deployment name. 
+For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your Deployment name.
 
 For example:
 
@@ -508,7 +508,7 @@ Example:
 8. Your newly deployed Production BOSH is ready to use.
 
 9. _Optional_: Delete micro BOSH deployment.
-                            
+
 
 ## vCenter Configuration ##
 
@@ -526,151 +526,151 @@ The BOSH command line interface is used to interact with the BOSH director to pe
 Currently available bosh commands are:
 
     Deployment
-      deployment [<name>]       Choose deployment to work with (it also updates 
-                                current target) 
-      delete deployment <name>  Delete deployment 
-                                --force    ignore all errors while deleting 
-                                           parts of the deployment 
-      deployments               Show the list of available deployments 
-      deploy                    Deploy according to the currently selected 
-                                deployment manifest 
-                                --recreate recreate all VMs in deployment 
-      diff [<template_file>]    Diffs your current BOSH deployment 
-                                configuration against the specified BOSH 
-                                deployment configuration template so that you 
-                                can keep your deployment configuration file up to 
-                                date. A dev template can be found in deployments 
-                                repos. 
+      deployment [<name>]       Choose deployment to work with (it also updates
+                                current target)
+      delete deployment <name>  Delete deployment
+                                --force    ignore all errors while deleting
+                                           parts of the deployment
+      deployments               Show the list of available deployments
+      deploy                    Deploy according to the currently selected
+                                deployment manifest
+                                --recreate recreate all VMs in deployment
+      diff [<template_file>]    Diffs your current BOSH deployment
+                                configuration against the specified BOSH
+                                deployment configuration template so that you
+                                can keep your deployment configuration file up to
+                                date. A dev template can be found in deployments
+                                repos.
 
     Release management
-      create release            Create release (assumes current directory to be a 
-                                release repository) 
-                                --force    bypass git dirty state check 
-                                --final    create production-ready release 
-                                           (stores artefacts in blobstore, 
-                                           bumps final version) 
-                                --with-tarball 
-                                           create full release tarball(by 
-                                           default only manifest is created) 
-                                --dry-run  stop before writing release manifest 
-                                           (for diagnostics) 
-      delete release <name> [<version>] 
-                                Delete release (or a particular release version) 
-                                --force    ignore errors during deletion 
-      verify release <path>     Verify release 
-      upload release [<path>]   Upload release (<path> can point to tarball or 
-                                manifest, defaults to the most recently created 
-                                release) 
-      releases                  Show the list of available releases 
-      reset release             Reset release development environment (deletes 
-                                all dev artifacts) 
+      create release            Create release (assumes current directory to be a
+                                release repository)
+                                --force    bypass git dirty state check
+                                --final    create production-ready release
+                                           (stores artefacts in blobstore,
+                                           bumps final version)
+                                --with-tarball
+                                           create full release tarball(by
+                                           default only manifest is created)
+                                --dry-run  stop before writing release manifest
+                                           (for diagnostics)
+      delete release <name> [<version>]
+                                Delete release (or a particular release version)
+                                --force    ignore errors during deletion
+      verify release <path>     Verify release
+      upload release [<path>]   Upload release (<path> can point to tarball or
+                                manifest, defaults to the most recently created
+                                release)
+      releases                  Show the list of available releases
+      reset release             Reset release development environment (deletes
+                                all dev artifacts)
 
-      init release [<path>]     Initialize release directory 
-      generate package <name>   Generate package template 
-      generate job <name>       Generate job template 
+      init release [<path>]     Initialize release directory
+      generate package <name>   Generate package template
+      generate job <name>       Generate job template
 
     Stemcells
-      upload stemcell <path>    Upload the stemcell 
-      verify stemcell <path>    Verify stemcell 
-      stemcells                 Show the list of available stemcells 
-      delete stemcell <name> <version> 
-                                Delete the stemcell 
-      public stemcells          Show the list of publicly available stemcells for 
-                                download. 
-      download public stemcell <stemcell_name> 
-                                Downloads a stemcell from the public blobstore. 
+      upload stemcell <path>    Upload the stemcell
+      verify stemcell <path>    Verify stemcell
+      stemcells                 Show the list of available stemcells
+      delete stemcell <name> <version>
+                                Delete the stemcell
+      public stemcells          Show the list of publicly available stemcells for
+                                download.
+      download public stemcell <stemcell_name>
+                                Downloads a stemcell from the public blobstore.
 
     User management
-      create user [<name>] [<password>] 
-                                Create user 
+      create user [<name>] [<password>]
+                                Create user
 
     Job management
-      start <job> [<index>]     Start job/instance 
-      stop <job> [<index>]      Stop job/instance 
-                                --soft     stop process only 
-                                --hard     power off VM 
-      restart <job> [<index>]   Restart job/instance (soft stop + start) 
-      recreate <job> [<index>]  Recreate job/instance (hard stop + start) 
+      start <job> [<index>]     Start job/instance
+      stop <job> [<index>]      Stop job/instance
+                                --soft     stop process only
+                                --hard     power off VM
+      restart <job> [<index>]   Restart job/instance (soft stop + start)
+      recreate <job> [<index>]  Recreate job/instance (hard stop + start)
 
     Log management
-      logs <job> <index>        Fetch job (default) or agent (if option provided) 
-                                logs 
-                                --agent    fetch agent logs 
-                                --only <filter1>[...] 
-                                           only fetch logs that satisfy given 
-                                           filters (defined in job spec) 
-                                --all      fetch all files in the job or agent log 
-                                           directory 
+      logs <job> <index>        Fetch job (default) or agent (if option provided)
+                                logs
+                                --agent    fetch agent logs
+                                --only <filter1>[...]
+                                           only fetch logs that satisfy given
+                                           filters (defined in job spec)
+                                --all      fetch all files in the job or agent log
+                                           directory
 
     Task management
-      tasks                     Show the list of running tasks 
-      tasks recent [<number>]   Show <number> recent tasks 
-      task [<task_id>|last]     Show task status and start tracking its output 
-                                --no-cache don't cache output locally 
-                                --event|--soap|--debug 
-                                           different log types to track 
-                                --raw      don't beautify log 
-      cancel task <id>          Cancel task once it reaches the next cancel 
-                                checkpoint 
+      tasks                     Show the list of running tasks
+      tasks recent [<number>]   Show <number> recent tasks
+      task [<task_id>|last]     Show task status and start tracking its output
+                                --no-cache don't cache output locally
+                                --event|--soap|--debug
+                                           different log types to track
+                                --raw      don't beautify log
+      cancel task <id>          Cancel task once it reaches the next cancel
+                                checkpoint
 
     Property management
-      set property <name> <value> 
-                                Set deployment property 
-      get property <name>       Get deployment property 
-      unset property <name>     Unset deployment property 
-      properties                List current deployment properties 
-                                --terse    easy to parse output 
+      set property <name> <value>
+                                Set deployment property
+      get property <name>       Get deployment property
+      unset property <name>     Unset deployment property
+      properties                List current deployment properties
+                                --terse    easy to parse output
 
     Maintenance
-      cleanup                   Remove all but several recent stemcells and 
-                                releases from current director (stemcells and 
-                                releases currently in use are NOT deleted) 
-      cloudcheck                Cloud consistency check and interactive repair 
-                                --auto     resolve problems automatically (not 
-                                           recommended for production) 
-                                --report   generate report only, don't attempt 
-                                           to resolve problems 
+      cleanup                   Remove all but several recent stemcells and
+                                releases from current director (stemcells and
+                                releases currently in use are NOT deleted)
+      cloudcheck                Cloud consistency check and interactive repair
+                                --auto     resolve problems automatically (not
+                                           recommended for production)
+                                --report   generate report only, don't attempt
+                                           to resolve problems
 
     Misc
-      status                    Show current status (current target, user, 
-                                deployment info etc.) 
-      vms [<deployment>]        List all VMs that supposed to be in a deployment 
-      target [<name>] [<alias>] Choose director to talk to (optionally creating 
-                                an alias). If no arguments given, show currently 
-                                targeted director 
-      login [<name>] [<password>] 
-                                Provide credentials for the subsequent 
-                                interactions with targeted director 
-      logout                    Forget saved credentials for targeted director 
-      purge                     Purge local manifest cache 
+      status                    Show current status (current target, user,
+                                deployment info etc.)
+      vms [<deployment>]        List all VMs that supposed to be in a deployment
+      target [<name>] [<alias>] Choose director to talk to (optionally creating
+                                an alias). If no arguments given, show currently
+                                targeted director
+      login [<name>] [<password>]
+                                Provide credentials for the subsequent
+                                interactions with targeted director
+      logout                    Forget saved credentials for targeted director
+      purge                     Purge local manifest cache
 
     Remote access
-      ssh <job> [index] [<options>] [command] 
-                                Given a job, execute the given command or start an 
-                                interactive session 
-                                --public_key <file> 
-                                --gateway_host <host> 
-                                --gateway_user <user> 
-                                --default_password 
-                                           Use default ssh password. Not 
-                                           recommended. 
-      scp <job> <--upload | --download> [options] /path/to/source /path/to/destination 
-                                upload/download the source file to the given job. 
-                                Note: for dowload /path/to/destination is a 
-                                directory 
-                                --index <job_index> 
-                                --public_key <file> 
-                                --gateway_host <host> 
-                                --gateway_user <user> 
-      ssh_cleanup <job> [index] Cleanup SSH artifacts 
+      ssh <job> [index] [<options>] [command]
+                                Given a job, execute the given command or start an
+                                interactive session
+                                --public_key <file>
+                                --gateway_host <host>
+                                --gateway_user <user>
+                                --default_password
+                                           Use default ssh password. Not
+                                           recommended.
+      scp <job> <--upload | --download> [options] /path/to/source /path/to/destination
+                                upload/download the source file to the given job.
+                                Note: for dowload /path/to/destination is a
+                                directory
+                                --index <job_index>
+                                --public_key <file>
+                                --gateway_host <host>
+                                --gateway_user <user>
+      ssh_cleanup <job> [index] Cleanup SSH artifacts
 
     Blob
-      upload blob <blobs>       Upload given blob to the blobstore 
-                                --force    bypass duplicate checking 
-      sync blobs                Sync blob with the blobstore 
-                                --force    overwrite all local copies with the 
-                                           remote blob 
-      blobs                     Print blob status 
+      upload blob <blobs>       Upload given blob to the blobstore
+                                --force    bypass duplicate checking
+      sync blobs                Sync blob with the blobstore
+                                --force    overwrite all local copies with the
+                                           remote blob
+      blobs                     Print blob status
 
 
 # Stemcells + releases / Director interaction
