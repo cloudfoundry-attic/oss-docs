@@ -832,13 +832,51 @@ File `config/final.yml`
 
 Note that local should **only** be used for testing purposes as it can't be shared with others (unless they run on the same system).
 
-## Versioning schemes
-
 ## Configuring Releases
+
+Initial release configuration can be performed using `bosh init release command` in an empty git repo. This will create a number of directories that can be used to keep jobs, packages and sources.
 
 ## Building Releases
 
-## Final Releases
+`bosh create release` command attempts to create a new release from the contents of release repo. Here's what happens:
+
+1. BOSH CLI identifies it's in a release repo directory and tries to find all jobs and packages in that repo. Then, for each artifact (package/job):
+	1. The fingerprint is built using artifact contents, file permissions and some other trackable data.
+	2. BOSH CLI tries to find the 'final' version of the artifact matching that fingerprint. All 'final' versions are supposed to be shared through a blobstore, with blobstore id being tracked in release repo. Once required blobstore id is found, CLI tries to either find the actual artifact in a local cache, and if it's missing or has a checksum mismatch, it fetches it from the blobstore (saving in a local cache afterwards).
+	3. If no final version is found, CLI tries to find dev version in a local cache. Dev versions are specific to a local copy of a release repo on a developer box, so no downloads are attempted, it's either available locally or not.
+	4. If the artifact (either dev or final) has been found, CLI uses the version associated with that artifact. The whole process in steps 1-4 is then essentially a lookup of the tarball and its version by a calculated fingerprint. Any change in package/job is supposed to change its fingerprint and this trigger step 5 (generating a new version).
+	5. If new artifact version needs to be generated, CLI uses its spec file to understand what needs to be included into the resulting tarball. For packages it resolves dependencies, copies matched files and runs `pre_packaging` script if available. For jobs it checks that all included packages and configurations templates are present. If all checks have passed, CLI generates and packs a new artifact tarball and assigns it a new version (see release versioning below).
+2. At this point all packages and jobs have been generated and CLI has references to them. The only remaining step is to generate a release manifest, binding all these jobs and packages together. The resulting YAML file is saved and path is provided to CLI user. This path can be used with `bosh upload release`  command to upload release to BOSH Director.
+
+## Final Releases, release versioning
+
+The final release can be created once all the changes are tested and it's time to actually deploy a release to production. The are there main criteria differentiating final releases from dev releases:
+
+1. Versioning scheme: final releases are version independently. Every time new final release is generated its version is a simple increment of the previous final release version, no matter how many dev releases have been created in between. Same is true for individual release artifacts, their final versions are independent from dev versions.
+2. Blobs sharing: package and job tarballs included into the final release are also being uploaded to a blobstore, so any person who attempts create release in the same release repo in the future will be using same actual bits instead of generating them locally. This is important for consistency and for being able to generate old versions of final releases if needed. 
+3. Only reusing components, not generating new ones: final release is supposed to include only previously generated artifacts. If the fingerprint calculated from the current state of the repo didn't match previously generated dev or final version, the error will be raised, telling CLI user to make sure to generate and test dev release first.
+ 
+Final release can be created by running `bosh create release --final`. Usually only people involved in updating production system should be generating final releases. There's also a `--dry-run` option to test out release creation without actually generating and uploading artifacts.
+
+By default all artifacts are stored in `.final_builds` directory inside the release repo, while release manifests are kept in `releases` directory. If the actual release tarball is required `bosh create release --with tarball` can be used. Also, `bosh create release /path/to/release_manifest.yml` can be used to recreate previously created release from its manifest. In both cases the output is a self-contained, ready-to-upload release tarball.
+
+Dev release artifacts versioning is slightly different from final: the latest generated final version of the artifact is used as major version of dev build, while the actual build revision is used as minor version.
+
+Let's see an example:
+
+1. There is a cloud_controller package in release repo: no dev version, no final version yet.
+2. `bosh create release` runs for the first time
+3. Now there is dev release 1, cloud_controller now has dev version 0.1, no final version yet
+4. `bosh create release` is a no-op now, unless we make some repo changes. 
+5. Someone edits one or more files matched by cloud_controller package.
+6. `bosh create release` now generates dev release 2, cloud_controller has dev version 0.2, no final version yet.
+7. `bosh create release --final` will now create final release 1, cloud_controller has dev version 0.2, which also gets rebranded as final version 1.
+8. Next edits to cloud_controller will subsequently generate dev version 1.1, 1.2 etc., until new final version is created
+
+The main point of this versioning scheme is to partition release engineering process between two audiences: 
+
+1. Developers who are quickly iterating on their changes and don't really care about keeping consistent versioning of Bosh Release, BOSH CLI takes care of all versioning details for them and prevents others from seeing all the work-in-progress releases.
+2. SREs who are actually building releases for production use and want them to be consistently versioned and source controlled.
 
 # BOSH Deployments
 
