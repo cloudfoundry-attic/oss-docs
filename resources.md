@@ -4,18 +4,18 @@ _Cloud Foundry Open Source Platform as a Service_
 
 * [Learn](learn)
 * [Ask Questions](ask)
-* [File a bug](file)
+* [File a Bug](file)
 * [OSS Contributions](oss)
 
 
 ## Learn [learn] ## 
 
-Cloud Foundry documentation is found in two places - one for open source developers, and one for cloudfoundry.com users:
+There is a Cloud Foundry documentation set for open source developers, and one for CloudFoundry.com users:
 
-* Open Source Developers - visit [https://github.com/cloudfoundry/oss-docs](https://github.com/cloudfoundry/oss-docs)
-* Developers using CloudFoundry.com visit [http://docs.cloudfoundry.com](http://docs.cloudfoundry.com)
+* Open Source Developers: [https://github.com/cloudfoundry/oss-docs](https://github.com/cloudfoundry/oss-docs)
+* CloudFoundry.com users: [http://docs.cloudfoundry.com](http://docs.cloudfoundry.com)
 
-To make changes to our documentation, follow the [OSS Contribution](oss) steps and make contribute to the oss-docs repository.
+To make changes to our documentation, follow the [OSS Contribution](oss) steps and contribute to the oss-docs repository.
 
 ## Ask Questions [ask] ##
 
@@ -25,7 +25,7 @@ Questions about CloudFoundry.com can be directed to: [http://support.cloudfoundr
 
 ## File a Bug [file] ##
 
-To file a bug against Cloud Foundry Open Source and its components sign up and use our bug tracking system: [http://cloudfoundry.atlassian.net](http://cloudfoundry.atlassian.net)
+To file a bug against Cloud Foundry Open Source and its components, sign up and use our bug tracking system: [http://cloudfoundry.atlassian.net](http://cloudfoundry.atlassian.net)
 
 ## OSS Contributions [oss] ##
 
@@ -51,7 +51,7 @@ _Note: to clone the BOSH repo, or the Documentation repo, replace `vcap` with `b
 		gerrit clone ssh://reviews.cloudfoundry.org:29418/vcap
 		cd vcap
 
-Make your changes, commit, and push to gerrit.
+Make your changes, commit, and push to gerrit:
 
 		git commit 
 		gerrit push 
