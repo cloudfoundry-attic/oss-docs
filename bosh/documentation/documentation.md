@@ -679,31 +679,34 @@ upload
 
 # Releases
 
+A release is a collection of source code, configuration files and startup scripts used to run services, along with a version number that uniquely identifies the components. When creating a new release, you should use a source code manager (like [git](http://git-scm.com/)) to manage new versions of the contained files.
+
 ## Release Repository
 
-A BOSH Release is built from a directory tree following a structure
-described in this section:
+A BOSH Release is built from a directory tree following a structure described in this section:
 
 ## Jobs
 
-TBW
+Jobs are realization of packages, i.e. running one or more processes from a package. A job contains the configuration files and startup scripts to run the binaries from a package.
+
+There is a *one to many* mapping between jobs and VMs - only one job can run in any given VM, but many VMs can run the same job. E.g. there can be four VMs running the Cloud Controller job, but the Cloud Controller job and the DEA job can not run on the same VM. If you need to run two different processes (from two different packages) on the same VM, you need to create a job which starts both processes.
 
 ### Prepare script
 
-TBW
+If a job needs to assemble itself from other jobs (like a super-job) a `prepare` script can be used, which is run before the job is packaged up, and can create, copy or modify files.
 
 ### Job templates
 
 The job templates are generalized configuration files and scripts for a job, which uses [ERB](http://ruby-doc.org/stdlib-1.9.3/libdoc/erb/rdoc/ERB.html) files to generate the final configuration files and scripts used when a Stemcell is turned into a job.
 
-When a confiuration file is turned into a template, instance specific information is abstracted into a property which later is provided when the [director][director] starts the job on a VM. E.g. which port the webserver should run on, or which username and password a databse should use.
+When a configuration file is turned into a template, instance specific information is abstracted into a property which later is provided when the [director][director] starts the job on a VM. E.g. which port the webserver should run on, or which username and password a databse should use.
 
 The files are located in the `templates` directory and the mapping between template file and its final location is provided in the job `spec` file in the templates section. E.g.
 
     templates:
-	  foo_ctl.erb: bin/foo_ctl
-	  foo.yml.erb: config/foo.yml
-	  foo.txt: config/foo.txt
+      foo_ctl.erb: bin/foo_ctl
+      foo.yml.erb: config/foo.yml
+      foo.txt: config/foo.txt
 
 ### Use of properties
 
@@ -734,7 +737,7 @@ TBW
 
 ## Packages
 
-TODO: ishisness!
+A package is a collection of source code along with a script that contains instruction how to compile it to binary format and install it, with optional dependencies on other pre-requisite packages.
 
 ### Package Compilation
 
@@ -764,7 +767,10 @@ The package `spec` file contains a section which lists other packages the curren
 When the [director][director] plans the compilation of a package during a deployment, it first makes sure all dependencies are compiled before it proceeds to compile the current package, and prior to commencing the compilation all dependent packages are installed on the compilation VM.
 
 ## Sources
- final release
+
+The `src` directory contains the source code for the packages.
+
+If you are using a source code repository to manage your release, you should avoid storing large objects in it (like source code tar-balls in the `src` directory), and instead use the [blobs][blobs] described below.
 
 ## Blobs
 
