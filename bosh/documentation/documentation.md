@@ -305,56 +305,8 @@ There are 2 ways to deploy and use BOSH.
 1. Deploy BOSH as an application using micro BOSH. So as in step 1, use BOSH deployer to deploiy micro BOSH, then use the micro BOSH as a means to deploy the final, distributed production BOSH on multiple VMs. The graphic below illustrates this two step process.
 
 
-## Deploy BOSH as an application using micro BOSH. ##
-
-1. Deploy micro BOSH. See the steps in the previous section.
-
-1. Target micro BOSH e.g from the previous section, micro BOSH had the ip 11.23.194.100, so you would target it as bosh target http://11.23.194.100:25555
-
-### Download a BOSH stemcell 
-
-1. List public stemcells with bosh public stemcells
-
-    +-------------------------------+----------------------------------------------------+
-    | Name                          | Url                                                |
-    +-------------------------------+----------------------------------------------------+
-    | bosh-stemcell-0.4.7.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...h120= |
-    | micro-bosh-stemcell-0.1.0.tgz | https://blob.cfblob.com/rest/objects/4e4e7...5Mms= |
-    | bosh-stemcell-0.3.0.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...mw1w= |
-    | bosh-stemcell-0.4.4.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...r144= |
-    +-------------------------------+----------------------------------------------------+
-
-1. Download a public stemcell. *NOTE, in this case you do not use the micro bosh stemcell.*
-
-		bosh download public stemcell bosh-stemcell-0.1.0.tgz
-
-1. Upload the downloaded stemcell to micro BOSH. bosh upload stemcell bosh-stemcell-0.1.0.tgz
-
-### Upload a BOSH release.
-
-1. You can create a BOSH release or use one of the public releases. The following steps show the use of a public release.
-
-		cd /home/bosh_user gerrit-clone ssh://reviews.cloudfoundry.org:29418/bosh-release.git
-
-1. Upload a public release from bosh-release
-
-		cd /home/bosh_user/bosh-release/releases/
-		bosh upload release bosh-1.yml
-
-1. Create and setup a BOSH deployment manifest. Look at the sample BOSH manifest in `/bosh/samples/bosh.yml`. Assuming you have created a `bosh.yml` in `/home/bosh_user`.
-
-		cd /home/bosh_user
-		bosh deployment ./bosh.yml
-
-1. Deploy BOSH
-
-		bosh deploy.
-
-8. Target the newly deployed bosh director. In the sample `bosh.yml`, the bosh director has the ip address 192.0.2.36. If you target this director with `bosh target http://192.0.2.36:25555` where 25555 is the default BOSH director port.
-
-Your newly installed BOSH instance is now ready for use.
-
-## Prerequisites ##
+## BOSH Deployer to deploy micro BOSH ##
+### Prerequisites ###
 
 1. It is recommend that you install into an empty gemset (or similar.)
 
@@ -387,7 +339,7 @@ Once you have installed micro BOSH, you will see some extra commands appear afte
 			micro apply <spec>        Apply spec
 
 
-## Configuration ##
+### Configuration ###
 
 For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your Deployment name.
 
@@ -400,7 +352,7 @@ For example:
 
 Deployment state is persisted to deployments/bosh-deployments.yml.
 
-## Deployment ##
+### Deployment ###
 
 1. Download a micro BOSH Stemcell:
 
@@ -433,7 +385,7 @@ Deployment state is persisted to deployments/bosh-deployments.yml.
 
 		% bosh micro deploy ~/stemcells/micro-bosh-stemcell-0.1.1.tgz --update
 
-## Deleting a micro BOSH deployment ##
+### Deleting a micro BOSH deployment ###
 
 The `delete` command will delete the VM, Stemcell, and persistent disk.
 
@@ -441,7 +393,7 @@ Example:
 
 		% bosh micro delete
 
-## Checking Status of a micro BOSH deploy ##
+### Checking Status of a micro BOSH deploy ###
 
 The status command will show the persisted state for a given micro BOSH instance.
 
@@ -453,19 +405,19 @@ The status command will show the persisted state for a given micro BOSH instance
 		Deployment     /var/vcap/deployments/dev33/micro_bosh.yml
 		Target         micro (http://11.23.194.100:25555) Ver: 0.3.12 (00000000)
 
-## Listing Deployments ##
+### Listing Deployments ###
 
 The `deployments` command prints a table view of deployments/bosh-deployments.yml.
 
 		% bosh micro deployments
 
-## Applying a specification
+### Applying a specification
 
 The micro-bosh-stemcell includes an embedded `apply_spec.yml`. This command can be used to apply a different spec to an existing instance. The `apply_spec.yml` properties are merged with your Deployment's network.ip and cloud.properties.vcenters properties.
 
 		% bosh micro apply apply_spec.yml
 
-## Sending messages to the micro BOSH agent ##
+### Sending messages to the micro BOSH agent ###
 
 The CLI can send messages over HTTP to the agent using the `agent` command.
 
@@ -474,7 +426,10 @@ Example:
 		% bosh micro agent ping
 		"pong"
 
-## Deploying Production BOSH through Micro BOSH ##
+
+## Deploy BOSH as an application using micro BOSH. ##
+
+1. Deploy micro BOSH. See the steps in the previous section.
 
 1. Once your micro BOSH instance is deployed, you can target its Director:
 
@@ -493,22 +448,57 @@ Example:
 		User           admin
 		Deployment     not set
 
-2. Upload a Stemcell. **NOTE** Do not use the micro BOSH Stemcell. Use a BOSH Stemcell.
+### Download a BOSH stemcell 
 
-3. Upload the BOSH release.
+1. List public stemcells with bosh public stemcells
 
-4. Ensure `bosh deployment` is set to the BOSH deployment.
+		% mkdir -p ~/stemcells
+		% cd stemcells
+		% bosh public stemcells
+		+-------------------------------+----------------------------------------------------+
+		| Name                          | Url                                                |
+		+-------------------------------+----------------------------------------------------+
+		| bosh-stemcell-0.4.7.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...h120= |
+		| micro-bosh-stemcell-0.1.0.tgz | https://blob.cfblob.com/rest/objects/4e4e7...5Mms= |
+		| bosh-stemcell-0.3.0.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...mw1w= |
+		| bosh-stemcell-0.4.4.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...r144= |
+		+-------------------------------+----------------------------------------------------+
+		To download use 'bosh download public stemcell <stemcell_name>'.
+		
 
-5. Run `bosh deploy`.
+1. Download a public stemcell. *NOTE, in this case you do not use the micro bosh stemcell.*
 
-6. Wait for successful deployment.
+		bosh download public stemcell bosh-stemcell-0.1.0.tgz
 
-7. Target the newly deployed BOSH Director.
+1. Upload the downloaded stemcell to micro BOSH.
 
-8. Your newly deployed Production BOSH is ready to use.
+		bosh upload stemcell bosh-stemcell-0.1.0.tgz
 
-9. _Optional_: Delete micro BOSH deployment.
+### Upload a BOSH release.
 
+1. You can create a BOSH release or use one of the public releases. The following steps show the use of a public release.
+
+		cd /home/bosh_user 
+		gerrit-clone ssh://reviews.cloudfoundry.org:29418/bosh-release.git
+
+1. Upload a public release from bosh-release
+
+		cd /home/bosh_user/bosh-release/releases/
+		bosh upload release bosh-1.yml
+
+
+### Setup a BOSH deployment manifest and deploy.
+
+1. Create and setup a BOSH deployment manifest. Look at the sample BOSH manifest in (https://github.com/cloudfoundry/oss-docs/bosh/samples/bosh.yml). Assuming you have created a `bosh.yml` in `/home/bosh_user`.
+
+		cd /home/bosh_user
+		bosh deployment ./bosh.yml
+
+1. Deploy BOSH
+
+		bosh deploy.
+
+8. Target the newly deployed bosh director. In the sample `bosh.yml`, the bosh director has the ip address 192.0.2.36. So if you target this director with `bosh target http://192.0.2.36:25555` where 25555 is the default BOSH director port.  Your newly installed BOSH instance is now ready for use.
 
 ## vCenter Configuration ##
 
