@@ -341,7 +341,7 @@ Once you have installed micro BOSH, you will see some extra commands appear afte
 
 ### Configuration ###
 
-For a minimal configuration example, see: `deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your Deployment name.
+For a minimal configuration example, see: `https://github.com/cloudfoundry/bosh/deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your Deployment name.
 
 For example:
 
@@ -351,6 +351,69 @@ For example:
 		deployments/dev33/micro_bosh.yml
 
 Deployment state is persisted to deployments/bosh-deployments.yml.
+
+### vCenter Configuration ###
+The Virtual Center configuration section looks like the following. 
+
+		cloud:
+  		plugin: vsphere
+  		properties:
+    		agent:
+      		ntp:
+       		- <ntp_host_1>
+       		- <ntp_host_2>
+    		vcenters:
+      		- host: <vcenter_ip>
+        		user: <vcenter_userid>
+        		password: <vcenter_password>
+        		datacenters:
+          		- name: <datacenter_name>
+            		vm_folder: <vm_folder_name>
+            		template_folder: <template_folder_name>
+            		disk_path: <subdir_to_store_disks>
+            		datastore_pattern: <data_store_pattern>
+            		persistent_datastore_pattern: <persistent_datastore_pattern>
+            		allow_mixed_datastores: <true_if_persistent_datastores_and_datastore_patterns_are_the_same>
+            		clusters:
+            		- <cluster_name>:
+                		resource_pool: <resource_pool_name>
+
+Before you can run micro BOSH deployer, you have to setup your VC to
+
+1. Create the vm_folder
+
+1. Create the template_folder
+
+1. Create the disk_path in the appropriate datastores
+
+1. Create the resource_pool. 
+
+NOTE. Resource pool is optional you can run without a resource pool. Without a resource pool the cluster property looks like
+
+            		persistent_datastore_pattern: <datastore_pattern>
+            		allow_mixed_datastores: <true_if_persistent_datastores_and_datastore_patterns_are_the_same>
+            		clusters:
+            		- <cluster_name>
+
+NOTE: The datastore pattern above could just be the name of a datastore or some regular expression matching the datastore name. 
+
+If you have a datastore called "vc_data_store_1" and you would like to use this datastore for both persistent and non persistent disks. Your config would look like
+
+            		datastore_pattern: vc_data_store_1 
+            		persistent_datastore_pattern:  vc_data_store_1
+            		allow_mixed_datastores: true
+
+If you have 2 datastores called "vc_data_store_1", "vc_data_store_2" and you would like to use both datastore for both persistent and non persistent disks. Your config would look like
+
+            		datastore_pattern: vc_data_store_? 
+            		persistent_datastore_pattern:  vc_data_store_?
+            		allow_mixed_datastores: true
+
+If you have 2 datastores called "vnx:1",  "vnx:2" and you would like to separate your persistent and non persistent disks. Your config would look like
+
+            		datastore_pattern: vnx:1 
+            		persistent_datastore_pattern: vnx:2
+            		allow_mixed_datastores: false
 
 ### Deployment ###
 
@@ -498,11 +561,7 @@ Example:
 
 		bosh deploy.
 
-8. Target the newly deployed bosh director. In the sample `bosh.yml`, the bosh director has the ip address 192.0.2.36. So if you target this director with `bosh target http://192.0.2.36:25555` where 25555 is the default BOSH director port.  Your newly installed BOSH instance is now ready for use.
-
-## vCenter Configuration ##
-
-Someone write this eh?
+1. Target the newly deployed bosh director. In the sample `bosh.yml`, the bosh director has the ip address 192.0.2.36. So if you target this director with `bosh target http://192.0.2.36:25555` where 25555 is the default BOSH director port.  Your newly installed BOSH instance is now ready for use.
 
 # BOSH CLI [bosh_cli]
 
