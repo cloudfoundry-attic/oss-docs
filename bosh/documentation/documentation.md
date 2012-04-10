@@ -55,7 +55,7 @@ A full overview of BOSH commands and installation appears in the [BOSH Command L
 
 ## Stemcells ##
 
-A Stemcell is a VM template with an embedded [BOSH Agent][] The Stemcell used for Cloud Foundry is a standard Ubuntu distribution. Stemcells are uploaded using the [BOSH CLI][] and used by the [BOSH Director][] when creating VMs through the [Cloud Provider Interface][] (CPI). When the Director creates a VM through the CPI, it will pass along configurations for networking and storage, as well as the location and credentials for the [Message Bus][] and the [Blobstore][].
+A Stemcell is a VM template with an embedded [BOSH Agent][]. The Stemcell used for Cloud Foundry is a standard Ubuntu distribution. Stemcells are uploaded using the [BOSH CLI][] and used by the [BOSH Director][] when creating VMs through the [Cloud Provider Interface][] (CPI). When the Director creates a VM through the CPI, it will pass along configurations for networking and storage, as well as the location and credentials for the [Message Bus][] and the [Blobstore][].
 
 ## Releases ##
 
