@@ -1,11 +1,3 @@
-latex input:	mmd-article-header
-Title:	BOSH Documentation
-Author:	VMware 2012 - Cloud Foundry
-Base Header Level:	2
-LaTeX Mode:	memoir
-latex input:	mmd-article-begin-doc
-latex footer:	mmd-memoir-footer
-
 # Introduction #
 
 Cloud Foundry BOSH is an open source tool chain for release engineering, deployment and lifecycle management of large scale distributed services. In this manual we describe the architecture, topology, configuration, and use of BOSH, as well as the structure and conventions used in packaging and deployment.
