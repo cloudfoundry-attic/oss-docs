@@ -429,11 +429,11 @@ If you had 2 datastores, called "vnx:1" and "vnx:2", and you wanted to separate 
 		% bosh micro deployment dev33
 		Deployment set to '/var/vcap/deployments/dev33/micro_bosh.yml'
 
-1. Deploy a new micro BOSH instance and create a new persistent disk.
+1. Deploy a new micro BOSH instance and create a new persistent disk:
 
 		% bosh micro deploy ~/stemcells/micro-bosh-stemcell-0.1.0.tgz
 
-1. Update an existing micro BOSH instance. The existing persistent disk will be attached to the new VM.
+1. Update an existing micro BOSH instance. The existing persistent disk will be attached to the new VM:
 
 		% bosh micro deploy ~/stemcells/micro-bosh-stemcell-0.1.1.tgz --update
 
@@ -447,7 +447,7 @@ Example:
 
 ### Checking Status of a micro BOSH deploy ###
 
-The status command will show the persisted state for a given micro BOSH instance.
+The status command will show the persisted state for a given micro BOSH instance
 
 		% bosh micro status
 		Stemcell CID   sc-f2430bf9-666d-4034-9028-abf9040f0edf
@@ -459,7 +459,7 @@ The status command will show the persisted state for a given micro BOSH instance
 
 ### Listing Deployments ###
 
-The `deployments` command prints a table view of deployments/bosh-deployments.yml.
+The `deployments` command prints a table view of deployments/bosh-deployments.yml
 
 		% bosh micro deployments
 
@@ -502,7 +502,7 @@ Example:
 
 ### Download a BOSH stemcell 
 
-1. List public stemcells with bosh public stemcells
+1. List public Stemcells with `bosh public stemcells`
 
 		% mkdir -p ~/stemcells
 		% cd stemcells
@@ -518,11 +518,11 @@ Example:
 		To download use 'bosh download public stemcell <stemcell_name>'.
 		
 
-1. Download a public stemcell. *NOTE, in this case you do not use the micro bosh stemcell.*
+1. Download a public Stemcell. *NOTE, in this case you do not use the micro BOSH Stemcell.*
 
 		bosh download public stemcell bosh-stemcell-0.1.0.tgz
 
-1. Upload the downloaded stemcell to micro BOSH.
+1. Upload the downloaded Stemcell to micro BOSH.
 
 		bosh upload stemcell bosh-stemcell-0.1.0.tgz
 
