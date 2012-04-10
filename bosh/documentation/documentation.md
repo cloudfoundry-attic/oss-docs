@@ -550,7 +550,7 @@ Example:
 
 		bosh deploy.
 
-1. Target the newly deployed bosh director. In the sample `bosh.yml`, the bosh director has the ip address 192.0.2.36. So if you target this director with `bosh target http://192.0.2.36:25555` where 25555 is the default BOSH director port.  Your newly installed BOSH instance is now ready for use.
+1. Target the newly deployed BOSH Director. In the sample `bosh.yml`, the BOSH Director has the ip address 192.0.2.36. You target this Director with `bosh target http://192.0.2.36:25555` where 25555 is the default BOSH Director port.  Your newly installed BOSH instance is now ready for use.
 
 # BOSH Command Line Interface #
 
