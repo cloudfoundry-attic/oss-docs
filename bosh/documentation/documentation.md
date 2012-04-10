@@ -252,6 +252,10 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 	
 	This directory contains the Cloud Foundry deployment and release files.
 
+1. Update submodules and pull down blobs (also used to update the repository).
+
+		./update
+
 1. Reset your environment
 
 		bosh reset release
