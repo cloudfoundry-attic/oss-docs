@@ -26,7 +26,7 @@ The core BOSH engine is abstracted from any particular Infrastructure as a Servi
 
 ## Cloud Provider Interface ##
 
-The IaaS interface plugins communicate through a Cloud Provider Interface (CPI) offered by the particular IaaS vendors such as VMware or Amazon. As a BOSH user there is no need to be concerned with the IaaS or CPI, but it can be helpful to understand its primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following:
+The IaaS interface plugins communicate through a Cloud Provider Interface (CPI) offered by the particular IaaS vendors such as VMware or Amazon. As a BOSH user there is no need to be concerned with the IaaS or CPI, but it can be helpful to understand its primitives when learning how BOSH works. The current examples of these interfaces are in: `bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following:
 
 	create_stemcell / delete_stemcell
 	create_vm  / delete_vm  / reboot_vm
