@@ -288,7 +288,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 # BOSH Installation #
 
-Installation of BOSH is done using something called Micro BOSH, which is a single VM that includes of the BOSH components in the same image. If you want to play around with BOSH, or create a simple development setup, you can install Micro BOSH using the [BOSH Deployer][]. If you would like to use BOSH in production to manage a distributed system, you also use the BOSH Deployer, install Micro BOSH, and then use it as means to deploy the final distributed system on multiple VMs.
+Installation of BOSH is done using something called Micro BOSH, which is a single VM that includes all of the BOSH components in the same image. If you want to play around with BOSH, or create a simple development setup, you can install Micro BOSH using the [BOSH Deployer][]. If you would like to use BOSH in production to manage a distributed system, you also use the BOSH Deployer, install Micro BOSH, and then use it as means to deploy the final distributed system on multiple VMs.
 
 A good way to think about this two step process is to consider that BOSH is a distributed system in itself. Since BOSH's core purpose is to deploy and manage distributed systems, it makes sense that we would use it to deploy itself. On the BOSH team, we gleefully refer to this as [Inception](http://en.wikipedia.org/wiki/Inception).
 
@@ -329,7 +329,7 @@ Once you have installed Micro BOSH, you will see some extra commands appear afte
 
 ### Configuration ###
 
-For a minimal configuration example, see: `https://github.com/cloudfoundry/bosh/deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your Deployment name.
+For a minimal configuration example, see: `https://github.com/cloudfoundry/bosh/deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdirectory containing `micro_bosh.yml`, where `$name` is your Deployment name.
 
 For example:
 
@@ -377,7 +377,7 @@ Before you can run micro BOSH deployer, you have to do the following within Virt
 
 1. Create the resource_pool. 
 
-Resource pool is optional you can run without a resource pool. Without a resource pool the cluster property looks like:
+A resource pool is optional -- you can run without a resource pool. Without a resource pool, the cluster property looks like:
 
             		persistent_datastore_pattern: <datastore_pattern>
             		allow_mixed_datastores: <true_if_persistent_datastores_and_datastore_patterns_are_the_same>
@@ -386,19 +386,19 @@ Resource pool is optional you can run without a resource pool. Without a resourc
 
 The datastore pattern above could just be the name of a datastore or some regular expression matching the datastore name. 
 
-If you have a datastore called "vc_data_store_1" and you would like to use this datastore for both persistent and non persistent disks. Your config would look like:
+If you had a datastore called "vc_data_store_1" and you wanted to use this datastore for both persistent and non persistent disks, your config would look like:
 
             		datastore_pattern: vc_data_store_1 
             		persistent_datastore_pattern:  vc_data_store_1
             		allow_mixed_datastores: true
 
-If you have 2 datastores called "vc_data_store_1", "vc_data_store_2" and you would like to use both datastore for both persistent and non persistent disks. Your config would look like:
+If you had 2 datastores, called "vc_data_store_1" and "vc_data_store_2", and you wanted to use both datastores for both persistent and non persistent disks, your config would look like:
 
             		datastore_pattern: vc_data_store_? 
             		persistent_datastore_pattern:  vc_data_store_?
             		allow_mixed_datastores: true
 
-If you have 2 datastores called "vnx:1",  "vnx:2" and you would like to separate your persistent and non persistent disks. Your config would look like
+If you had 2 datastores, called "vnx:1" and "vnx:2", and you wanted to separate your persistent and non persistent disks, your config would look like:
 
             		datastore_pattern: vnx:1 
             		persistent_datastore_pattern: vnx:2
