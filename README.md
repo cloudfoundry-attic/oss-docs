@@ -1,34 +1,61 @@
-# Cloud Foundry Docs
-© VMWare 2012
+# Cloud Foundry OSS Resources #
 
-The Cloud Foundry Docs are written in MultiMarkdown (MMD). If you want to install the MultiMarkdown tools, you can read about that here: [MultiMarkdown](https://github.com/fletcher/peg-multimarkdown) 
+_Cloud Foundry Open Source Platform as a Service_
 
-To create a PDF from a MMD document you need both MultiMarkdown and LaTeX on your system. You can read about how to do this here: [LaTeX Home Page](http://www.latex-project.org/)
-
-If you are on a Mac, It is recommended that you install MultiMarkdown Composer from the Apple App Store, but any text editor will do.
-
-You can create a nicely formatted PDF like this…
-
-1. Download John Fletcher's MMD Latex Support files [here](https://github.com/fletcher/peg-multimarkdown-latex-support)
-2. Install them here `~/Library/texmf/tex/latex/mmd` or on Unix here: `~/texmf/tex/latex/mmd`
-3. Edit the mmd-article-begin-doc.tex file with:
-	
-		\begin{document}
-		\title{\mytitle}
-		\author{© \myauthor}
-		\date{\relax}%TeX note: relax: null
-
-4. At the top of your MMD document, create metadata such as:
-
-		latex input:	mmd-article-header
-		Title:	Cloud Foundry Technical Overview 
-		Author:	VMware 2012 - Cloud Foundry
-		Base Header Level:	2  
-		LaTeX Mode:	memoir  
-		latex input:        mmd-article-begin-doc
-		latex footer:       mmd-memoir-footer
-
-5. You can create a PDF from Markdown using the instructions on [John Fletcher's site](http://fletcherpenney.net/multimarkdown/) - or you can use MultiMarkdown Composer to Export to LaTeX, and then generate a PDF from there.
+* [Learn][]
+* [Ask Questions][]
+* [File a Bug][]
+* [OSS Contributions][]
 
 
+## Learn ## 
 
+There is a Cloud Foundry documentation set for open source developers, and one for CloudFoundry.com users:
+
+* Open Source Developers: [https://github.com/cloudfoundry/oss-docs](https://github.com/cloudfoundry/oss-docs)
+* CloudFoundry.com users: [http://docs.cloudfoundry.com](http://docs.cloudfoundry.com)
+
+To make changes to our documentation, follow the [OSS Contribution][oss] steps and contribute to the oss-docs repository.
+
+## Ask Questions ##
+
+Questions about the Cloud Foundry Open Source Project can be directed to our Google Groups: [http://groups.google.com/a/cloudfoundry.org/groups/dir](http://groups.google.com/a/cloudfoundry.org/groups/dir)
+
+Questions about CloudFoundry.com can be directed to: [http://support.cloudfoundry.com](http://support.cloudfoundry.com)
+
+## File a Bug ##
+
+To file a bug against Cloud Foundry Open Source and its components, sign up and use our bug tracking system: [http://cloudfoundry.atlassian.net](http://cloudfoundry.atlassian.net)
+
+## OSS Contributions ##
+
+The Cloud Foundry team uses Gerrit, a code review tool that originated in the Android Open Source Project. We also use GitHub as an official mirror, though all pull requests are accepted via Gerrit.
+
+Follow these steps to make a contribution to any of our open source repositories:
+  
+1. Sign up for an account on our public Gerrit server at http://reviews.cloudfoundry.org/ 
+1. Create and upload your public SSH key in your Gerrit account profile
+1. Set your name and email
+
+		git config --global user.name "Firstname Lastname"
+		git config --global user.email "your_email@youremail.com"
+
+Install our gerrit-cli gem:
+
+		gem install gerrit-cli
+
+Clone the Cloud Foundry repo
+
+_Note: to clone the BOSH repo, or the Documentation repo, replace `vcap` with `bosh` or `oss-docs`_
+
+		gerrit clone ssh://reviews.cloudfoundry.org:29418/vcap
+		cd vcap
+
+Make your changes, commit, and push to gerrit:
+
+		git commit 
+		gerrit push 
+
+Once your commits are approved you should see your revisions go from OPEN to MERGED and be replicated to GitHub. If you get feedback on your submission, we recommend squashing your commit with the original change-id. See the squashing section here for more details: [http://help.github.com/rebase/](http://help.github.com/rebase/).
+
+Every Gerrit repository is mirrored at [http://github.com/cloudfoundry/](https://github.com/cloudfoundry/)
