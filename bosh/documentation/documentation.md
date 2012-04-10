@@ -24,9 +24,9 @@ BOSH was originally developed in the context of the Cloud Foundry Application Pl
 
 The core BOSH engine is abstracted from any particular Infrastructure as a Service (IaaS). IaaS interfaces are implemented as plugins to BOSH. Currently, BOSH supports both VMware vSphere and Amazon Web Services.
 
-## Cloud Provider Interface (CPI) [cpi]##
+## Cloud Provider Interface ##
 
-The IaaS interface plugins communicate through a Cloud Provider Interface offered by the particular IaaS vendors such as VMware or Amazon. As a BOSH user there is no need to be concerned with the IaaS or CPI, but it can be helpful to understand its primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following:
+The IaaS interface plugins communicate through a Cloud Provider Interface (CPI) offered by the particular IaaS vendors such as VMware or Amazon. As a BOSH user there is no need to be concerned with the IaaS or CPI, but it can be helpful to understand its primitives when learning how BOSH works. The current examples of these interfaces are in:	`bosh/vsphere_cpi/lib/cloud/vsphere/cloud.rb` for vSphere, and `bosh/aws_cpi/lib/cloud/aws/cloud.rb` for Amazon Web Services. Within those subdirectories are Ruby classes with methods to do the following:
 
 	create_stemcell / delete_stemcell
 	create_vm  / delete_vm  / reboot_vm
@@ -35,15 +35,15 @@ The IaaS interface plugins communicate through a Cloud Provider Interface offere
 
 Please refer to the API documentation in these files for further explanation of the CPI primitives.
 
-## BOSH Director [director]##
+## BOSH Director ##
 
 The Director is the core orchestrating component in BOSH which controls creation of VMs, deployment, and other life cycle events of software and services. Command and control is handed over to the the Director-Agent interaction after the CPI has created resources.
 
-## BOSH Agent [Agent] ##
+## BOSH Agent ##
 
-BOSH Agents listen for instructions from the BOSH Director. Every VM contains an Agent. Through the Director-Agent interaction, a VM is given a [Job](Jobs), or role, within Cloud Foundry. If the VM's job is to run MySQL, for example, the Director will send instructions to the Agent about which packages must be installed and what the configurations for those packages are.
+BOSH Agents listen for instructions from the BOSH Director. Every VM contains an Agent. Through the Director-Agent interaction, VMs are given [Jobs][], or roles, within Cloud Foundry. If the VM's job is to run MySQL, for example, the Director will send instructions to the Agent about which packages must be installed and what the configurations for those packages are.
 
-## BOSH CLI [bosh_cli_short] ##
+## BOSH CLI ##
 
 The BOSH Command Line Interface is how users interact with BOSH using a terminal session. BOSH commands follow the format shown below:
 
@@ -51,29 +51,29 @@ The BOSH Command Line Interface is how users interact with BOSH using a terminal
            [--force] [--no-color] [--skip-director-checks] [--quiet]
            [--non-interactive]
 
-A full overview of BOSH commands and installation appears in the [BOSH CLI](bosh_cli) and [BOSH installation](bosh_install) sections.
+A full overview of BOSH commands and installation appears in the [BOSH Command Line Interface][] and [BOSH installation][] sections.
 
-## Stemcells [stemcells ] ##
+## Stemcells ##
 
-A Stemcell is a VM template with an embedded [Agent](agent). The Stemcell used for Cloud Foundry is a standard Ubuntu distribution. Stemcells are uploaded using the [BOSH CLI](bosh_cli) and used by the [Director](director) when creating VMs through the [CPI](dpi). When the Director creates a VM through the CPI, it will pass along configurations for networking and storage, as well as the location and credentials for the [Message Bus](message_bus) and the [Blobstore](blobstore).
+A Stemcell is a VM template with an embedded [BOSH Agent][] The Stemcell used for Cloud Foundry is a standard Ubuntu distribution. Stemcells are uploaded using the [BOSH CLI][] and used by the [BOSH Director][] when creating VMs through the [Cloud Provider Interface][] (CPI). When the Director creates a VM through the CPI, it will pass along configurations for networking and storage, as well as the location and credentials for the [Message Bus][] and the [Blobstore][].
 
-## Releases [releases_short] ##
+## Releases ##
 
 A Release in BOSH is a packaged bundle of service descriptors known as Jobs. Jobs are collections of software bits and configurations. Any given Release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service.
 
-A Release is typically not restricted to any particular environment. As such, it can be re-used across clusters handling different stages in a service life cycle, such as Development, QA, Staging, or Production. The [BOSH CLI](bosh_cli) manages both the creation of Releases and their deployments into specific environments.
+A Release is typically not restricted to any particular environment. As such, it can be re-used across clusters handling different stages in a service life cycle, such as Development, QA, Staging, or Production. The [BOSH CLI][] manages both the creation of Releases and their deployments into specific environments.
 
-See the [Releases](releases) section for a deeper look at both Releases and [Jobs](jobs).
+See the [Releases][] section for a deeper look at both Releases and [Jobs][].
 
-## Deployments [deployments] ##
+## Deployments ##
 
-While BOSH [Stemcells](stemcells) and [Releases](releases_short) are static components, they are bound together into a Deployment by a [Deployment Manifest][deploy_manifest]. In the Deployment Manifest, you declare pools of VMs, which networks they live on, and which [Jobs](jobs) (service components) from the [Release](releases_short) you want to activate. Job configurations specify life cycle parameters, the number of instances of a Job, and network and storage requirements. Furthermore, the Deployment Manifest allows you to specify properties used to parameterize configuration templates contained in the Release.
+While BOSH [Stemcells][] and [Releases][] are static components, they are bound together into a Deployment by a [BOSH Deployment Manifest][]. In the Deployment Manifest, you declare pools of VMs, which networks they live on, and which [Jobs][] (service components) from the Releases you want to activate. Job configurations specify life cycle parameters, the number of instances of a Job, and network and storage requirements. Furthermore, the Deployment Manifest allows you to specify properties used to parameterize configuration templates contained in the Release.
 
-Using the [BOSH CLI](bosh_cli), you specify a [Deployment Manifest](deploy_manifest) and perform a Deploy operation (`bosh deploy`), which creates or updates resources on your cluster according to your specifications. Refer to the [Steps of a Deployment](deploy_steps) for examples.
+Using the [BOSH CLI][], you specify a Deployment Manifest and perform a Deploy operation (`bosh deploy`), which creates or updates resources on your cluster according to your specifications. Refer to the [Steps of a Deployment][] for examples.
 
-## Blobstore [blobstore] ##
+## Blobstore ##
 
-The BOSH Blobstore is used to store the content of Releases (BOSH [Jobs](jobs) and [Packages](packages) in their source form as well as the compiled image of BOSH Packages). [Releases][releases] are uploaded by the [BOSH CLI](bosh_cli) and inserted into the Blobstore by the [BOSH Director](director). When you deploy a Release, BOSH will orchestrate the compilation of packages and store the result in the Blobstore. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the Blobstore.
+The BOSH Blobstore is used to store the content of Releases (BOSH [Jobs][] and [Packages][] in their source form as well as the compiled image of BOSH Packages. [Releases][releases] are uploaded by the [BOSH CLI][][] and inserted into the Blobstore by the [BOSH Director][]. When you deploy a Release, BOSH will orchestrate the compilation of packages and store the result in the Blobstore. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the Blobstore.
 
 BOSH also uses the Blobstore as an intermediate store for large payloads, such as log files (see BOSH logs) and output from the BOSH Agent that exceeds the max size for messages over the message bus.
 
@@ -83,25 +83,25 @@ There are currently three Blobstores supported in BOSH:
 1. [S3](http://aws.amazon.com/s3/)
 1. [simple blobstore server](https://github.com/cloudfoundry/bosh/tree/master/simple_blobstore_server)
 
-For example configurations of each Blobstore, see the [Blobs] section. The default BOSH configuration uses the simple blobstore server, as the load is very light and low latency is preferred.
+For example configurations of each Blobstore, see the [Blobs][] section. The default BOSH configuration uses the simple blobstore server, as the load is very light and low latency is preferred.
 
 ## Health Monitor ##
 
-The BOSH Health Monitor receives health status and life cycle events from the [BOSH Agents][agent] and can send alerts through notification plugins (such as email). The Health Monitor has a simple awareness of events in the system, so as not to alert if a component is updated.
+The BOSH Health Monitor receives health status and life cycle events from the [BOSH Agent][] and can send alerts through notification plugins (such as email). The Health Monitor has a simple awareness of events in the system, so as not to alert if a component is updated.
 
-## Message bus [message_bus] ##
+## Message Bus ##
 
 BOSH uses the [NATS](http://github.com/dcollison/nats) message bus for command and control.
 
 # Using BOSH #
 
-Before we can use BOSH we need to install the [BOSH CLI](bosh_cli_short). To continue with this section, you will need a running development environment with an uploaded Stemcell. If this is not the case, you can  [BOSH Installation](bosh_install) section.
+Before we can use BOSH we need to install the [BOSH CLI][]. To continue with this section, you will need a running development environment with an uploaded Stemcell. If this is not the case, you can  [BOSH Installation][] section.
 
-## Installing BOSH Command Line Interface [bosh_install] ##
+## Installing BOSH Command Line Interface ##
 
 The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on either a physical or Virtual Machine.
 
-### Install Ruby via rbenv
+### Install Ruby via rbenv ###
 
 1. Bosh is written in Ruby. Let's install Ruby's dependencies
 
@@ -151,7 +151,7 @@ _Note: After installing gems (`gem install` or `bundle install`) run `rbenv reha
 		gem install bundler
 		rbenv rehash
 
-### Install Local BOSH and BOSH Releases
+### Install Local BOSH and BOSH Releases ###
 
 1. Sign up for the Cloud Foundry Gerrit server at [http://reviews.cloudfoundry.org](http://reviews.cloudfoundry.org)
 
@@ -187,13 +187,13 @@ _Note: After installing gems (`gem install` or `bundle install`) run `rbenv reha
 		rbenv rehash
 
 
-### Deploy to your BOSH Environment
+### Deploy to your BOSH Environment ###
 
 With a fully configured environment, we can begin deploying a Cloud Foundry Release to our environment. As listed in the prerequisites, you should already have an environment running, as well as the IP address of the BOSH Director. To set this up, skip to the [BOSH Installation][] section.
 
 ### Point BOSH at a Target and Clean your Environment ###
 
-1. Target your Director (this IP is an example.) **NOTE: EXAMPLE WORKS FOR INTERNAL USE (u: admin / p: admin)**
+1. Target your Director (this IP is an example.)
 
 		bosh target 11.23.128.219:25555
 
@@ -248,8 +248,6 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 1. Change directories into the release directory.
 
-**NOTE: This is not correct yet - Get correct locations and names from Oleg**
-
 		cd ~/release
 	
 	This directory contains the Cloud Foundry deployment and release files.
@@ -288,30 +286,29 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 1. You may now target the Cloud Foundry deployment using VMC, as described in the Cloud Foundry documentation.
 
-# BOSH Installation [bosh_install]#
-There are 2 ways to deploy and use BOSH.
+# BOSH Installation #
 
-1. Use BOSH Deployer to deploy a micro BOSH, which is all the BOSH components packaged in a single VM. For dev setups where you want to play with BOSH and manage a few applications, this micro BOSH should suffice. If you want to use BOSH in production or want to use BOSH to manage a large number of applications then you need to follow the next step.
+Installation of BOSH is done using something called Micro BOSH, which is a single VM that includes of the BOSH components in the same image. If you want to play around with BOSH, or create a simple development setup, you can install Micro BOSH using the [BOSH Deployer][]. If you would like to use BOSH in production to manage a distributed system, you also use the BOSH Deployer, install Micro BOSH, and then use it as means to deploy the final distributed system on multiple VMs.
 
-1. Deploy BOSH as an application using micro BOSH. So as in step 1, use BOSH deployer to deploiy micro BOSH, then use the micro BOSH as a means to deploy the final, distributed production BOSH on multiple VMs. The graphic below illustrates this two step process.
+A good way to think about this two step process is to consider that BOSH is a distributed system in itself. Since BOSH's core purpose is to deploy and manage distributed systems, it makes sense that we would use it to deploy itself. On the BOSH team, we gleefully refer to this as [Inception](http://en.wikipedia.org/wiki/Inception).
 
+## BOSH Deployer ##
 
-## BOSH Deployer to deploy micro BOSH ##
 ### Prerequisites ###
 
 1. It is recommend that you install into an empty gemset (or similar.)
 
 1. Install some core packages on Ubuntu.
 
-		% sudo apt-get -y install libsqlite3-dev genisoimage
+		sudo apt-get -y install libsqlite3-dev genisoimage
 
-1. Build the BOSH Deployer.
+1. Build the BOSH Deployer, which is also known as Micro BOSH.
 
-		% cd bosh/deployer
-		% bundle install
-		% rake install
+		cd bosh/deployer
+		bundle install
+		rake install
 
-Once you have installed micro BOSH, you will see some extra commands appear after typing `bosh` on your command line.
+Once you have installed Micro BOSH, you will see some extra commands appear after typing `bosh` on your command line.
 
 **The `bosh micro` commands must be run within the deployments directory**
 
@@ -344,19 +341,20 @@ For example:
 Deployment state is persisted to deployments/bosh-deployments.yml.
 
 ### vCenter Configuration ###
+
 The Virtual Center configuration section looks like the following. 
 
 		cloud:
-  		plugin: vsphere
-  		properties:
-    		agent:
-      		ntp:
-       		- <ntp_host_1>
-       		- <ntp_host_2>
-    		vcenters:
-      		- host: <vcenter_ip>
-        		user: <vcenter_userid>
-        		password: <vcenter_password>
+			plugin: vsphere
+				properties:
+    			agent:
+      			ntp:
+       			- <ntp_host_1>
+       			- <ntp_host_2>
+    			vcenters:
+      				- host: <vcenter_ip>
+        			user: <vcenter_userid>
+        			password: <vcenter_password>
         		datacenters:
           		- name: <datacenter_name>
             		vm_folder: <vm_folder_name>
@@ -369,7 +367,7 @@ The Virtual Center configuration section looks like the following.
             		- <cluster_name>:
                 		resource_pool: <resource_pool_name>
 
-Before you can run micro BOSH deployer, you have to setup your VC to
+Before you can run micro BOSH deployer, you have to do the following within Virtual Center:
 
 1. Create the vm_folder
 
@@ -379,22 +377,22 @@ Before you can run micro BOSH deployer, you have to setup your VC to
 
 1. Create the resource_pool. 
 
-NOTE. Resource pool is optional you can run without a resource pool. Without a resource pool the cluster property looks like
+Resource pool is optional you can run without a resource pool. Without a resource pool the cluster property looks like:
 
             		persistent_datastore_pattern: <datastore_pattern>
             		allow_mixed_datastores: <true_if_persistent_datastores_and_datastore_patterns_are_the_same>
             		clusters:
             		- <cluster_name>
 
-NOTE: The datastore pattern above could just be the name of a datastore or some regular expression matching the datastore name. 
+The datastore pattern above could just be the name of a datastore or some regular expression matching the datastore name. 
 
-If you have a datastore called "vc_data_store_1" and you would like to use this datastore for both persistent and non persistent disks. Your config would look like
+If you have a datastore called "vc_data_store_1" and you would like to use this datastore for both persistent and non persistent disks. Your config would look like:
 
             		datastore_pattern: vc_data_store_1 
             		persistent_datastore_pattern:  vc_data_store_1
             		allow_mixed_datastores: true
 
-If you have 2 datastores called "vc_data_store_1", "vc_data_store_2" and you would like to use both datastore for both persistent and non persistent disks. Your config would look like
+If you have 2 datastores called "vc_data_store_1", "vc_data_store_2" and you would like to use both datastore for both persistent and non persistent disks. Your config would look like:
 
             		datastore_pattern: vc_data_store_? 
             		persistent_datastore_pattern:  vc_data_store_?
@@ -528,7 +526,7 @@ Example:
 
 		bosh upload stemcell bosh-stemcell-0.1.0.tgz
 
-### Upload a BOSH release.
+### Upload a BOSH release ###
 
 1. You can create a BOSH release or use one of the public releases. The following steps show the use of a public release.
 
@@ -541,7 +539,7 @@ Example:
 		bosh upload release bosh-1.yml
 
 
-### Setup a BOSH deployment manifest and deploy.
+### Setup a BOSH deployment manifest and deploy ###
 
 1. Create and setup a BOSH deployment manifest. Look at the sample BOSH manifest in (https://github.com/cloudfoundry/oss-docs/bosh/samples/bosh.yml). Assuming you have created a `bosh.yml` in `/home/bosh_user`.
 
@@ -554,7 +552,7 @@ Example:
 
 1. Target the newly deployed bosh director. In the sample `bosh.yml`, the bosh director has the ip address 192.0.2.36. So if you target this director with `bosh target http://192.0.2.36:25555` where 25555 is the default BOSH director port.  Your newly installed BOSH instance is now ready for use.
 
-# BOSH CLI [bosh_cli]
+# BOSH Command Line Interface #
 
 The BOSH command line interface is used to interact with the BOSH director to perform actions on the cloud.  For the most recent documentation on its functions, install BOSH and simply type `bosh`.  Usage:
 
@@ -712,39 +710,34 @@ Currently available bosh commands are:
                                            remote blob
       blobs                     Print blob status
 
-
-# Stemcells + releases / Director interaction
-
-upload
-
-# Releases
+# Releases #
 
 A release is a collection of source code, configuration files and startup scripts used to run services, along with a version number that uniquely identifies the components. When creating a new release, you should use a source code manager (like [git](http://git-scm.com/)) to manage new versions of the contained files.
 
-## Release Repository
+## Release Repository ##
 
 A BOSH Release is built from a directory tree with the contents described in this section. A typical release repository has the following sub-directories:
 
-| Directory  | Contents |
-|------------|----------|
-| `jobs`     | job definitions |
-| `packages` | package definitions |
-| `config`   | release configuration files |
-| `releases` | final releases |
-| `src`      | source code for packages |
-| `blobs`    | large source code bundles |
+| Directory 	| Contents 	|
+| ------------	| ----------	|
+| `jobs` 	| job definitions 	|
+| `packages` 	| package definitions 	|
+| `config` 	| release configuration files 	|
+| `releases` 	| final releases 	|
+| `src` 	| source code for packages 	|
+| `blobs` 	| large source code bundles 	|
 
-## Jobs
+## Jobs ##
 
 Jobs are realization of packages, i.e. running one or more processes from a package. A job contains the configuration files and startup scripts to run the binaries from a package.
 
 There is a *one to many* mapping between jobs and VMs - only one job can run in any given VM, but many VMs can run the same job. E.g. there can be four VMs running the Cloud Controller job, but the Cloud Controller job and the DEA job can not run on the same VM. If you need to run two different processes (from two different packages) on the same VM, you need to create a job which starts both processes.
 
-### Prepare script
+### Prepare script ###
 
 If a job needs to assemble itself from other jobs (like a super-job) a `prepare` script can be used, which is run before the job is packaged up, and can create, copy or modify files.
 
-### Job templates
+### Job templates ###
 
 The job templates are generalized configuration files and scripts for a job, which uses [ERB](http://ruby-doc.org/stdlib-1.9.3/libdoc/erb/rdoc/ERB.html) files to generate the final configuration files and scripts used when a Stemcell is turned into a job.
 
@@ -757,15 +750,15 @@ The files are located in the `templates` directory and the mapping between templ
       foo.yml.erb: config/foo.yml
       foo.txt: config/foo.txt
 
-### Use of properties
+### Use of properties ###
 
 The properties used for a job comes from the deployment manifest, which passes the instance specific information to the VM via the [agent][agent].
 
-### "the job of a vm"
+### "the job of a vm" ###
 
 When a VM is first started, is a Stemcell, which can become any kind of job. It is first when the director instructs the VM to run a job as it will gets its *personality*.
 
-### Monitrc
+### Monitrc ###
 
 BOSH uses [monit](http://mmonit.com/monit/) to manage and monitor the process(es) for a job. The `monit` file describes how the BOSH [agent][agent] will stop and start the job, and it contains at least three sections:
 
@@ -780,15 +773,15 @@ BOSH uses [monit](http://mmonit.com/monit/) to manage and monitor the process(es
 
 Usually the `monit` file contain a script to invoke to start/stop the process, but it can invoke the binary directly.
 
-### DNS support
+### DNS support ###
 
 TBW
 
-## Packages
+## Packages ###
 
 A package is a collection of source code along with a script that contains instruction how to compile it to binary format and install it, with optional dependencies on other pre-requisite packages.
 
-### Package Compilation
+### Package Compilation ###
 
 Packages are compiled on demand during the deployment. The [director][director] first checks to see if there already is a compiled version of the package for the stemcell version it is being deployed to, and if it doesn't already exist a compiled version, the director will instantiate a compile VM (using the same stemcell version it is going to be deployed to) which will get the package source from the blobstore, compile it, and then package the resulting binaries and store it in the blobstore.
 
@@ -796,7 +789,7 @@ To turn source code into binaries each package has a `packaging` script that is 
 
 There is an optional `pre_packaging` script, which is run when the source of the package is assembled during the `bosh create release`. It can for instance be used to limit which parts of the source that get packages up and stored in the blobstore. It gets the environment variable `BUILD_DIR` set by the [BOSH cli][bosh_cli], which is the directory containing the source to be packaged.
 
-### Package specs
+### Package specs ###
 
 The package contents are specified in the `spec` file, which has three sections:
 
@@ -809,19 +802,19 @@ The package contents are specified in the `spec` file, which has three sections:
 `files`
 : A list of files this package contains, which can contain globs. A `*` matches any file and can be restricted by other values in the glob, e.g. `*.rb` only matches files ending with `.rb`. A `**` matches directories recursively.
 
-### Dependencies
+### Dependencies ###
 
 The package `spec` file contains a section which lists other packages the current package depends on. These dependencies are compile time dependencies, as opposed to the job dependencies which are runtime dependencies.
 
 When the [director][director] plans the compilation of a package during a deployment, it first makes sure all dependencies are compiled before it proceeds to compile the current package, and prior to commencing the compilation all dependent packages are installed on the compilation VM.
 
-## Sources
+## Sources ##
 
 The `src` directory contains the source code for the packages.
 
 If you are using a source code repository to manage your release, you should avoid storing large objects in it (like source code tar-balls in the `src` directory), and instead use the [blobs][blobs] described below.
 
-## Blobs
+## Blobs ##
 
 To create final releases you need to configure your release repository with a blobstore. This is where BOSH will upload the final releases to, so that the release can later be retreived from another computer.
 
@@ -829,9 +822,9 @@ To prevent the release repository from becoming bloated with large binary files 
 
 For production releases you should use either the Atmos or S3 blobstore and configure them as described below.
 
-### Atmos
+### Atmos ###
 
-To use Atmos, edit `config/final.tml` and `config/private.yml`, and add the following (replacing the `url`, `uid` and `secret` with your account information):
+Atmos is a shared storage solution from EMC. To use Atmos, edit `config/final.tml` and `config/private.yml`, and add the following (replacing the `url`, `uid` and `secret` with your account information):
 
 File `config/final.yml`
 
@@ -848,9 +841,9 @@ File `config/private.yml`
     ---
     blobstore_secret: ahye7dAS93kjWOIpqla9as8GBu1=
 
-### S3
+### S3 ###
 
-To use S3, edit `config/final.tml` and `config/private.yml`, and add the following (replacing the `access_key_id`, `bucket_name`, `encryption_key` and `secret_access_key` with your account information):
+To use S3, a shared storage solution from Amazon, edit `config/final.tml` and `config/private.yml`, and add the following (replacing the `access_key_id`, `bucket_name`, `encryption_key` and `secret_access_key` with your account information):
 
 File `config/final.yml`
 
@@ -867,9 +860,9 @@ File `config/private.yml`
     ---
     blobstore_secret: kjhasdUIHIkjas765/kjahsIUH54asd/kjasdUSf
 
-### Local
+### Local ###
 
-If you are just trying out BOSH and don't have an Atmos or S3 account, you can use the local blobstore provider (which stored the files on disk instead of a remote server).
+If you are trying out BOSH and don't have an Atmos or S3 account, you can use the local blobstore provider (which stored the files on disk instead of a remote server).
 
 File `config/final.yml`
 
@@ -881,23 +874,23 @@ File `config/final.yml`
 
 Note that local should **only** be used for testing purposes as it can't be shared with others (unless they run on the same system).
 
-## Configuring Releases
+## Configuring Releases ##
 
 Initial release configuration can be performed using `bosh init release command` in an empty git repo. This will create a number of directories that can be used to keep jobs, packages and sources.
 
-## Building Releases
+## Building Releases ##
 
-`bosh create release` command attempts to create a new release from the contents of release repo. Here's what happens:
+To create a new release use the `bosh create release` command. This will attempt to create a new release from the contents of the release repo. Here's what happens:
 
-1. BOSH CLI identifies it's in a release repo directory and tries to find all jobs and packages in that repo. Then, for each artifact (package/job):
+* BOSH CLI identifies it's in a release repo directory and tries to find all jobs and packages in that repo. Then, for each artifact (package/job):
 	1. The fingerprint is built using artifact contents, file permissions and some other trackable data.
 	2. BOSH CLI tries to find the 'final' version of the artifact matching that fingerprint. All 'final' versions are supposed to be shared through a blobstore, with blobstore id being tracked in release repo. Once required blobstore id is found, CLI tries to either find the actual artifact in a local cache, and if it's missing or has a checksum mismatch, it fetches it from the blobstore (saving in a local cache afterwards).
 	3. If no final version is found, CLI tries to find dev version in a local cache. Dev versions are specific to a local copy of a release repo on a developer box, so no downloads are attempted, it's either available locally or not.
 	4. If the artifact (either dev or final) has been found, CLI uses the version associated with that artifact. The whole process in steps 1-4 is then essentially a lookup of the tarball and its version by a calculated fingerprint. Any change in package/job is supposed to change its fingerprint and this trigger step 5 (generating a new version).
 	5. If new artifact version needs to be generated, CLI uses its spec file to understand what needs to be included into the resulting tarball. For packages it resolves dependencies, copies matched files and runs `pre_packaging` script if available. For jobs it checks that all included packages and configurations templates are present. If all checks have passed, CLI generates and packs a new artifact tarball and assigns it a new version (see release versioning below).
-2. At this point all packages and jobs have been generated and CLI has references to them. The only remaining step is to generate a release manifest, binding all these jobs and packages together. The resulting YAML file is saved and path is provided to CLI user. This path can be used with `bosh upload release`  command to upload release to BOSH Director.
+* At this point all packages and jobs have been generated and CLI has references to them. The only remaining step is to generate a release manifest, binding all these jobs and packages together. The resulting YAML file is saved and path is provided to CLI user. This path can be used with `bosh upload release`  command to upload release to BOSH Director.
 
-## Final Releases, release versioning
+## Final Releases & release versioning ##
 
 The final release can be created once all the changes are tested and it's time to actually deploy a release to production. The are there main criteria differentiating final releases from dev releases:
 
@@ -911,7 +904,7 @@ By default all artifacts are stored in `.final_builds` directory inside the rele
 
 Dev release artifacts versioning is slightly different from final: the latest generated final version of the artifact is used as major version of dev build, while the actual build revision is used as minor version.
 
-Let's see an example:
+An example is as follows:
 
 1. There is a cloud_controller package in release repo: no dev version, no final version yet.
 2. `bosh create release` runs for the first time
@@ -927,20 +920,21 @@ The main point of this versioning scheme is to partition release engineering pro
 1. Developers who are quickly iterating on their changes and don't really care about keeping consistent versioning of Bosh Release, BOSH CLI takes care of all versioning details for them and prevents others from seeing all the work-in-progress releases.
 2. SREs who are actually building releases for production use and want them to be consistently versioned and source controlled.
 
-# BOSH Deployments
+# BOSH Deployments #
 
-## Steps of a Deployment
-Here are the steps that take place in a BOSH deployment.
+## Steps of a Deployment ##
+
+When you do a deploy using BOSH the following sequence of steps occur:
 
 1. Preparing deployment
-    1. binding deployment - Creates an entry in the Director's database for the deployment if it doesn't exist.
-    1. binding release - Makes sure the release specified in deployment configuration exists then locks it from being deleted.
-    1. binding existing deployment - Takes existing VMs and sets them up to be used for the deployment.
-    1. binding resource pools - Gives idle VMs network reservations.
-    1. binding stemcells - Makes sure the stemcell specified has been uploaded and then locks it from being deleted.
-    1. binding templates - Sets up internal data objects to track packages and their pre-reqs for installation.
-    1. binding unallocated VMs - For each job instance required it determines whether a VM running the instance already exists and assigns one if not.
-    1. binding instance networks - Reserves networks for each VM that doesn't have one.
+    * binding deployment - Creates an entry in the Director's database for the deployment if it doesn't exist.
+    * binding release - Makes sure the release specified in deployment configuration exists then locks it from being deleted.
+    * binding existing deployment - Takes existing VMs and sets them up to be used for the deployment.
+    * binding resource pools - Gives idle VMs network reservations.
+    * binding stemcells - Makes sure the stemcell specified has been uploaded and then locks it from being deleted.
+    * binding templates - Sets up internal data objects to track packages and their pre-reqs for installation.
+    * binding unallocated VMs - For each job instance required it determines whether a VM running the instance already exists and assigns one if not.
+    * binding instance networks - Reserves networks for each VM that doesn't have one.
 1. Compiling packages - Calculates all packages and their dependencies that need to be compiled.  It then begins compiling the packages and storing their output in the blobstore.  The number of `workers` specified in the deployment configuration determines how many VMs can be created at once for compiling.
 1. Preparing DNS - Creates DNS entry if it doesn't exist.
 1. Creating bound missing VMs - Creates new VMs, deletes extra/oudated/idle VMs.
@@ -951,7 +945,7 @@ Here are the steps that take place in a BOSH deployment.
 
 ## BOSH Deployment Manifest
 
-Deployment manifest is a YAML file defining the layout and properties of the deployment. When BOSH user initiates a new deployment using CLI, BOSH Director receives a version of deployment manifest and creates a new deployment plan using this manifest (see [Steps of a Deployment][]). Manifest contains several sections:
+The BOSH Deployment manifest is a YAML file defining the layout and properties of the deployment. When BOSH user initiates a new deployment using CLI, BOSH Director receives a version of deployment manifest and creates a new deployment plan using this manifest (see [Steps of a Deployment][]). Manifest contains several sections:
 
 * `name` [String, required] Deployment name. Single BOSH Director can manage multiple deployments and distinguishes them by name.
 * `director_uuid` [String, required] Director UUID. Identifies BOSH Director that manages given deployment. A targeted Director UUID should match this property in order for BOSH CLI to allow any operations on the deployment.
@@ -973,7 +967,7 @@ Deployment manifest is a YAML file defining the layout and properties of the dep
 * `jobs` [Hash<Array>, required] Lists jobs included in into this deployment. See [job_spec] for details.
 * `properties` [Hash, required] Global deployment properties. See [job_cloud_properties] for details.
 
-### Network spec [network spec]
+### Network spec ###
 
 Network spec specifies a network configuration that can be referenced by jobs. Different environments have very different networking capabilities, so there are several network types. Each type has a required `name` property that identifies the network within BOSH and has to be unique.
 
@@ -989,7 +983,7 @@ The more details network type description follows:
 	* `static` [String, optional] Static IP range. When jobs request static IPs, they all should be coming from some subnet static IP pool.
 3. `vip` The network is just a collection of virtual IPs (e.g. EC2 elastic IPs) and each job spec will provide a range of IPs it supposed to have. Actual VMs are not aware of these IPs. The only extra property this network supports is `cloud_properties`, containing any IaaS-specific network details for CPI.
 
-### Resource pool spec [resource_pool_spec]
+### Resource pool spec ###
 
 Resource pool spec is essentially a blueprint for VMs created and managed by BOSH. There might be multiple resource pools within a deployment manifest, `name` is used to identify and reference them, so it needs to be unique. Resource pool VMs are created within a deployment and later jobs are applied to these VMs. Jobs might override some of the resource pool settings (i.e. networks) but in general resource pools are a good vehicle to partition jobs according to capacity and IaaS configuration needs. The resource pool spec properties are:
 
@@ -1002,7 +996,7 @@ Resource pool spec is essentially a blueprint for VMs created and managed by BOS
 * `cloud_properties` [Hash, required] IaaS-specific resource pool properties (see [job_cloud_properties]).
 * `env` [Hash, optional] VM environment. Used to provide specific VM environment to CPI `create_stemcell` call. This data will be available to BOSH Agent as VM settings. Default is {} (empty Hash).
 
-### Job spec [job_spec]
+### Job spec ###
 
 Job is one or more VMs (called instances) running the same software and essentially representing some role. Job uses job template, which is a part of a release, to populate VM with packages, configuration files and control scripts that tell BOSH Agent what is to run on a particular VM. The most commonly used job properties are:
 
@@ -1018,7 +1012,7 @@ Job is one or more VMs (called instances) running the same software and essentia
 	* `static_ips` [Range, optional] Specifies the range of IP addresses job supposed to reserve from that network.
 	* `default` [Array, optional] Specifies which of default network components (dns, gateway) are populated from this network (this only makes sense if there are multiple networks).
 
-### Job properties and cloud properties [job_cloud_properties]
+### Job properties and cloud properties ###
 
 There are two kinds of properties that can be featured in the deployment manifest.
 
@@ -1047,7 +1041,7 @@ Instance spec is a special object accessible to any job configuration file, simi
 
 Two important parts of the instance spec are `job` and `index`. `job` contains job name and `index` contains 0-based instance index. This index is important if you want to only perform some actions (i.e. database migrations) on a particular job instance or want to test a new feature only on several instances but not all of them. Other things available through this spec are `networks` and  `resource_pool` which might be useful to get some data about job whereabouts.
 
-## BOSH Property Store
+## BOSH Property Store ##
 
 Deployment manifest is a YAML file but it gets processed by ERB before being actually used, thus it might contain ERB expressions. This allows BOSH Director to substitute some properties saved in its database, so that sensitive or volatile data is only set at the time of deployment but not by manifest author at the time of creating the actual manifest.
 
@@ -1061,13 +1055,13 @@ BOSH CLI has several commands allowing property management:
 You can set the property using `bosh set property <name> <value>` and then reference it in the deployment manifest using `<%= property(name) %>` syntax.
 
 
-# BOSH Troubleshooting
+# BOSH Troubleshooting #
 
-## BOSH ssh
+## BOSH SSH ##
 
 To ssh to a running Job, first find the name and index of it.  Use `bosh vms` to display a list of the VMs that are running and what Job is on each.  To ssh to it, run `bosh ssh <job_name> <index>`.  The password is whatever is set in the Stemcell.  For default Stemcells it is ca$hc0w.
 
-## BOSH Logs
+## BOSH Logs ##
 
 When troubleshooting BOSH or BOSH deployments, it's important to read log files so that problems can be narrowed down.  There are three types of logs.
 
@@ -1083,6 +1077,6 @@ When troubleshooting BOSH or BOSH deployments, it's important to read log files 
 
     These are the logs produced by the actual jobs running on VMs.  These may be logs produced by Redis, or a webserver, etc….  These logs will vary because it is up to the Deployment to configure where they are output to.  Typically, the output path is defined in a config file in `release/jobs/<job_name>/templates/<config_file>`.  For Cloud Foundry, our Jobs are typically configured to log to `/var/vcap/sys/log/<job_name>/<job_name>.log`.  These logs can also be accessed via `bosh logs <job_name> <index>`.
 
-## BOSH Cloud Check
+## BOSH Cloud Check ##
 
 BOSH cloud check is a BOSH command line utility that automatically checks for problems in VMs and Jobs that have been deployed.  It checks for things such as unresponsive/out-of-sync VMs, unbound disks, etc.  To use it, run `bosh cck` and it will prompt you for actions to take if there are any problems found.
