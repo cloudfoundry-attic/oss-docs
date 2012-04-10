@@ -554,7 +554,7 @@ Example:
 
 # BOSH Command Line Interface #
 
-The BOSH command line interface is used to interact with the BOSH director to perform actions on the cloud.  For the most recent documentation on its functions, install BOSH and simply type `bosh`.  Usage:
+The BOSH command line interface is used to interact with the BOSH Director to perform actions on the cloud.  For the most recent documentation on its functions, install BOSH and simply type `bosh`.  Usage:
 
     bosh [--verbose] [--config|-c <FILE>] [--cache-dir <DIR]
          [--force] [--no-color] [--skip-director-checks] [--quiet]
@@ -712,7 +712,7 @@ Currently available bosh commands are:
 
 # Releases #
 
-A release is a collection of source code, configuration files and startup scripts used to run services, along with a version number that uniquely identifies the components. When creating a new release, you should use a source code manager (like [git](http://git-scm.com/)) to manage new versions of the contained files.
+A release is a collection of source code, configuration files, and startup scripts used to run services, along with a version number that uniquely identifies the components. When creating a new release, you should use a source code manager (like [git](http://git-scm.com/)) to manage new versions of the contained files.
 
 ## Release Repository ##
 
@@ -729,9 +729,9 @@ A BOSH Release is built from a directory tree with the contents described in thi
 
 ## Jobs ##
 
-Jobs are realization of packages, i.e. running one or more processes from a package. A job contains the configuration files and startup scripts to run the binaries from a package.
+Jobs run one or more processes from a package. A job also contains the configuration files and startup scripts to run the binaries from a package.
 
-There is a *one to many* mapping between jobs and VMs - only one job can run in any given VM, but many VMs can run the same job. E.g. there can be four VMs running the Cloud Controller job, but the Cloud Controller job and the DEA job can not run on the same VM. If you need to run two different processes (from two different packages) on the same VM, you need to create a job which starts both processes.
+There is a *one to many* mapping between jobs and VMs - only one job can run in any given VM, but many VMs can run the same job. E.g., there can be four VMs running the Cloud Controller job, but the Cloud Controller job and the DEA job cannot run on the same VM. If you need to run two different processes (from two different packages) on the same VM, you need to create a job which starts both processes.
 
 ### Prepare script ###
 
