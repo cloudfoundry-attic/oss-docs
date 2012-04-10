@@ -741,9 +741,9 @@ If a job needs to assemble itself from other jobs (like a super-job,) a `prepare
 
 The job templates are generalized configuration files and scripts for a job, which use [ERB](http://ruby-doc.org/stdlib-1.9.3/libdoc/erb/rdoc/ERB.html) files to generate the final configuration files and scripts used when a Stemcell is turned into a job.
 
-When a configuration file is turned into a template, instance specific information is abstracted into a property which later is provided when the [director][director] starts the job on a VM. E.g. which port the webserver should run on, or which username and password a databse should use.
+When a configuration file is turned into a template, instance specific information is abstracted into a property which later is provided when the [director][director] starts the job on a VM. For example, this may specify which port the webserver should run on, or which username and password a database should use.
 
-The files are located in the `templates` directory and the mapping between template file and its final location is provided in the job `spec` file in the templates section. E.g.
+The files are located in the `templates` directory and the mapping between a template file and its final location is provided in the job `spec` file in the templates section. For example:
 
     templates:
       foo_ctl.erb: bin/foo_ctl
