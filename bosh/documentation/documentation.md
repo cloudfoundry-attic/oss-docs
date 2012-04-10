@@ -168,7 +168,7 @@ _Note: After installing gems (`gem install` or `bundle install`) run `rbenv reha
 		git config --global user.name "Firstname Lastname"
 		git config --global user.email "your_email@youremail.com"
 		
-1. Install out gerrit-cli gem	
+1. Install our gerrit-cli gem	
 
 		gem install gerrit-cli
 
