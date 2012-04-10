@@ -315,10 +315,15 @@ _Note: You can also build ruby using ruby-build plugin for rbenv. See https://gi
 
 		rbenv global 1.9.2-p290
 
+_Note: The rake 0.8.7 gem may need to be reinstalled when using this method_
+
+		gem pristine rake
+
 1. Update rubygems and install bundler. 
 
 _Note: After installing gems (`gem install` or `bundle install`) run `rbenv rehash` to add new shims_
 
+		rbenv rehash
 		gem update --system
 		gem install bundler
 		rbenv rehash
@@ -346,17 +351,14 @@ _Note: After installing gems (`gem install` or `bundle install`) run `rbenv reha
 
 1. Clone BOSH repositories from Gerrit
 
-		gerrit clone ssh://reviews.cloudfoundry.org:29418/release.git
+		gerrit clone ssh://reviews.cloudfoundry.org:29418/cf-release.git
 		gerrit clone ssh://reviews.cloudfoundry.org:29418/bosh.git
 		
 1. Run some rake tasks to install the BOSH CLI
 
-		cd ~/bosh
-		rake bundle_install (Note: if this fails run 'gem pristine rake' and retry)
-		cd cli
-		bundle exec rake build
-		gem install pkg/bosh_cli-x.x.x.gem
+		gem install bosh_cli
 		rbenv rehash
+		bosh --version
 
 
 ### Deploy to your BOSH Environment ###
@@ -442,7 +444,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 1. Your terminal will display information about the release including the Release Manifest, Packages, Jobs, and tarball location.
 
-1. Open `bosh-sample-release/cloudfoundry.yml` in your favorite text editor and confirm that `name` is `cloudfoundry` and `version` matches the version that was displayed in your terminal (if this is your first release, this will be version 1.)
+1. Open `bosh/samples/cloudfoundry.yml` (in documentation repository) in your favorite text editor and confirm that `name` is `cloudfoundry` and `version` matches the version that was displayed in your terminal (if this is your first release, this will be version 1.)
 
 ### Deploy the Release ###
 
@@ -452,7 +454,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 		
 1. Your terminal will display information about the upload, and an upload progress bar will reach 100% after a few minutes.
 
-1. Open `releases/cloudfoundry.yml` and make sure that your network settings match the environment that you were given.
+1. Open `bosh/samples/cloudfoundry.yml` and make sure that your network settings match the environment that you were given.
 
 1. Deploy the Release.
 
@@ -464,7 +466,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 # BOSH Installation #
 
-Installation of BOSH is done using something called Micro BOSH, which is a single VM that includes of the BOSH components in the same image. If you want to play around with BOSH, or create a simple development setup, you can install Micro BOSH using the [BOSH Deployer][]. If you would like to use BOSH in production to manage a distributed system, you also use the BOSH Deployer, install Micro BOSH, and then use it as means to deploy the final distributed system on multiple VMs.
+Installation of BOSH is done using something called Micro BOSH, which is a single VM that includes all of the BOSH components in the same image. If you want to play around with BOSH, or create a simple development setup, you can install Micro BOSH using the [BOSH Deployer][]. If you would like to use BOSH in production to manage a distributed system, you also use the BOSH Deployer, install Micro BOSH, and then use it as a means to deploy the final distributed system on multiple VMs.
 
 A good way to think about this two step process is to consider that BOSH is a distributed system in itself. Since BOSH's core purpose is to deploy and manage distributed systems, it makes sense that we would use it to deploy itself. On the BOSH team, we gleefully refer to this as [Inception](http://en.wikipedia.org/wiki/Inception).
 
@@ -707,7 +709,7 @@ Example:
 1. You can create a BOSH release or use one of the public releases. The following steps show the use of a public release.
 
 		cd /home/bosh_user 
-		gerrit-clone ssh://reviews.cloudfoundry.org:29418/bosh-release.git
+		gerrit clone ssh://reviews.cloudfoundry.org:29418/bosh-release.git
 
 1. Upload a public release from bosh-release
 
