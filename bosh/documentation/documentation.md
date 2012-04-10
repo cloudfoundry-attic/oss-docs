@@ -73,7 +73,7 @@ Using the [BOSH CLI][], you specify a Deployment Manifest and perform a Deploy o
 
 ## Blobstore ##
 
-The BOSH Blobstore is used to store the content of Releases (BOSH [Jobs][] and [Packages][] in their source form as well as the compiled image of BOSH Packages. [Releases][releases] are uploaded by the [BOSH CLI][][] and inserted into the Blobstore by the [BOSH Director][]. When you deploy a Release, BOSH will orchestrate the compilation of packages and store the result in the Blobstore. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the Blobstore.
+The BOSH Blobstore is used to store the content of Releases (BOSH [Jobs][] and [Packages][] in their source form as well as the compiled image of BOSH Packages. [Releases][releases] are uploaded by the [BOSH CLI][] and inserted into the Blobstore by the [BOSH Director][]. When you deploy a Release, BOSH will orchestrate the compilation of packages and store the result in the Blobstore. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the Blobstore.
 
 BOSH also uses the Blobstore as an intermediate store for large payloads, such as log files (see BOSH logs) and output from the BOSH Agent that exceeds the max size for messages over the message bus.
 
