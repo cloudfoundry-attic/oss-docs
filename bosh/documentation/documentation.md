@@ -95,7 +95,7 @@ BOSH uses the [NATS](http://github.com/dcollison/nats) message bus for command a
 
 # Using BOSH #
 
-Before we can use BOSH we need to install the [BOSH CLI][]. To continue with this section, you will need a running development environment with an uploaded Stemcell. If this is not the case, you can  [BOSH Installation][] section.
+Before we can use BOSH we need to install the [BOSH CLI][]. To continue with this section, you will need a running development environment with an uploaded Stemcell. If this is not the case, you can refer to the [BOSH Installation][] section.
 
 ## Installing BOSH Command Line Interface ##
 
