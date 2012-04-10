@@ -123,7 +123,7 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on eit
 
 1. Download Ruby 1.9.2
 
-_Note: You can also build ruby using ruby-build plugin for rbenv. See https://github.com/sstephenson/ruby-build_
+_Note: You can also build ruby using the ruby-build plugin for rbenv. See https://github.com/sstephenson/ruby-build_
 
 		wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz
 
