@@ -1,6 +1,6 @@
 latex input:	mmd-article-header
 Title:	BOSH Tutorial 
-Author:	VMware 2012 - Cloud Foundry - Internal Use Only
+Author:	VMware 2012 - Cloud Foundry
 Base Header Level:	2  
 LaTeX Mode:	memoir  
 latex input:	mmd-article-begin-doc
@@ -10,17 +10,18 @@ latex footer:	mmd-memoir-footer
 Introduction
 ============
 
-This tutorial will guide you through the process of deploying a multi-tier WordPress installation using BOSH. Due to its simplicity, WordPress is a good way to learn BOSH, but it is not a realistic use case. Most, if not all, of BOSH’s utility will be in the context of deploying Cloud Foundry.
+This tutorial will guide you through the process of deploying a multi-tier WordPress installation using BOSH. Due to its simplicity, WordPress is a good way to learn BOSH, but it is not meant to represent a realistic use case.
 
 Prerequisites
 ==========
 
+A working BOSH director
 
-# Installing BOSH on an Ubuntu VM
+# Installing BOSH on an Ubuntu VM #
 
-## Install Ruby via rbenv
+## Install Ruby via rbenv ##
 
-1. Bosh is written in Ruby. Let's install Ruby's dependencies
+1. BOSH is written in Ruby. Let's install Ruby's dependencies
 
 		sudo apt-get install git-core build-essential libsqlite3-dev curl libmysqlclient-dev libxml2-dev libxslt-dev libpq-dev
 
@@ -59,61 +60,48 @@ Prerequisites
 
 ## Install Local BOSH and BOSH Releases ##
 
-1. Sign up for the Cloud Foundry Gerrit server at [http://cloudfoundry-codereview.qa.mozycloud.com/gerrit](http://cloudfoundry-codereview.qa.mozycloud.com/gerrit)
+1. Sign up for an account on the Cloud Foundry public Gerrit server at [http://reviews.cloudfoundry.org/](http://reviews.cloudfoundry.org/)
 
-**NOTE: PUBLIC GERRIT IN FINAL DRAFT**
-
-1. Set up your ssh public key (accept all defaults)
+1. Generate an ssh public key (accept all defaults)
 
 		ssh-keygen -t rsa
 		
 1. Copy your key from `~/.ssh/id_rsa.pub` into your Gerrit account
  
-1.Create ~/.gitconfig as follows (Make sure that the email specified is registered with gerrit):
-		
-		[user]
-		name = YOUR_NAME
-		email = YOUR_EMAIL
-		[alias]
-		gerrit-clone = !bash -c 'gerrit-clone $@' -
-		
-1. Clone gerrit tools using git
-		
-		git clone git@github.com:vmware-ac/tools.git
-		
-**NOTE: PUBLIC TOOLS REPO IN FINAL DRAFT**
+1. Set your name and email
 
-1. Add gerrit-clone to your path
+                git config --global user.name "Firstname Lastname"
+                git config --global user.email "your_email@youremail.com"
 
-		echo 'export PATH="$HOME/tools/gerrit/:$PATH"' >> ~/.bash_profile
+		
+1. Install our gerrit-cli gem:
 
- 1. Restart your shell so the path changes take effect
-
-		source ~/.bash_profile
+                gem install gerrit-cli
+                rbenv rehash
 
 1. Clone BOSH repositories from Gerrit
 
-		git gerrit-clone ssh://cloudfoundry-codereview.qa.mozycloud.com:29418/bosh-sample-release
-		git gerrit-clone ssh://cloudfoundry-codereview.qa.mozycloud.com:29418/release.git
-		git gerrit-clone ssh://cloudfoundry-codereview.qa.mozycloud.com:29418/bos.git
+                gerrit clone ssh://reviews.cloudfoundry.org:29418/bosh-sample-release.git
+                gerrit clone ssh://reviews.cloudfoundry.org:29418/release.git
+                gerrit clone ssh://reviews.cloudfoundry.org:29418/bosh.git
 		
 1. Run some rake tasks to install the BOSH CLI
 
 		cd ~/bosh
-		rake bundle_install
+		rake bundle_install (Note: if this fails run 'gem pristine rake' and retry)
 		cd cli
 		bundle exec rake build
 		gem install pkg/bosh_cli-x.x.x.gem
 
-## Deploy to your BOSH Environment
+## Deploy to your BOSH Environment ##
 
 With a fully configured environment, we can begin deploying the sample application to our environment. As listed in the prerequisites, you should already have an environment running, as well as the IP address of the BOSH Director. Ask your BOSH technical contact for help if you need it.
 
 ### Point BOSH at a Target and Clean your Environment ###
 
-1. Target your director (this IP is an example) **NOTE: EXAMPLE WORKS FOR INTERNAL USE (u: admin / p: admin)**
+1. Target your director (this IP is an example - replace with yours!) 
 
-		bosh target 172.23.128.219:25555 
+		bosh target 192.168.1.99:25555 
 
 1. Check the state of your BOSH settings.
 
@@ -121,26 +109,26 @@ With a fully configured environment, we can begin deploying the sample applicati
 		
 1. The result of your status will be akin to:
 
-		Target         dev48 (http://172.23.128.219:25555) Ver: 0.3.12 (01169817)
-		UUID           4a8a029c-f0ae-49a2-b016-c8f47aa1ac85
+		Target         targetname (http://198.1621.99:25555) Ver: 0.3.12 (01169817)
+		UUID           #####hex-uuid-goes-here-############
 		User           admin
 		Deployment     not set
 
-1. List previous deployments (we will remove them in a moment)
+1. If you have previously used this BOSH director you may have existing deployments and releases.  List previous deployments (we will remove them in a moment)
     
 		bosh deployments
 
-1. The result of `bosh deployments` should be akin to:
+1. If you have any existing deployments `bosh deployments` will show something like:
 
-		+-------+
-		| Name  |
-		+-------+
-		| dev48 |
-		+-------+
+		+---------+
+		| Name    |
+		+---------+
+		| example |
+		+---------+
 
-1. Delete the existing deployments (ex: dev48) 
+1. Delete any existing deployments (ex: example) 
 
-		bosh delete deployment dev48
+		bosh delete deployment example 
 
 1. Answer `yes` to the prompt and wait for the deletion to complete
 
@@ -148,17 +136,17 @@ With a fully configured environment, we can begin deploying the sample applicati
 
 		`bosh releases`
 
-1. The result of `bosh releases` should be akin to:
+1. If you have  result of `bosh releases` should be akin to:
 
-		+----------+------------+
-		| Name	   | Versions 	|
-		+----------+------------+
-		| appcloud | 47, 55, 58 |
-		+----------+------------+
+		+--------+----------+
+		| Name	 | Versions |
+		+--------+----------+
+		| myapp  | 1, 2, 3  |
+		+--------+----------+
 		
-1. Delete the existing releases (ex: appcloud) 
+1. Delete the existing releases (ex: myapps) 
 
-		bosh delete release appcloud
+		bosh delete release myapp 
 
 1. Answer `yes` to the prompt and wait for the deletion to complete
 
@@ -168,7 +156,7 @@ With a fully configured environment, we can begin deploying the sample applicati
 
 		cd ~/bosh-sample-release
 	
-	This directory contains the sample WordPress deployment and release files. If this were a Cloud Foundry deploy, you would work with analogous files, provided by your BOSH contact.
+	This directory contains the sample WordPress deployment and release files. 
 
 1. Reset your environment
 
@@ -178,7 +166,7 @@ With a fully configured environment, we can begin deploying the sample applicati
 
 1. Create a release
 
-		bosh create release –force –with-tarball
+		bosh create release --force --with-tarball
 		
 1. Answer `wordpress` to the `release name` prompt
 
@@ -195,7 +183,7 @@ With a fully configured environment, we can begin deploying the sample applicati
 		
 1. Your terminal will display information about the upload, and an upload progress bar will reach 100% after a few minutes.
 
-1. Open `bosh-sample-release/wordpress.yml` and make sure that your networking and IP addresses match the environment that you were given. An example manifest is in the Appendix.
+1. Open `bosh-sample-release/wordpress.yml`.  You will need to edit several things to match your environment.  You should update director_uuid, any VLANs, the IPs under networks, dns servers and any static ips listed for specific jobs.  An example manifest is in the Appendix.
 
 1. Deploy the Release
 
@@ -209,13 +197,13 @@ With a fully configured environment, we can begin deploying the sample applicati
 
 1. Complete the form to install your WordPress blog
 
-![Deployed Wordpress](https://github.com/vmware-ac/doxa/raw/master/bosh/tutorial/deployed.png)
+![Deployed Wordpress](deployed.pdf)
 
 ## Appendix ##
 
 		---
 		name: wordpress
-		director_uuid: 4a8a029c-f0ae-49a2-b016-c8f47aa1ac85
+		director_uuid: #####hex-uuid-goes-here-############
 
 		release:
 			name: wordpress
@@ -242,28 +230,29 @@ With a fully configured environment, we can begin deploying the sample applicati
 		- name: default
 			subnets:
 			- reserved:
-    			- 172.23.224.2 - 172.23.224.10
-    			- 172.23.224.200 - 172.23.224.254
+    			- 192.168.224.2 - 192.168.224.10
+    			- 192.168.224.200 - 192.168.224.254
     		static:
-    			- 172.23.224.11 - 172.23.224.100
-    			range: 172.23.224.0/23
-    			gateway: 172.23.224.1
+    			- 192.168.224.11 - 192.168.224.100
+    			range: 192.168.224.0/23
+    			gateway: 192.168.224.1
     		dns:
-    			- 172.22.22.153
-    			- 172.22.22.154
+    			- 192.168.1.4
+    			- 192.168.1.5
     		cloud_properties:
-      			name: VLAN2224
+      			name: VLAN1234
 
 		- name: dmz
 		  subnets:
 		  - static:
-		  	- 172.20.4.241 - 172.20.4.242
-		  range: 172.20.4.241/28
+		  	- 192.168.4.241 - 192.168.4.242
+		  range: 192.168.4.241/28
 		  dns:
-		  	- 172.22.22.153
-		  	- 172.22.22.154
+    			- 192.168.1.4
+    			- 192.168.1.5
+    		cloud_properties:
 		  cloud_properties:
-		  	name: VLAN3079
+		  	name: VLAN4321
 
 		resource_pools:
 
@@ -272,7 +261,7 @@ With a fully configured environment, we can begin deploying the sample applicati
 			size: 6
 			stemcell:
 				name: bosh-stemcell
-				version: 0.4.4
+				version: 0.4.7
 			cloud_properties:
 				cpu: 1
 				disk: 8192
@@ -287,7 +276,7 @@ With a fully configured environment, we can begin deploying the sample applicati
 			networks:
 				- name: default
 				static_ips:
-					- 172.23.224.11
+					- 192.168.224.11
 
 			- name: wordpress
 			template: wordpress
@@ -296,7 +285,7 @@ With a fully configured environment, we can begin deploying the sample applicati
 			networks:
 				- name: default
 				static_ips:
-					- 172.23.224.12 - 172.23.224.15
+					- 192.168.224.12 - 192.168.224.15
 
 			- name: nginx
 			template: nginx
@@ -306,21 +295,21 @@ With a fully configured environment, we can begin deploying the sample applicati
 				- name: default
 					default: [dns, gateway]
 					static_ips:
-						- 172.23.224.1
+						- 192.168.224.1
 				- name: dmz
 					static_ips:
-						- 172.20.4.241
+						- 192.168.4.241
 
 		properties:
 			wordpress:
 				admin: foo@bar.com
 				port: 8008
 				servers:
-						- 172.23.224.12
-						- 172.23.224.13
-						- 172.23.224.14
-						- 172.23.224.15
-				servername: wp.cf48.dev.las01.vcsops.com
+						- 192.168.224.12
+						- 192.168.224.13
+						- 192.168.224.14
+						- 192.168.224.15
+				servername: wp.myurl.mycompany.com
 				db:
 					name: wp
 					user: wordpress
@@ -334,7 +323,7 @@ With a fully configured environment, we can begin deploying the sample applicati
 				logged_in_salt: random key
 				nonce_salt: random key
 			mysql:
-				address: 172.23.224.11
+				address: 192.168.224.11
 				port: 3306
 				password: verysecretpasswordforroot
 			nginx:
