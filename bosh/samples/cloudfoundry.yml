@@ -1,6 +1,6 @@
 ---
 name: sample
-director_uuid: <YOUR_DIRECTOR_ID>
+director_uuid: 74cee69e-2cd8-4c99-96c8-f332e4967021
 
 release:
   name: appcloud
@@ -16,8 +16,8 @@ compilation:
 
 update:
   canaries: 1
-  canary_watch_time: 3000-30000
-  update_watch_time: 3000-30000
+  canary_watch_time: 3000-90000
+  update_watch_time: 3000-90000
   max_in_flight: 2
   max_errors: 1
 
@@ -52,7 +52,7 @@ resource_pools:
 
 - name: infrastructure
   network: default
-  size: 31
+  size: 32
   stemcell:
     name: bosh-stemcell
     version: 0.4.4
@@ -63,7 +63,7 @@ resource_pools:
   env:
     bosh:
       password: $6$2f6qtRfO$oJOeKk/ZDNb7PWnvMiXDC/HstKiLiZCBHP32KHFVeM9rXgs4W/JJiI4a/eHoddhxJzorLYgi2JUQiOKxZko4M.
-      # c1oudc0w
+      # c1oudc0w - password generated using mkpasswd -m sha-512
 
 - name: deas
   network: default
@@ -78,7 +78,7 @@ resource_pools:
   env:
     bosh:
       password: $6$2f6qtRfO$oJOeKk/ZDNb7PWnvMiXDC/HstKiLiZCBHP32KHFVeM9rXgs4W/JJiI4a/eHoddhxJzorLYgi2JUQiOKxZko4M.
-      # c1oudc0w
+      # c1oudc0w - password generated using mkpasswd -m sha-512
 
 jobs:
 
@@ -287,31 +287,6 @@ jobs:
   networks:
   - name: default
 
-- name: rabbitmq_srs_service
-  template: rabbitmq_srs_service
-  instances: 1
-  resource_pool: infrastructure
-  persistent_disk: 600
-  networks:
-  - name: default
-    static_ips:
-    - 192.0.2.65
-
-- name: rabbitmq_srs_gateway
-  template: rabbitmq_srs_gateway
-  instances: 1
-  resource_pool: infrastructure
-  networks:
-  - name: default
-
-- name: rabbitmq_srs_node
-  template: rabbitmq_srs_node
-  instances: 1
-  resource_pool: infrastructure
-  persistent_disk: 600
-  networks:
-  - name: default
-
 - name: postgresql_node
   template: postgresql_node
   instances: 1
@@ -338,8 +313,19 @@ jobs:
     static_ips:
     - 192.0.2.80
 
+- name: service_utilities
+  template: service_utilities
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.81
+
 properties:
   domain: cloudfoundry.test
+
+  env: {}
 
   networks:
     apps: default
@@ -372,6 +358,7 @@ properties:
     uaa:
       enabled: true
       resource_id: cloud_controller
+      client_secret: aaaNxRJcx6cpv
     admins:
     - martin@englund.nu
 
@@ -402,59 +389,89 @@ properties:
     address: 192.0.2.14
     port: 4242
 
+  service_plans:
+    mysql:
+      free:
+        job_management:
+          high_water: 1400
+          low_water: 100
+        configuration:
+          allow_over_provisioning: true
+          capacity: 200
+          max_db_size: 128
+          max_long_query: 3
+          max_long_tx: 0
+          max_clients: 20
+    postgresql:
+      free:
+        job_management:
+          high_water: 1400
+          low_water: 100
+        configuration:
+          capacity: 200
+          max_db_size: 128
+          max_long_query: 3
+          max_long_tx: 30
+          max_clients: 20
+    mongodb:
+      free:
+        job_management:
+          high_water: 3000
+          low_water: 100
+        configuration:
+          allow_over_provisioning: true
+          capacity: 200
+          quota_files: 4
+          max_clients: 500
+    redis:
+      free:
+        job_management:
+          high_water: 1400
+          low_water: 100
+        configuration:
+          capacity: 200
+          max_memory: 16
+          max_swap: 32
+          max_clients: 500
+    rabbit:
+      free:
+        job_management:
+          low_water: 100
+          high_water: 1400
+        configuration:
+          max_memory_factor: 0.5
+          max_clients: 512
+          capacity: 200
+
   mysql_gateway:
     check_orphan_interval: 7200
-    token: "0xdeadbeef"
+    token: "0xfeedface"
   mysql_node:
     production: true
-    available_storage: 200
-    max_db_size: 30
     password: aaa13djkas
 
   redis_gateway:
-    token: "0xdeadbeef"
+    token: "0xfeedface"
     check_orphan_interval: 7200
   redis_node:
-    available_memory: 180
-    command_rename_prefix: obfuscated
+    command_rename_prefix: sample
 
   mongodb_gateway:
     check_orphan_interval: 7200
-    token: "0xdeadbeef"
+    token: "0xfeedface"
   mongodb_node:
-    available_memory: 200
+    {}
 
-  rabbit_node:
-    available_memory: 256
-    max_memory: 128
   rabbit_gateway:
     token: AAA430A8BAED490B1240338DA34B10D
-
-  rabbitmq_srs:
-    admin_user: srs_admin
-    admin_passwd_hash: aaagO20WqcRng
-    admin_group: admin
-    token: aaa9cf55d722fc8287b625e53a36e356d8fd7b6662a7c19d14aecee7c750
-    backbone_user: backbone
-    backbone_password: aaaGWFAdTgP56
-    backbone_address: 192.0.2.65
-    backbone_port: 1672
-    acls: 'null'
+  rabbit_node:
+    {}
 
   postgresql_gateway:
     check_orphan_interval: 7200
-    admin_passwd_hash: aaabxaiC371JM
-    admin_user: psql_admin
     token: aaaeAh4BXFBXwLrrWJCpQTfeDnaCn7m
-    acls: '{users: [at_least_one@vmware.com], wildcards: [*@vmware.com, *@springsource.com, *@emc.com]}'
-
   postgresql_node:
-    admin_passwd_hash: aaabxaiC371JM
-    admin_user: psql_admin
-    available_storage: 200
-    max_db_size: 30
     production: true
-    max_long_tx: 30
 
   syslog_aggregator:
     address: 192.0.2.13
@@ -482,3 +499,8 @@ properties:
       email: admin@vmware.com
     cc:
       token_secret: aaabxaiC371JM
+      client_secret: $2a$08$dahioBqSkqa1AbLvaqkLoe5W0aOPN3Ia9W0xkeB926G.AZJhq1SsK
+    batch:
+      username: do0H2AKay2jAc
+      password: FSCTiplI5Q83n
+
