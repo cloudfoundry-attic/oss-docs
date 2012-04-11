@@ -95,7 +95,7 @@ A working BOSH director
 
 ## Deploy to your BOSH Environment ##
 
-With a fully configured environment, we can begin deploying the sample application to our environment. As listed in the prerequisites, you should already have an environment running, as well as the IP address of the BOSH Director. Ask your BOSH technical contact for help if you need it.
+With a fully configured environment, we can begin deploying the sample application to our environment. As listed in the prerequisites, you should already have an environment running, as well as the IP address of the BOSH Director.
 
 ### Point BOSH at a Target and Clean your Environment ###
 
