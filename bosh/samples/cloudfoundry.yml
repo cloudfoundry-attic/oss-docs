@@ -1,6 +1,6 @@
 ---
 name: sample
-director_uuid: 74cee69e-2cd8-4c99-96c8-f332e4967021
+director_uuid: <YOUR_DIRECTOR_ID>
 
 release:
   name: appcloud
@@ -26,25 +26,25 @@ networks:
 - name: default
   subnets:
   - reserved:
-    - 172.31.220.2 - 172.31.220.9
-    - 172.31.223.245 - 172.31.223.254
+    - 192.0.2.2 - 192.0.2.9
+    - 192.0.2.245 - 192.0.2.254
     static:
-    - 172.31.220.10 - 172.31.220.140
-    range: 172.31.220.0/22
-    gateway: 172.31.220.1
+    - 192.0.2.10 - 192.0.2.140
+    range: 192.0.2.0/24
+    gateway: 192.0.2.1
     dns:
-    - 172.30.22.153
-    - 172.30.22.154
+    - 192.0.2.245
+    - 192.0.2.246
     cloud_properties:
       name: VLAN2220
 - name: lb
   subnets:
   - static:
-    - 172.28.5.209 - 172.28.5.210
-    range: 172.28.5.208/28
+    - 192.168.0.1 - 192.168.0.100
+    range: 192.168.0.0/24
     dns:
-    - 172.22.22.153
-    - 172.22.22.154
+    - 192.168.0.245
+    - 192.168.0.246
     cloud_properties:
       name: VLAN3093
 
@@ -90,7 +90,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.10
+    - 192.0.2.10
 
 - name: syslog_aggregator
   template: syslog_aggregator
@@ -100,7 +100,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.13
+    - 192.0.2.13
 
 - name: nats
   template: nats
@@ -109,7 +109,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.11
+    - 192.0.2.11
 
 - name: opentsdb
   template: opentsdb
@@ -119,7 +119,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.14
+    - 192.0.2.14
 
 - name: collector
   template: collector
@@ -143,7 +143,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.12
+    - 192.0.2.12
 
 - name: uaadb
   template: ccdb_postgres
@@ -154,13 +154,13 @@ jobs:
     ccdb:
       user: root
       password: aaa39c8e3f34bc201351ba7a
-      address: 172.31.220.15
+      address: 192.0.2.15
       port: 2544
       dbname: uaa
   networks:
   - name: default
     static_ips:
-    - 172.31.220.15
+    - 192.0.2.15
 
 - name: vcap_redis
   template: vcap_redis
@@ -169,7 +169,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.16
+    - 192.0.2.16
 
 - name: uaa
   template: uaa
@@ -201,7 +201,7 @@ jobs:
     default: [dns, gateway]
   - name: lb
     static_ips:
-    - 172.28.5.209 - 172.28.5.210
+    - 192.168.0.2 - 192.168.0.2
 
 - name: health_manager
   template: health_manager
@@ -210,7 +210,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.109
+    - 192.0.2.109
 
 - name: dea
   template: dea
@@ -227,7 +227,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.30
+    - 192.0.2.30
 
 - name: mysql_gateway
   template: mysql_gateway
@@ -244,7 +244,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.40
+    - 192.0.2.40
 
 - name: mongodb_gateway
   template: mongodb_gateway
@@ -261,7 +261,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.50
+    - 192.0.2.50
 
 - name: redis_gateway
   template: redis_gateway
@@ -278,7 +278,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.60
+    - 192.0.2.60
 
 - name: rabbit_gateway
   template: rabbit_gateway
@@ -295,7 +295,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.65
+    - 192.0.2.65
 
 - name: rabbitmq_srs_gateway
   template: rabbitmq_srs_gateway
@@ -320,7 +320,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.70
+    - 192.0.2.70
 
 - name: postgresql_gateway
   template: postgresql_gateway
@@ -336,7 +336,7 @@ jobs:
   networks:
   - name: default
     static_ips:
-    - 172.31.220.80
+    - 192.0.2.80
 
 properties:
   domain: cloudfoundry.test
@@ -348,13 +348,13 @@ properties:
   nats:
     user: nats
     password: aaa3ij3122
-    address: 172.31.220.11
+    address: 192.0.2.11
     port: 4222
 
   ccdb:
     user: ccadmin
     password: aaaBauWauZZb2
-    address: 172.31.220.12
+    address: 192.0.2.12
     port: 5524
     pool_size: 10
     dbname: appcloud
@@ -376,7 +376,7 @@ properties:
     - martin@englund.nu
 
   vcap_redis:
-    address: 172.31.220.16
+    address: 192.0.2.16
     port: 5454
     password: aaaxbL98RWpwBuUJvKNojnpIcRb1ot2
     maxmemory: 2000000000 # 2GB
@@ -395,11 +395,11 @@ properties:
     max_memory: 4096
 
   nfs_server:
-    address: 172.31.220.10
-    network: 172.31.220.0/22
+    address: 192.0.2.10
+    network: 192.0.2.0/24
 
   opentsdb:
-    address: 172.31.220.14
+    address: 192.0.2.14
     port: 4242
 
   mysql_gateway:
@@ -437,7 +437,7 @@ properties:
     token: aaa9cf55d722fc8287b625e53a36e356d8fd7b6662a7c19d14aecee7c750
     backbone_user: backbone
     backbone_password: aaaGWFAdTgP56
-    backbone_address: 172.31.220.65
+    backbone_address: 192.0.2.65
     backbone_port: 1672
     acls: 'null'
 
@@ -457,7 +457,7 @@ properties:
     max_long_tx: 30
 
   syslog_aggregator:
-    address: 172.31.220.13
+    address: 192.0.2.13
     port: 54321
 
   stager:
@@ -470,7 +470,7 @@ properties:
     db:
       user: root
       password: aaa39c8e3f34bc201351ba7a
-      address: 172.31.220.15
+      address: 192.0.2.15
       port: 2544
       dbname: uaa
     bootstrap:

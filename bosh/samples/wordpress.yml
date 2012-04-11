@@ -1,6 +1,6 @@
 ---
 name: wordpress
-director_uuid: 74cee69e-2cd8-4c99-96c8-f332e4967021
+director_uuid: <YOUR_DIRECTOR_ID>
 
 release:
   name: sample
@@ -26,25 +26,25 @@ networks:
   - name: default
     subnets:
     - reserved:
-      - 172.31.220.2 - 172.31.220.10
-      - 172.31.223.200 - 172.31.223.254
+      - 192.0.2.2 - 192.0.2.10
+      - 192.0.2.200 - 192.0.2.254
       static:
-      - 172.31.220.11 - 172.31.220.100
-      range: 172.31.220.0/22
-      gateway: 172.31.220.1
+      - 192.0.2.11 - 192.0.2.100
+      range: 192.0.2.0/24
+      gateway: 192.0.2.1
       dns:
-      - 172.30.22.153
-      - 172.30.22.154
+      - 192.0.2.245
+      - 192.0.2.246
       cloud_properties:
         name: VLAN2220
   - name: dmz
     subnets:
     - static:
-      - 172.28.5.209 - 172.28.5.210
+      - 192.168.0.1 - 192.168.0.2
       range: 172.28.5.208/28
       dns:
-      - 172.22.22.153
-      - 172.22.22.154
+      - 192.168.0.245
+      - 192.168.0.246
       cloud_properties:
         name: VLAN3093
 
@@ -69,7 +69,7 @@ jobs:
     networks:
     - name: default
       static_ips:
-      - 172.31.220.20
+      - 192.0.2.20
 
   - name: wordpress
     template: wordpress
@@ -78,7 +78,7 @@ jobs:
     networks:
     - name: default
       static_ips:
-      - 172.31.220.30 - 172.31.220.33
+      - 192.0.2.30 - 192.0.2.33
 
   - name: nginx
     template: nginx
@@ -88,10 +88,10 @@ jobs:
     - name: default
       default: [dns, gateway]
       static_ips:
-        - 172.31.220.40
+        - 192.0.2.40
     - name: dmz
       static_ips:
-        - 172.28.5.209
+        - 192.168.0.1
 
 properties:
 
@@ -99,10 +99,10 @@ properties:
     admin: foo@bar.com
     port: 8008
     servers:
-      - 172.31.220.30
-      - 172.31.220.31
-      - 172.31.220.32
-      - 172.31.220.33
+      - 192.0.2.30
+      - 192.0.2.31
+      - 192.0.2.32
+      - 192.0.2.33
     servername: wp.appcloud14.dev.mozycloud.com
     db:
       name: wp
@@ -118,7 +118,7 @@ properties:
     nonce_salt: random key
 
   mysql:
-    address: 172.31.220.20
+    address: 192.0.2.20
     port: 3306
     password: rootpass
 
