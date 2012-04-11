@@ -1,24 +1,17 @@
 \input{mmd-article-header}
 \def\mytitle{BOSH Tutorial}
-\def\myauthor{VMware 2012 - Cloud Foundry - Internal Use Only}
+\def\myauthor{VMware 2012 - Cloud Foundry}
 \def\latexmode{memoir}
 \input{mmd-article-begin-doc}
 \chapter{Introduction}
 \label{introduction}
 
-This tutorial will guide you through the process of deploying a multi-tier WordPress installation using BOSH. Due to its simplicity, WordPress is a good way to learn BOSH, but it is not a realistic use case. Most, if not all, of BOSH’s utility will be in the context of deploying Cloud Foundry.
+This tutorial will guide you through the process of deploying a multi-tier WordPress installation using BOSH. Due to its simplicity, WordPress is a good way to learn BOSH, but it is not meant to represent a realistic use case.
 
 \chapter{Prerequisites}
 \label{prerequisites}
 
-\begin{itemize}
-\item A running development environment with a BOSH Director and an uploaded stemcell.
-
-\item Access to the BOSH Gerrit server
-
-\item A clean Ubuntu 10.04 LTS running in VMWare Fusion
-
-\end{itemize}
+A working BOSH director
 
 \chapter{Installing BOSH on an Ubuntu VM}
 \label{installingboshonanubuntuvm}
@@ -27,7 +20,7 @@ This tutorial will guide you through the process of deploying a multi-tier WordP
 \label{installrubyviarbenv}
 
 \begin{enumerate}
-\item Bosh is written in Ruby. Let's install Ruby's dependencies
+\item BOSH is written in Ruby. Let's install Ruby's dependencies
 
 \begin{verbatim}
 sudo apt-get install git-core build-essential libsqlite3-dev curl libmysqlclient-dev libxml2-dev libxslt-dev libpq-dev
@@ -94,14 +87,9 @@ rbenv global 1.9.2-p290
 \label{installlocalboshandboshreleases}
 
 \begin{enumerate}
-\item Sign up for the Cloud Foundry Gerrit server at \href{http://cloudfoundry-codereview.qa.mozycloud.com/gerrit}{http:/\slash cloudfoundry-codereview.qa.mozycloud.com\slash gerrit}\footnote{\href{http://cloudfoundry-codereview.qa.mozycloud.com/gerrit}{http:/\slash cloudfoundry-codereview.qa.mozycloud.com\slash gerrit}}
+\item Sign up for an account on the Cloud Foundry public Gerrit server at \href{http://reviews.cloudfoundry.org/}{http:/\slash reviews.cloudfoundry.org\slash }\footnote{\href{http://reviews.cloudfoundry.org/}{http:/\slash reviews.cloudfoundry.org\slash }}
 
-\end{enumerate}
-
-\textbf{NOTE: PUBLIC GERRIT IN FINAL DRAFT}
-
-\begin{enumerate}
-\item Set up your ssh public key (accept all defaults)
+\item Generate an ssh public key (accept all defaults)
 
 \begin{verbatim}
 ssh-keygen -t rsa
@@ -110,55 +98,28 @@ ssh-keygen -t rsa
 
 \item Copy your key from \texttt{\ensuremath{\sim}\slash .ssh\slash id\_rsa.pub} into your Gerrit account
 
-\end{enumerate}
-
-1.Create \ensuremath{\sim}\slash .gitconfig as follows (Make sure that the email specified is registered with gerrit):
-
-\begin{adjustwidth}{2.5em}{2.5em}
-\begin{verbatim}
-
-    [user]
-    name = YOUR_NAME
-    email = YOUR_EMAIL
-    [alias]
-    gerrit-clone = !bash -c 'gerrit-clone $@' -
-
-\end{verbatim}
-\end{adjustwidth}
-
-\begin{enumerate}
-\item Clone gerrit tools using git
+\item Set your name and email
 
 \begin{verbatim}
-git clone git@github.com:vmware-ac/tools.git
+        git config --global user.name "Firstname Lastname"
+        git config --global user.email "your_email@youremail.com"
 \end{verbatim}
 
 
-\end{enumerate}
-
-\textbf{NOTE: PUBLIC TOOLS REPO IN FINAL DRAFT}
-
-\begin{enumerate}
-\item Add gerrit-clone to your path
+\item Install our gerrit-cli gem:
 
 \begin{verbatim}
-echo 'export PATH="$HOME/tools/gerrit/:$PATH"' >> ~/.bash_profile
-\end{verbatim}
-
-
-\item Restart your shell so the path changes take effect
-
-\begin{verbatim}
-source ~/.bash_profile
+        gem install gerrit-cli
+        rbenv rehash
 \end{verbatim}
 
 
 \item Clone BOSH repositories from Gerrit
 
 \begin{verbatim}
-git gerrit-clone ssh://cloudfoundry-codereview.qa.mozycloud.com:29418/bosh-sample-release
-git gerrit-clone ssh://cloudfoundry-codereview.qa.mozycloud.com:29418/release.git
-git gerrit-clone ssh://cloudfoundry-codereview.qa.mozycloud.com:29418/bos.git
+        gerrit clone ssh://reviews.cloudfoundry.org:29418/bosh-sample-release.git
+        gerrit clone ssh://reviews.cloudfoundry.org:29418/release.git
+        gerrit clone ssh://reviews.cloudfoundry.org:29418/bosh.git
 \end{verbatim}
 
 
@@ -166,7 +127,7 @@ git gerrit-clone ssh://cloudfoundry-codereview.qa.mozycloud.com:29418/bos.git
 
 \begin{verbatim}
 cd ~/bosh
-rake bundle_install
+rake bundle_install (Note: if this fails run 'gem pristine rake' and retry)
 cd cli
 bundle exec rake build
 gem install pkg/bosh_cli-x.x.x.gem
@@ -184,10 +145,10 @@ With a fully configured environment, we can begin deploying the sample applicati
 \label{pointboshatatargetandcleanyourenvironment}
 
 \begin{enumerate}
-\item Target your director (this IP is an example) \textbf{NOTE: EXAMPLE WORKS FOR INTERNAL USE (u: admin \slash  p: admin)}
+\item Target your director (this IP is an example - replace with yours!) 
 
 \begin{verbatim}
-bosh target 172.23.128.219:25555 
+bosh target 192.168.1.99:25555 
 \end{verbatim}
 
 
@@ -201,35 +162,35 @@ bosh status
 \item The result of your status will be akin to:
 
 \begin{verbatim}
-Target         dev48 (http://172.23.128.219:25555) Ver: 0.3.12 (01169817)
-UUID           4a8a029c-f0ae-49a2-b016-c8f47aa1ac85
+Target         targetname (http://198.1621.99:25555) Ver: 0.3.12 (01169817)
+UUID           #####hex-uuid-goes-here-############
 User           admin
 Deployment     not set
 \end{verbatim}
 
 
-\item List previous deployments (we will remove them in a moment)
+\item If you have previously used this BOSH director you may have existing deployments and releases. List previous deployments (we will remove them in a moment)
 
 \begin{verbatim}
 bosh deployments
 \end{verbatim}
 
 
-\item The result of \texttt{bosh deployments} should be akin to:
+\item If you have any existing deployments \texttt{bosh deployments} will show something like:
 
 \begin{verbatim}
-+-------+
-| Name  |
-+-------+
-| dev48 |
-+-------+
++---------+
+| Name    |
++---------+
+| example |
++---------+
 \end{verbatim}
 
 
-\item Delete the existing deployments (ex: dev48) 
+\item Delete any existing deployments (ex: example) 
 
 \begin{verbatim}
-bosh delete deployment dev48
+bosh delete deployment example 
 \end{verbatim}
 
 
@@ -242,21 +203,21 @@ bosh delete deployment dev48
 \end{verbatim}
 
 
-\item The result of \texttt{bosh releases} should be akin to:
+\item If you have result of \texttt{bosh releases} should be akin to:
 
 \begin{verbatim}
-+----------+------------+
-| Name     | Versions   |
-+----------+------------+
-| appcloud | 47, 55, 58 |
-+----------+------------+
++--------+----------+
+| Name   | Versions |
++--------+----------+
+| myapp  | 1, 2, 3  |
++--------+----------+
 \end{verbatim}
 
 
-\item Delete the existing releases (ex: appcloud) 
+\item Delete the existing releases (ex: myapps) 
 
 \begin{verbatim}
-bosh delete release appcloud
+bosh delete release myapp 
 \end{verbatim}
 
 
@@ -275,7 +236,7 @@ cd ~/bosh-sample-release
 \end{verbatim}
 
 
-This directory contains the sample WordPress deployment and release files. If this were a Cloud Foundry deploy, you would work with analogous files, provided by your BOSH contact.
+This directory contains the sample WordPress deployment and release files. 
 
 \item Reset your environment
 
@@ -289,11 +250,11 @@ bosh reset release
 \item Create a release
 
 \begin{verbatim}
-bosh create release –force –with-tarball
+bosh create release --force --with-tarball
 \end{verbatim}
 
 
-\item Answer \texttt{wordpress} to the \texttt{release name}prompt
+\item Answer \texttt{wordpress} to the \texttt{release name} prompt
 
 \item Your terminal will display information about the release including the Release Manifest, Packages, Jobs, and tarball location.
 
@@ -314,7 +275,7 @@ bosh upload release dev_releases/wordpress-1.tgz
 
 \item Your terminal will display information about the upload, and an upload progress bar will reach 100\% after a few minutes.
 
-\item Open \texttt{bosh-sample-release\slash wordpress.yml} and make sure that your networking and IP addresses match the environment that you were given. An example manifest is in the Appendix.
+\item Open \texttt{bosh-sample-release\slash wordpress.yml}. You will need to edit several things to match your environment. You should update director\_uuid, any VLANs, the IPs under networks, dns servers and any static ips listed for specific jobs. An example manifest is in the Appendix.
 
 \item Deploy the Release
 
@@ -350,7 +311,7 @@ bosh deploy
 
     ---
     name: wordpress
-    director_uuid: 4a8a029c-f0ae-49a2-b016-c8f47aa1ac85
+    director_uuid: #####hex-uuid-goes-here-############
 
     release:
         name: wordpress
@@ -377,28 +338,29 @@ bosh deploy
     - name: default
         subnets:
         - reserved:
-            - 172.23.224.2 - 172.23.224.10
-            - 172.23.224.200 - 172.23.224.254
+            - 192.168.224.2 - 192.168.224.10
+            - 192.168.224.200 - 192.168.224.254
         static:
-            - 172.23.224.11 - 172.23.224.100
-            range: 172.23.224.0/23
-            gateway: 172.23.224.1
+            - 192.168.224.11 - 192.168.224.100
+            range: 192.168.224.0/23
+            gateway: 192.168.224.1
         dns:
-            - 172.22.22.153
-            - 172.22.22.154
+            - 192.168.1.4
+            - 192.168.1.5
         cloud_properties:
-            name: VLAN2224
+            name: VLAN1234
 
     - name: dmz
       subnets:
       - static:
-        - 172.20.4.241 - 172.20.4.242
-      range: 172.20.4.241/28
+        - 192.168.4.241 - 192.168.4.242
+      range: 192.168.4.241/28
       dns:
-        - 172.22.22.153
-        - 172.22.22.154
+            - 192.168.1.4
+            - 192.168.1.5
+        cloud_properties:
       cloud_properties:
-        name: VLAN3079
+        name: VLAN4321
 
     resource_pools:
 
@@ -407,7 +369,7 @@ bosh deploy
         size: 6
         stemcell:
             name: bosh-stemcell
-            version: 0.4.4
+            version: 0.4.7
         cloud_properties:
             cpu: 1
             disk: 8192
@@ -422,7 +384,7 @@ bosh deploy
         networks:
             - name: default
             static_ips:
-                - 172.23.224.11
+                - 192.168.224.11
 
         - name: wordpress
         template: wordpress
@@ -431,7 +393,7 @@ bosh deploy
         networks:
             - name: default
             static_ips:
-                - 172.23.224.12 - 172.23.224.15
+                - 192.168.224.12 - 192.168.224.15
 
         - name: nginx
         template: nginx
@@ -441,21 +403,21 @@ bosh deploy
             - name: default
                 default: [dns, gateway]
                 static_ips:
-                    - 172.23.224.1
+                    - 192.168.224.1
             - name: dmz
                 static_ips:
-                    - 172.20.4.241
+                    - 192.168.4.241
 
     properties:
         wordpress:
             admin: foo@bar.com
             port: 8008
             servers:
-                    - 172.23.224.12
-                    - 172.23.224.13
-                    - 172.23.224.14
-                    - 172.23.224.15
-            servername: wp.cf48.dev.las01.vcsops.com
+                    - 192.168.224.12
+                    - 192.168.224.13
+                    - 192.168.224.14
+                    - 192.168.224.15
+            servername: wp.myurl.mycompany.com
             db:
                 name: wp
                 user: wordpress
@@ -469,7 +431,7 @@ bosh deploy
             logged_in_salt: random key
             nonce_salt: random key
         mysql:
-            address: 172.23.224.11
+            address: 192.168.224.11
             port: 3306
             password: verysecretpasswordforroot
         nginx:
