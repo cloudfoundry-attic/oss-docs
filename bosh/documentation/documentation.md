@@ -10,7 +10,16 @@ BOSH was originally developed in the context of the Cloud Foundry Application Pl
 
 ## Fig 1. Interaction of BOSH Components ##
 
-![Interaction of BOSH Components](fig1.png)
+![Interaction of BOSH Components](https://github.com/cloudfoundry/oss-docs/raw/master/bosh/documentation/fig1.png)
+
+<!--
+\begin{figure}[htbp]
+\centering
+\includegraphics[keepaspectratio,width=\textwidth,height=0.75\textheight]{fig1.png}
+\caption{Interaction of BOSH Components}
+\label{}
+\end{figure}
+-->
 
 ## Infrastructure as a Service (IaaS) ##
 
@@ -779,11 +788,11 @@ A package is a collection of source code along with a script that contains instr
 
 ### Package Compilation ###
 
-Packages are compiled on demand during the deployment. The [director][director] first checks to see if there already is a compiled version of the package for the stemcell version it is being deployed to, and if it doesn't already exist a compiled version, the director will instantiate a compile VM (using the same stemcell version it is going to be deployed to) which will get the package source from the blobstore, compile it, and then package the resulting binaries and store it in the blobstore.
+Packages are compiled on demand during the deployment. The [director][] first checks to see if there already is a compiled version of the package for the stemcell version it is being deployed to, and if it doesn't already exist a compiled version, the director will instantiate a compile VM (using the same stemcell version it is going to be deployed to) which will get the package source from the blobstore, compile it, and then package the resulting binaries and store it in the blobstore.
 
 To turn source code into binaries each package has a `packaging` script that is responsible for the compilation, and is run on the compile VM. The script gets two environment variables set from the BOSH agent which tells it where to install the files the package generates `BOSH_INSTALL_TARGET`, and the other is `BOSH_COMPILE_TARGET` which is the directory containing the source (which is the current directory when the `packaging` script is invoked). The `BOSH_INSTALL_TARGET` is set to `/var/vcap/data/packages/<package name>/<package version>`. When the package is installed a symlink is created from `/var/vcap/packages/<package name>` which points to the latest version of the package. This link should be used when refering to another package in the `pckaging` script.
 
-There is an optional `pre_packaging` script, which is run when the source of the package is assembled during the `bosh create release`. It can for instance be used to limit which parts of the source that get packages up and stored in the blobstore. It gets the environment variable `BUILD_DIR` set by the [BOSH cli][bosh_cli], which is the directory containing the source to be packaged.
+There is an optional `pre_packaging` script, which is run when the source of the package is assembled during the `bosh create release`. It can for instance be used to limit which parts of the source that get packages up and stored in the blobstore. It gets the environment variable `BUILD_DIR` set by the [BOSH cli][], which is the directory containing the source to be packaged.
 
 ### Package specs ###
 
