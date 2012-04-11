@@ -87,11 +87,11 @@ A working BOSH director
 		
 1. Run some rake tasks to install the BOSH CLI
 
-		cd ~/bosh
-		rake bundle_install (Note: if this fails run 'gem pristine rake' and retry)
+		cd bosh
+		rake bundle_install # Note: if this fails run 'gem pristine rake' and retry
 		cd cli
 		bundle exec rake build
-		gem install pkg/bosh_cli-x.x.x.gem
+		gem install pkg/bosh_cli*.gem
 
 ## Deploy to your BOSH Environment ##
 
