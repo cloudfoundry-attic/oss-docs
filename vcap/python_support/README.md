@@ -60,7 +60,7 @@ Cloud Foundry makes the service connection credentials available as JSON via the
 
 ## VMC
 
-To discover and use PHP support, you need VMC version _0.3.14_ or higher:
+To discover and use Python support, you need VMC version _0.3.14_ or higher:
     
     $ vmc -v
     vmc 0.3.16.beta.5
