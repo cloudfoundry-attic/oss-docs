@@ -52,7 +52,7 @@ Clone the Cloud Foundry repo
 
 _Note: to clone the BOSH repo, or the Documentation repo, replace `vcap` with `bosh` or `oss-docs`_
 
-		gerrit clone ssh://reviews.cloudfoundry.org:29418/vcap
+		gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/vcap
 		cd vcap
 
 Make your changes, commit, and push to gerrit:
