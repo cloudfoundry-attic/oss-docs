@@ -175,7 +175,7 @@ _Note: After installing gems (`gem install` or `bundle install`) run `rbenv reha
 
 1. Clone BOSH repositories from Gerrit
 
-		gerrit clone ssh://reviews.cloudfoundry.org:29418/release.git
+		gerrit clone ssh://reviews.cloudfoundry.org:29418/cf-release.git
 		gerrit clone ssh://reviews.cloudfoundry.org:29418/bosh.git
 		
 1. Run some rake tasks to install the BOSH CLI
@@ -249,7 +249,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 1. Change directories into the release directory.
 
-		cd ~/release
+		cd ~/cf-release
 	
 	This directory contains the Cloud Foundry deployment and release files.
 
