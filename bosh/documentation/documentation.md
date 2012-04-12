@@ -36,6 +36,33 @@ The IaaS interface plugins communicate through a Cloud Provider Interface (CPI) 
 
 Please refer to the API documentation in these files for further explanation of the CPI primitives.
 
+### vCenter CPI ###
+
+If you want to create a role for the bosh user in vCenter, these are the privileges needed:
+
+* Allocate space
+* Browse datastore
+* Low level file operations
+* Remove file
+* Update virtual machine files
+* Folder
+* Cancel task
+* Diagnostics
+* Create virtual machine
+* Delete virtual machine
+* Reconfigure virtual machine
+* Assign network
+* Resource
+* Scheduled task
+* View and stop sessions
+* Tasks
+* vApp
+* Configuration
+* Interaction
+* Inventory
+* Provisioning
+* State
+
 ## BOSH Director ##
 
 The Director is the core orchestrating component in BOSH which controls creation of VMs, deployment, and other life cycle events of software and services. Command and control is handed over to the the Director-Agent interaction after the CPI has created resources.
