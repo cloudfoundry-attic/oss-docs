@@ -523,27 +523,27 @@ Deployment state is persisted to deployments/bosh-deployments.yml.
 The Virtual Center configuration section looks like the following. 
 
 		cloud:
-			plugin: vsphere
-				properties:
-    			agent:
-      			ntp:
-       			- <ntp_host_1>
-       			- <ntp_host_2>
-    			vcenters:
-      				- host: <vcenter_ip>
-        			user: <vcenter_userid>
-        			password: <vcenter_password>
-        		datacenters:
-          		- name: <datacenter_name>
-            		vm_folder: <vm_folder_name>
-            		template_folder: <template_folder_name>
-            		disk_path: <subdir_to_store_disks>
-            		datastore_pattern: <data_store_pattern>
-            		persistent_datastore_pattern: <persistent_datastore_pattern>
-            		allow_mixed_datastores: <true_if_persistent_datastores_and_datastore_patterns_are_the_same>
-            		clusters:
-            		- <cluster_name>:
-                		resource_pool: <resource_pool_name>
+		  plugin: vsphere
+		  properties:
+		    agent:
+		      ntp:
+		        - <ntp_host_1>
+		        - <ntp_host_2>
+		     vcenters:
+		       - host: <vcenter_ip>
+		         user: <vcenter_userid>
+		         password: <vcenter_password>
+		         datacenters:
+		           - name: <datacenter_name>
+		             vm_folder: <vm_folder_name>
+		             template_folder: <template_folder_name>
+		             disk_path: <subdir_to_store_disks>
+		             datastore_pattern: <data_store_pattern>
+		             persistent_datastore_pattern: <persistent_datastore_pattern>
+		             allow_mixed_datastores: <true_if_persistent_datastores_and_datastore_patterns_are_the_same>
+		             clusters:
+		             - <cluster_name>:
+		                 resource_pool: <resource_pool_name>
 
 Before you can run micro BOSH deployer, you have to do the following within Virtual Center:
 
