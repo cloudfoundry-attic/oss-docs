@@ -717,7 +717,7 @@ Example:
 
 ### Setup a BOSH deployment manifest and deploy ###
 
-1. Create and setup a BOSH deployment manifest. Look at the sample BOSH manifest in (https://github.com/cloudfoundry/oss-docs/bosh/samples/bosh.yml). Assuming you have created a `bosh.yml` in `/home/bosh_user`.
+1. Create and setup a BOSH deployment manifest. Look at the sample BOSH manifest in (https://github.com/cloudfoundry/oss-docs/blob/master/bosh/samples/bosh.yml). Assuming you have created a `bosh.yml` in `/home/bosh_user`.
 
 		cd /home/bosh_user
 		bosh deployment ./bosh.yml
