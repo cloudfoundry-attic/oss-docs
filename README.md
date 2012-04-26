@@ -14,7 +14,7 @@ There is a Cloud Foundry documentation set for open source developers, and one f
 * Open Source Developers: [https://github.com/cloudfoundry/oss-docs](https://github.com/cloudfoundry/oss-docs)
 * CloudFoundry.com users: [http://docs.cloudfoundry.com](http://docs.cloudfoundry.com)
 
-To make changes to our documentation, follow the [OSS Contribution][oss] steps and contribute to the oss-docs repository.
+To make changes to our documentation, follow the [OSS Contributions][OSS Contributions] steps and contribute to the oss-docs repository.
 
 ## Ask Questions
 
