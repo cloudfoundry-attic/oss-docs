@@ -94,4 +94,8 @@ Resolve any conflicts that may occur and finally push the change to gerrit
 
     gerrit push
 
-Once your change passes the ci, you can add reviewers or you can just wait for us to go and look at the change.
+Once your change passes our Continuous Integration Bot (CI Bot) as well as our engineering staff, you can add reviewers or you can just wait for us to go and look at the change.
+
+If your change is approved by reviewers or commiters, you are free to merge the change. The merge will be replicated to GitHub automatically at [http://github.com/cloudfoundry/](https://github.com/cloudfoundry/).
+
+If you get feedback on your submission, we recommend squashing your commit with the original change-id. See the squashing section here for more details: [http://help.github.com/rebase/](http://help.github.com/rebase/). 
