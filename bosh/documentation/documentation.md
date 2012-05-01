@@ -180,8 +180,8 @@ _Note: After installing gems (`gem install` or `bundle install`) run `rbenv reha
 
 1. Clone BOSH repositories from Gerrit
 
-		gerrit clone ssh://reviews.cloudfoundry.org:29418/cf-release.git
-		gerrit clone ssh://reviews.cloudfoundry.org:29418/bosh.git
+		gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/cf-release.git
+		gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/bosh.git
 		
 1. Run some rake tasks to install the BOSH CLI
 
@@ -707,7 +707,7 @@ Example:
 1. You can create a BOSH release or use one of the public releases. The following steps show the use of a public release.
 
 		cd /home/bosh_user 
-		gerrit clone ssh://reviews.cloudfoundry.org:29418/bosh-release.git
+		gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/bosh-release.git
 
 1. Upload a public release from bosh-release
 

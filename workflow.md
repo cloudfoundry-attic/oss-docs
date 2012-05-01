@@ -53,7 +53,7 @@ The last one-time step is to clone the gerrit repository.
 
 Note! Don't clone the **github** repository, we don't accept pull requests.
 
-    gerrit clone ssh://reviews.cloudfoundry.org/bosh
+    gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/bosh
 
 Make sure to use this instead of cloning by hand (with `git clone`) as this installs a pre-commit hook that adds the required `Change-Id`.
 
