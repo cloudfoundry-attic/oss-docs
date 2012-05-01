@@ -1235,7 +1235,7 @@ You can set the property using `bosh set property <name> <value>` and then refer
 
 ## BOSH SSH ##
 
-To ssh to a running Job, first find the name and index of it.  Use `bosh vms` to display a list of the VMs that are running and what Job is on each.  To ssh to it, run `bosh ssh <job_name> <index>`.  The password is whatever is set in the Stemcell.  For default Stemcells it is ca$hc0w.
+To ssh to a running Job, first find the name and index of it.  Use `bosh vms` to display a list of the VMs that are running and what Job is on each.  To ssh to it, run `bosh ssh <job_name> <index>`.  The password is whatever is set in the Stemcell.  For default Stemcells it is c1oudc0w.
 
 ## BOSH Logs ##
 
