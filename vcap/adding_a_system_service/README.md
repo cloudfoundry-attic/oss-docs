@@ -6,7 +6,7 @@ _Author: **Georgi Sabev**_
 
 This guide will walk you through the process of adding a new service to your
 Cloud Foundry landscape and will show you how to consume it from a web
-application. This tutorial is for a [dev_setup installation](https://github.com/vmware-ac/doxa/tree/master/vcap/single_and_multi_node_deployments_with_dev_setup) of Cloud
+application. This tutorial is for a [dev_setup installation](https://github.com/cloudfoundry/oss-docs/tree/master/vcap/single_and_multi_node_deployments_with_dev_setup) of Cloud
 Foundry. For the purpose of this guide we have provided a simple echo service
 and a simple consumer web application that sends messages to be echoed. Both
 are written in java, but you can write your own services in any language you
@@ -19,7 +19,7 @@ new user and schema when it is provisioned. The service gateway is a REST
 interface to the service provisioner. Here is a small picture illustrating
 these basic components:
 
-![service_provisioning.png](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/images/service_provisioning.png)
+![service_provisioning.png](https://github.com/cloudfoundry/oss-docs/raw/master/vcap/adding_a_system_service/images/service_provisioning.png)
 
 ## Services in Cloud Foundry
 
@@ -31,7 +31,7 @@ later used by applications to lookup metadata about the provisioned services.
 You can list both system and provisioned services by logging in to vmc and
 typing `vmc services`:
 
-![services.png](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/images/services.png)
+![services.png](https://github.com/cloudfoundry/oss-docs/raw/master/vcap/adding_a_system_service/images/services.png)
 
 ## Adding the echo service to the system services
 
@@ -92,7 +92,7 @@ Here are the steps you need to execute:
 
             $ chmod +x .../cloudfoundry/vcap/bin/services/echo_{node,gateway} 
 
-5. Download and extract the implementation of the [echo service provisioner](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/support/echo_sp.zip) to the services host. Then move the implementation files and config files to the appropriate locations:
+5. Download and extract the implementation of the [echo service provisioner](https://github.com/cloudfoundry/oss-docs/raw/master/vcap/adding_a_system_service/support/echo_sp.zip) to the services host. Then move the implementation files and config files to the appropriate locations:
 
         $ unzip echo_sp.zip
         $ cp -r echo .../cloudfoundry/vcap/services/
@@ -164,14 +164,14 @@ be used by the test application later on to look up the host and port we
 configured fot the echo service. After you provision myecho execute `vmc
 services`. This will output something like this:
 
-    ![echo_service.png](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/images/echo_service.png)
+    ![echo_service.png](https://github.com/cloudfoundry/oss-docs/raw/master/vcap/adding_a_system_service/images/echo_service.png)
 
     Now we have our service provisioned!
 
   
 2. Push a test application and bind the provisioned echo service.
 
-    Download the test application's [.war file](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/support/testapp.war), or compile from the [source code](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/support/testapp_src.zip). Place it in an empty folder and deploy with `vmc push`:
+    Download the test application's [.war file](https://github.com/cloudfoundry/oss-docs/raw/master/vcap/adding_a_system_service/support/testapp.war), or compile from the [source code](https://github.com/cloudfoundry/oss-docs/raw/master/vcap/adding_a_system_service/support/testapp_src.zip). Place it in an empty folder and deploy with `vmc push`:
 
         Would you like to deploy from the current directory? [Yn]:  
          Application Name: echotest  
@@ -200,7 +200,7 @@ services`. This will output something like this:
 3. Start the echo service and access the application.
 
     So far we have provided the echo service metadata to users and applications in Cloud Foundry, but we haven't started the program which provides the functionality of an echo service itself. The test application obtains the service IP and port from the environment variable `VCAP_SERVICES` &mdash; but it's our responsibility to ensure that there
-really is a listening service. Without doing so the application will return an error when attemting to access the echo service. So let's start the service: download the [echo service jar](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/support/echo_service.jar) to the `host` listed in `echo_node.yml`, or compile it from the [source code](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/support/echo_service_src.zip). Then execute the following:
+really is a listening service. Without doing so the application will return an error when attemting to access the echo service. So let's start the service: download the [echo service jar](https://github.com/cloudfoundry/oss-docs/raw/master/vcap/adding_a_system_service/support/echo_service.jar) to the `host` listed in `echo_node.yml`, or compile it from the [source code](https://github.com/cloudfoundry/oss-docs/raw/master/vcap/adding_a_system_service/support/echo_service_src.zip). Then execute the following:
   
         $ java -jar echo_service.jar -port <echo_service_port>
 
@@ -211,4 +211,4 @@ http://echotest.vcap.me or the URI you have chosen when pushing. Enter
 some message in the text area and click on the _Echo message_ button. The echo
 service will echo your message:
 
-    ![helloworld.png](https://github.com/vmware-ac/doxa/raw/master/vcap/adding_a_system_service/images/helloworld.png)
+    ![helloworld.png](https://github.com/cloudfoundry/oss-docs/raw/master/vcap/adding_a_system_service/images/helloworld.png)
