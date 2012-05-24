@@ -655,6 +655,153 @@ Example:
 		"pong"
 
 
+## Building your own micro BOSH stemcell for AWS
+
+If you want to create your own micro BOSH stemcell to use with AWS, this section describes the steps needed to do it.
+
+### Build the chroot
+
+The first step is to create the base contents of the stemcell
+
+		cd ~/bosh/agent
+		rake stemcell:chroot_tgz[aws]
+
+This outputs a file in `/var/tmp/bosh/agent-x.y.z-nnnnn/chroot-aws.tgz`
+
+### Build the BOSH release
+
+Next create a tarball of the bosh release
+
+		cd ~
+		git clone git@github.com:cloudfoundry/bosh-release.git
+		cd ~/bosh-release
+		git submodule init --update
+		bosh create release --with-tarball
+
+If this is the first time you run `bosh create release` in the release repo, it will ask you to name the release, e.g. "bosh", and then the output will be dev_releases/bosh-n.tgz
+
+### Create manifest
+
+Now you need to create the mocro BOSH manifest file, call it `aws_micro.yml`
+
+		---
+		deployment: micro
+		release:
+		  name: micro
+		  version: 9
+		configuration_hash: {}
+		properties:
+		  micro: true
+		  domain: vcap.me
+		  env:
+		  networks:
+		    apps: local
+		    management: local
+		  nats:
+		    user: nats
+		    password: nats
+		    address: 127.0.0.1
+		    port: 4222
+		  redis:
+		    address: 127.0.0.1
+		    port: 25255
+		    password: redis
+		  postgres:
+		    user: postgres
+		    password: postgres
+		    address: 127.0.0.1
+		    port: 5432
+		    database: bosh
+		  blobstore:
+		    address: 127.0.0.1
+		    backend_port: 25251
+		    port: 25250
+		    director:
+		      user: director
+		      password: director
+		    agent:
+		      user: agent
+		      password: agent
+		  director:
+		    address: 127.0.0.1
+		    name: micro
+		    port: 25555
+		  aws_registry:
+		    address: 127.0.0.1
+		    http:
+		      port: 25777
+		      user: admin
+		      password: admin
+		    db:
+		      database: postgres://postgres:postgres@localhost/bosh
+		      max_connections: 32
+		      pool_timeout: 10
+		    aws:
+		      max_retries: 2
+		  hm:
+		    http:
+		      port: 25923
+		      user: hm
+		      password: hm
+		    loglevel: info
+		    director_account:
+		      user: admin
+		      password: admin
+		    intervals:
+		      poll_director: 60
+		      poll_grace_period: 30
+		      log_stats: 300
+		      analyze_agents: 60
+		      agent_timeout: 180
+		      rogue_agent_alert: 180
+
+
+### Build micro BOSH stemcell
+
+Now you have all the pieces to assemble the micro BOSH AWS stemcell
+
+		cd ~/bosh/agent
+		rake stemcell:micro[micro_bosh:aws,aws_micro.yml,bosh-1.tgz,chroot-aws.tgz]
+
+This outputs the stemcell in `/var/tmp/bosh/agent-x.y.z-nnnnn/bosh-stemcell-aws-x.y.z.tgz`
+
+### Deploy it
+
+Before you can deploy, you need to upload the stemcell you build to your AWS VM:
+
+		scp bosh-stemcell-aws-x.y.z.tgz ubuntu@ec2-nnn-nnn-nnn-nnn.compute-1.amazonaws.com:
+
+Then log on to the AWS VM and create the file `~/deployments/aws/micro_bosh.yml`
+
+		---
+		name: micro-bosh-aws
+
+		logging:
+		  level: DEBUG
+
+		network:
+		  type: dynamic
+
+		resources:
+		  cloud_properties:
+		    instance_type: m1.small
+
+		cloud:
+		  plugin: aws
+		  properties:
+		    aws:
+		      access_key_id: ...
+		      secret_access_key: ...
+		      default_key_name: ...
+		      default_security_groups: ["default"]
+		      ec2_private_key: ~/.ssh/ec2.pem
+
+Finally run
+
+		cd deployments
+		bosh micro deployment aws
+		bosh micro deploy ~/bosh-stemcell-aws-0.5.2.tgz
+
 ## Deploy BOSH as an application using micro BOSH. ##
 
 1. Deploy micro BOSH. See the steps in the previous section.
