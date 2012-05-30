@@ -82,7 +82,7 @@ A working BOSH director
 1. Clone BOSH repositories from Gerrit
 
                 gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/bosh-sample-release.git
-                gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/release.git
+                gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/bosh-release.git
                 gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/bosh.git
 		
 1. Run some rake tasks to install the BOSH CLI
