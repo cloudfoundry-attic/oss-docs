@@ -34,7 +34,7 @@ The IaaS interface plugins communicate through a Cloud Provider Interface (CPI) 
 	configure_networks
 	create_disk / delete_disk / attach_disk / detach_disk
 
-Please refer to the API documentation in these files for further explanation of the CPI primitives.
+Please refer to the [API documentation](https://github.com/cloudfoundry/bosh/blob/master/cpi/lib/cloud.rb) in these files for further explanation of the CPI primitives.
 
 ## BOSH Director ##
 
@@ -42,7 +42,8 @@ The Director is the core orchestrating component in BOSH which controls creation
 
 ## BOSH Agent ##
 
-BOSH Agents listen for instructions from the BOSH Director. Every VM contains an Agent. Through the Director-Agent interaction, VMs are given [Jobs][], or roles, within Cloud Foundry. If the VM's job is to run MySQL, for example, the Director will send instructions to the Agent about which packages must be installed and what the configurations for those packages are.
+BOSH Agents listen for instructions from the BOSH Director. Every VM contains an Agent. Through the Director-Agent interaction, VMs are given [Jobs](#jobs), or roles, within Cloud Foundry.
+If the VM's job is to run MySQL, for example, the Director will send instructions to the Agent about which packages must be installed and what the configurations for those packages are.
 
 ## BOSH CLI ##
 
@@ -52,29 +53,40 @@ The BOSH Command Line Interface is how users interact with BOSH using a terminal
            [--force] [--no-color] [--skip-director-checks] [--quiet]
            [--non-interactive]
 
-A full overview of BOSH commands and installation appears in the [BOSH Command Line Interface][] and [BOSH installation][] sections.
+For more details on the options, [install](#installing-bosh-command-line-interface) the [BOSH Command Line Interface](http://rubygems.org/gems/bosh_cli) gem and run the `bosh` command.
 
 ## Stemcells ##
 
-A Stemcell is a VM template with an embedded [BOSH Agent][] The Stemcell used for Cloud Foundry is a standard Ubuntu distribution. Stemcells are uploaded using the [BOSH CLI][] and used by the [BOSH Director][] when creating VMs through the [Cloud Provider Interface][] (CPI). When the Director creates a VM through the CPI, it will pass along configurations for networking and storage, as well as the location and credentials for the [Message Bus][] and the [Blobstore][].
+A Stemcell is a VM template with an embedded [BOSH Agent](#bosh-agent) The Stemcell used for Cloud Foundry is a standard Ubuntu distribution.
+Stemcells are uploaded using the [BOSH CLI](#bosh-cli) and used by the [BOSH Director](#bosh-director) when creating VMs through the [Cloud Provider Interface] (#cloud-provider-interface).
+When the Director creates a VM through the CPI, it will pass along configurations for networking and storage, as well as the location and credentials for the [Message Bus](#message-bus) and the [Blobstore](#blobstore).
 
 ## Releases ##
 
-A Release in BOSH is a packaged bundle of service descriptors known as Jobs. Jobs are collections of software bits and configurations. Any given Release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service.
+A Release in BOSH is a packaged bundle of service descriptors known as Jobs. Jobs are collections of software bits and configurations.
+Any given Release contains all the static bits (source or binary) required to have BOSH manage an application or a distributed service.
 
-A Release is typically not restricted to any particular environment. As such, it can be re-used across clusters handling different stages in a service life cycle, such as Development, QA, Staging, or Production. The [BOSH CLI][] manages both the creation of Releases and their deployments into specific environments.
+A Release is typically not restricted to any particular environment. As such, it can be re-used across clusters handling different stages in a service life cycle, such as Development, QA, Staging, or Production.
+The [BOSH CLI](#bosh-cli) manages both the creation of Releases and their deployments into specific environments.
 
-See the [Releases][] section for a deeper look at both Releases and [Jobs][].
+See the [Packages](#packages) section for a deeper look at both Releases and [Jobs](#jobs).
 
 ## Deployments ##
 
-While BOSH [Stemcells][] and [Releases][] are static components, they are bound together into a Deployment by a [BOSH Deployment Manifest][]. In the Deployment Manifest, you declare pools of VMs, which networks they live on, and which [Jobs][] (service components) from the Releases you want to activate. Job configurations specify life cycle parameters, the number of instances of a Job, and network and storage requirements. Furthermore, the Deployment Manifest allows you to specify properties used to parameterize configuration templates contained in the Release.
+While BOSH [Stemcells](#stemcells) and [Packages](#packages) are static components, they are bound together into a Deployment by a [BOSH Deployment Manifest](#bosh-deployment-manifest).
+In the Deployment Manifest, you declare pools of VMs, which networks they live on, and which [Jobs](#jobs) (service components) from the Releases you want to activate.
+Job configurations specify life cycle parameters, the number of instances of a Job, and network and storage requirements.
+Furthermore, the Deployment Manifest allows you to specify properties used to parameterize configuration templates contained in the Release.
 
-Using the [BOSH CLI][], you specify a Deployment Manifest and perform a Deploy operation (`bosh deploy`), which creates or updates resources on your cluster according to your specifications. Refer to the [Steps of a Deployment][] for examples.
+Using the [BOSH CLI](#bosh-cli), you specify a Deployment Manifest and perform a Deploy operation (`bosh deploy`), which creates or updates resources on your cluster according to your specifications.
+Refer to the [Steps of a Deployment](#steps-of-a-deployment) for examples.
 
 ## Blobstore ##
 
-The BOSH Blobstore is used to store the content of Releases (BOSH [Jobs][] and [Packages][] in their source form as well as the compiled image of BOSH Packages. [Releases][releases] are uploaded by the [BOSH CLI][][] and inserted into the Blobstore by the [BOSH Director][]. When you deploy a Release, BOSH will orchestrate the compilation of packages and store the result in the Blobstore. When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the Blobstore.
+The BOSH Blobstore is used to store the content of Releases (BOSH [Jobs](#jobs) and [Packages](#packages) in their source form as well as the compiled image of BOSH Packages.
+[Releases](#releases) are uploaded by the [BOSH CLI](#bosh-cli) and inserted into the Blobstore by the [BOSH Director](#bosh-director).
+When you deploy a Release, BOSH will orchestrate the compilation of packages and store the result in the Blobstore.
+When BOSH deploys a BOSH Job to a VM, the BOSH Agent will pull the specified Job and associated BOSH Packages from the Blobstore.
 
 BOSH also uses the Blobstore as an intermediate store for large payloads, such as log files (see BOSH logs) and output from the BOSH Agent that exceeds the max size for messages over the message bus.
 
@@ -84,19 +96,19 @@ There are currently three Blobstores supported in BOSH:
 1. [S3](http://aws.amazon.com/s3/)
 1. [simple blobstore server](https://github.com/cloudfoundry/bosh/tree/master/simple_blobstore_server)
 
-For example configurations of each Blobstore, see the [Blobs][] section. The default BOSH configuration uses the simple blobstore server, as the load is very light and low latency is preferred.
+For example configurations of each Blobstore, see the [Blobs](#blobs) section. The default BOSH configuration uses the simple blobstore server, as the load is very light and low latency is preferred.
 
 ## Health Monitor ##
 
-The BOSH Health Monitor receives health status and life cycle events from the [BOSH Agent][] and can send alerts through notification plugins (such as email). The Health Monitor has a simple awareness of events in the system, so as not to alert if a component is updated.
+The BOSH Health Monitor receives health status and life cycle events from the [BOSH Agent](#bosh-agent) and can send alerts through notification plugins (such as email). The Health Monitor has a simple awareness of events in the system, so as not to alert if a component is updated.
 
 ## Message Bus ##
 
-BOSH uses the [NATS](http://github.com/dcollison/nats) message bus for command and control.
+BOSH uses the [NATS](https://github.com/derekcollison/nats) message bus for command and control.
 
 # Using BOSH #
 
-Before we can use BOSH we need to install the [BOSH CLI][]. To continue with this section, you will need a running development environment with an uploaded Stemcell. If this is not the case, you can  [BOSH Installation][] section.
+Before we can use BOSH we need to install the [BOSH CLI](#bosh-cli). To continue with this section, you will need a running development environment with an uploaded Stemcell. If this is not the case, you can  [BOSH installation](#bosh-installation) section.
 
 ## Installing BOSH Command Line Interface ##
 
@@ -148,7 +160,7 @@ _Note: The rake 0.8.7 gem may need to be reinstalled when using this method_
 
 		gem pristine rake
 
-1. Update rubygems and install bundler. 
+1. Update rubygems and install bundler.
 
 _Note: After installing gems (`gem install` or `bundle install`) run `rbenv rehash` to add new shims_
 
@@ -164,7 +176,7 @@ _Note: After installing gems (`gem install` or `bundle install`) run `rbenv reha
 1. Set up your ssh public key (accept all defaults)
 
 		ssh-keygen -t rsa
-		
+
 1. Copy your key from `~/.ssh/id_rsa.pub` into your Gerrit account
 
 1. Create and upload your public SSH key in your Gerrit account profile
@@ -173,8 +185,8 @@ _Note: After installing gems (`gem install` or `bundle install`) run `rbenv reha
 
 		git config --global user.name "Firstname Lastname"
 		git config --global user.email "your_email@youremail.com"
-		
-1. Install out gerrit-cli gem	
+
+1. Install out gerrit-cli gem
 
 		gem install gerrit-cli
 
@@ -182,7 +194,7 @@ _Note: After installing gems (`gem install` or `bundle install`) run `rbenv reha
 
 		gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/cf-release.git
 		gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/bosh.git
-		
+
 1. Run some rake tasks to install the BOSH CLI
 
 		gem install bosh_cli
@@ -192,7 +204,7 @@ _Note: After installing gems (`gem install` or `bundle install`) run `rbenv reha
 
 ### Deploy to your BOSH Environment ###
 
-With a fully configured environment, we can begin deploying a Cloud Foundry Release to our environment. As listed in the prerequisites, you should already have an environment running, as well as the IP address of the BOSH Director. To set this up, skip to the [BOSH Installation][] section.
+With a fully configured environment, we can begin deploying a Cloud Foundry Release to our environment. As listed in the prerequisites, you should already have an environment running, as well as the IP address of the BOSH Director. To set this up, skip to the [BOSH installation](#bosh-installation) section.
 
 ### Point BOSH at a Target and Clean your Environment ###
 
@@ -203,7 +215,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 1. Check the state of your BOSH settings.
 
 		bosh status
-		
+
 1. The result of your status will be akin to:
 
 		Target         dev48 (http://11.23.128.219:25555) Ver: 0.3.12 (01169817)
@@ -212,7 +224,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 		Deployment     not set
 
 1. List any previous Deployments (we will remove them in a moment). If this is your first Deployment, there will be none listed.
-    
+
 		bosh deployments
 
 1. The result of `bosh deployments` should be akin to:
@@ -240,7 +252,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 		+---------------+---------------+
 		| cloudfoundry	| 47, 55, 58    |
 		+---------------+---------------+
-		
+
 1. Delete the existing Releases (ex: cloudfoundry)
 
 		bosh delete release cloudfoundry
@@ -252,7 +264,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 1. Change directories into the release directory.
 
 		cd ~/release
-	
+
 	This directory contains the Cloud Foundry deployment and release files.
 
 1. Update submodules and pull down blobs (also used to update the repository).
@@ -268,7 +280,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 1. Create a Release
 
 		bosh create release --force --with-tarball
-		
+
 1. Answer `cloudfoundry` to the `release name` prompt
 
 1. Your terminal will display information about the release including the Release Manifest, Packages, Jobs, and tarball location.
@@ -280,7 +292,7 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 1. Upload the cloudfoundry Release to your Environment.
 
 		bosh upload release dev_releases/cloudfoundry-1.tgz
-		
+
 1. Your terminal will display information about the upload, and an upload progress bar will reach 100% after a few minutes.
 
 1. Open `bosh/samples/cloudfoundry.yml` and make sure that your network settings match the environment that you were given.
@@ -288,14 +300,14 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 1. Deploy the Release.
 
 		bosh deploy
-		
+
 1. Your deployment will take a few minutes.
 
 1. You may now target the Cloud Foundry deployment using VMC, as described in the Cloud Foundry documentation.
 
 # BOSH Installation #
 
-Installation of BOSH is done using something called Micro BOSH, which is a single VM that includes all of the BOSH components in the same image. If you want to play around with BOSH, or create a simple development setup, you can install Micro BOSH using the [BOSH Deployer][]. If you would like to use BOSH in production to manage a distributed system, you also use the BOSH Deployer, install Micro BOSH, and then use it as a means to deploy the final distributed system on multiple VMs.
+Installation of BOSH is done using something called Micro BOSH, which is a single VM that includes all of the BOSH components in the same image. If you want to play around with BOSH, or create a simple development setup, you can install Micro BOSH using the [BOSH Deployer](#bosh-deployer). If you would like to use BOSH in production to manage a distributed system, you also use the BOSH Deployer, install Micro BOSH, and then use it as a means to deploy the final distributed system on multiple VMs.
 
 A good way to think about this two step process is to consider that BOSH is a distributed system in itself. Since BOSH's core purpose is to deploy and manage distributed systems, it makes sense that we would use it to deploy itself. On the BOSH team, we gleefully refer to this as [Inception](http://en.wikipedia.org/wiki/Inception).
 
@@ -349,7 +361,7 @@ Deployment state is persisted to deployments/bosh-deployments.yml.
 
 ### vCenter Configuration ###
 
-The Virtual Center configuration section looks like the following. 
+The Virtual Center configuration section looks like the following.
 
 		cloud:
 		  plugin: vsphere
@@ -551,7 +563,7 @@ Before you can run micro BOSH deployer, you have to do the following within Virt
 
 1. Create the disk_path in the appropriate datastores
 
-1. Create the resource_pool. 
+1. Create the resource_pool.
 
 Resource pool is optional you can run without a resource pool. Without a resource pool the cluster property looks like:
 
@@ -560,23 +572,23 @@ Resource pool is optional you can run without a resource pool. Without a resourc
             		clusters:
             		- <cluster_name>
 
-The datastore pattern above could just be the name of a datastore or some regular expression matching the datastore name. 
+The datastore pattern above could just be the name of a datastore or some regular expression matching the datastore name.
 
 If you have a datastore called "vc_data_store_1" and you would like to use this datastore for both persistent and non persistent disks. Your config would look like:
 
-            		datastore_pattern: vc_data_store_1 
+            		datastore_pattern: vc_data_store_1
             		persistent_datastore_pattern:  vc_data_store_1
             		allow_mixed_datastores: true
 
 If you have 2 datastores called "vc_data_store_1", "vc_data_store_2" and you would like to use both datastore for both persistent and non persistent disks. Your config would look like:
 
-            		datastore_pattern: vc_data_store_? 
+            		datastore_pattern: vc_data_store_?
             		persistent_datastore_pattern:  vc_data_store_?
             		allow_mixed_datastores: true
 
 If you have 2 datastores called "vnx:1",  "vnx:2" and you would like to separate your persistent and non persistent disks. Your config would look like
 
-            		datastore_pattern: vnx:1 
+            		datastore_pattern: vnx:1
             		persistent_datastore_pattern: vnx:2
             		allow_mixed_datastores: false
 
@@ -597,7 +609,7 @@ If you have 2 datastores called "vnx:1",  "vnx:2" and you would like to separate
 		+-------------------------------+----------------------------------------------------+
 		To download use 'bosh download public stemcell <stemcell_name>'.
 		% bosh download public stemcell micro-bosh-stemcell-0.1.0.tgz
-		
+
 
 1. Set the micro BOSH Deployment using:
 
@@ -823,7 +835,7 @@ Finally run
 		User           admin
 		Deployment     not set
 
-### Download a BOSH stemcell 
+### Download a BOSH stemcell
 
 1. List public stemcells with bosh public stemcells
 
@@ -839,7 +851,7 @@ Finally run
 		| bosh-stemcell-0.4.4.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...r144= |
 		+-------------------------------+----------------------------------------------------+
 		To download use 'bosh download public stemcell <stemcell_name>'.
-		
+
 
 1. Download a public stemcell. *NOTE, in this case you do not use the micro bosh stemcell.*
 
@@ -853,7 +865,7 @@ Finally run
 
 1. You can create a BOSH release or use one of the public releases. The following steps show the use of a public release.
 
-		cd /home/bosh_user 
+		cd /home/bosh_user
 		gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/bosh-release.git
 
 1. Upload a public release from bosh-release
@@ -1106,11 +1118,11 @@ A package is a collection of source code along with a script that contains instr
 
 ### Package Compilation ###
 
-Packages are compiled on demand during the deployment. The [director][] first checks to see if there already is a compiled version of the package for the stemcell version it is being deployed to, and if it doesn't already exist a compiled version, the director will instantiate a compile VM (using the same stemcell version it is going to be deployed to) which will get the package source from the blobstore, compile it, and then package the resulting binaries and store it in the blobstore.
+Packages are compiled on demand during the deployment. The [director](#bosh-director) first checks to see if there already is a compiled version of the package for the stemcell version it is being deployed to, and if it doesn't already exist a compiled version, the director will instantiate a compile VM (using the same stemcell version it is going to be deployed to) which will get the package source from the blobstore, compile it, and then package the resulting binaries and store it in the blobstore.
 
 To turn source code into binaries each package has a `packaging` script that is responsible for the compilation, and is run on the compile VM. The script gets two environment variables set from the BOSH agent which tells it where to install the files the package generates `BOSH_INSTALL_TARGET`, and the other is `BOSH_COMPILE_TARGET` which is the directory containing the source (which is the current directory when the `packaging` script is invoked). The `BOSH_INSTALL_TARGET` is set to `/var/vcap/data/packages/<package name>/<package version>`. When the package is installed a symlink is created from `/var/vcap/packages/<package name>` which points to the latest version of the package. This link should be used when refering to another package in the `packaging` script.
 
-There is an optional `pre_packaging` script, which is run when the source of the package is assembled during the `bosh create release`. It can for instance be used to limit which parts of the source that get packages up and stored in the blobstore. It gets the environment variable `BUILD_DIR` set by the [BOSH cli][], which is the directory containing the source to be packaged.
+There is an optional `pre_packaging` script, which is run when the source of the package is assembled during the `bosh create release`. It can for instance be used to limit which parts of the source that get packages up and stored in the blobstore. It gets the environment variable `BUILD_DIR` set by the [BOSH CLI](#bosh-cli), which is the directory containing the source to be packaged.
 
 ### Package specs ###
 
@@ -1129,13 +1141,13 @@ The package contents are specified in the `spec` file, which has three sections:
 
 The package `spec` file contains a section which lists other packages the current package depends on. These dependencies are compile time dependencies, as opposed to the job dependencies which are runtime dependencies.
 
-When the [director][director] plans the compilation of a package during a deployment, it first makes sure all dependencies are compiled before it proceeds to compile the current package, and prior to commencing the compilation all dependent packages are installed on the compilation VM.
+When the [director](#bosh-director) plans the compilation of a package during a deployment, it first makes sure all dependencies are compiled before it proceeds to compile the current package, and prior to commencing the compilation all dependent packages are installed on the compilation VM.
 
 ## Sources ##
 
 The `src` directory contains the source code for the packages.
 
-If you are using a source code repository to manage your release, you should avoid storing large objects in it (like source code tar-balls in the `src` directory), and instead use the [blobs][blobs] described below.
+If you are using a source code repository to manage your release, you should avoid storing large objects in it (like source code tar-balls in the `src` directory), and instead use the [blobs](#blobs) described below.
 
 ## Blobs ##
 
@@ -1218,9 +1230,9 @@ To create a new release use the `bosh create release` command. This will attempt
 The final release can be created once all the changes are tested and it's time to actually deploy a release to production. The are there main criteria differentiating final releases from dev releases:
 
 1. Versioning scheme: final releases are version independently. Every time new final release is generated its version is a simple increment of the previous final release version, no matter how many dev releases have been created in between. Same is true for individual release artifacts, their final versions are independent from dev versions.
-2. Blobs sharing: package and job tarballs included into the final release are also being uploaded to a blobstore, so any person who attempts create release in the same release repo in the future will be using same actual bits instead of generating them locally. This is important for consistency and for being able to generate old versions of final releases if needed. 
+2. Blobs sharing: package and job tarballs included into the final release are also being uploaded to a blobstore, so any person who attempts create release in the same release repo in the future will be using same actual bits instead of generating them locally. This is important for consistency and for being able to generate old versions of final releases if needed.
 3. Only reusing components, not generating new ones: final release is supposed to include only previously generated artifacts. If the fingerprint calculated from the current state of the repo didn't match previously generated dev or final version, the error will be raised, telling CLI user to make sure to generate and test dev release first.
- 
+
 Final release can be created by running `bosh create release --final`. Usually only people involved in updating production system should be generating final releases. There's also a `--dry-run` option to test out release creation without actually generating and uploading artifacts.
 
 By default all artifacts are stored in `.final_builds` directory inside the release repo, while release manifests are kept in `releases` directory. If the actual release tarball is required `bosh create release --with tarball` can be used. Also, `bosh create release /path/to/release_manifest.yml` can be used to recreate previously created release from its manifest. In both cases the output is a self-contained, ready-to-upload release tarball.
@@ -1238,7 +1250,7 @@ An example is as follows:
 7. `bosh create release --final` will now create final release 1, cloud_controller has dev version 0.2, which also gets rebranded as final version 1.
 8. Next edits to cloud_controller will subsequently generate dev version 1.1, 1.2 etc., until new final version is created
 
-The main point of this versioning scheme is to partition release engineering process between two audiences: 
+The main point of this versioning scheme is to partition release engineering process between two audiences:
 
 1. Developers who are quickly iterating on their changes and don't really care about keeping consistent versioning of Bosh Release, BOSH CLI takes care of all versioning details for them and prevents others from seeing all the work-in-progress releases.
 2. SREs who are actually building releases for production use and want them to be consistently versioned and source controlled.
@@ -1268,7 +1280,7 @@ When you do a deploy using BOSH the following sequence of steps occur:
 
 ## BOSH Deployment Manifest
 
-The BOSH Deployment manifest is a YAML file defining the layout and properties of the deployment. When BOSH user initiates a new deployment using CLI, BOSH Director receives a version of deployment manifest and creates a new deployment plan using this manifest (see [Steps of a Deployment][]). Manifest contains several sections:
+The BOSH Deployment manifest is a YAML file defining the layout and properties of the deployment. When BOSH user initiates a new deployment using CLI, BOSH Director receives a version of deployment manifest and creates a new deployment plan using this manifest (see [Steps of a Deployment](#steps-of-a-deployment)). Manifest contains several sections:
 
 * `name` [String, required] Deployment name. Single BOSH Director can manage multiple deployments and distinguishes them by name.
 * `director_uuid` [String, required] Director UUID. Identifies BOSH Director that manages given deployment. A targeted Director UUID should match this property in order for BOSH CLI to allow any operations on the deployment.
