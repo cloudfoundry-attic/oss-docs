@@ -687,14 +687,14 @@ Next create a tarball of the bosh release
 		cd ~
 		git clone git@github.com:cloudfoundry/bosh-release.git
 		cd ~/bosh-release
-		git submodule init --update
+		git submodule update --init
 		bosh create release --with-tarball
 
 If this is the first time you run `bosh create release` in the release repo, it will ask you to name the release, e.g. "bosh", and then the output will be dev_releases/bosh-n.tgz
 
 ### Create manifest
 
-Now you need to create the mocro BOSH manifest file, call it `aws_micro.yml`
+Now you need to create the micro BOSH manifest file, call it `aws_micro.yml`
 
 		---
 		deployment: micro
@@ -772,6 +772,7 @@ Now you need to create the mocro BOSH manifest file, call it `aws_micro.yml`
 
 Now you have all the pieces to assemble the micro BOSH AWS stemcell
 
+        sudo apt-get -y install debootstrap python-vm-builder
 		cd ~/bosh/agent
 		rake stemcell:micro[micro_bosh:aws,aws_micro.yml,bosh-1.tgz,chroot-aws.tgz]
 
@@ -810,7 +811,7 @@ Then log on to the AWS VM and create the file `~/deployments/aws/micro_bosh.yml`
 
 Finally run
 
-		cd deployments
+		cd ~/deployments
 		bosh micro deployment aws
 		bosh micro deploy ~/bosh-stemcell-aws-0.5.2.tgz
 
