@@ -888,6 +888,32 @@ Finally run
 
 1. Target the newly deployed bosh director. In the sample `bosh.yml`, the bosh director has the ip address 192.0.2.36. So if you target this director with `bosh target http://192.0.2.36:25555` where 25555 is the default BOSH director port.  Your newly installed BOSH instance is now ready for use.
 
+# Deploying to AWS using BOSH
+
+The BOSH cloud provider interface for AWS allows BOSH to deploy to AWS.
+
+## AWS cloud properties
+
+The cloud properties specific to AWS are
+
+### Resource pools
+
+1. `key_name`
+
+1. `availability_zone`
+
+1. `instance_type`
+
+### Networks
+
+1. `type`
+
+1. `ip`
+
+## Security concern deploying Cloud Foundry to AWS
+
+If you deploy [Cloud Foundry](https://github.com/cloudfoundry/cf-release) to AWS using BOSH, the deployment property `nfs_server.network` needs to be set to `*` (or `10/8`) as we don't have a way to limit the list of IPs belonging to the deployment. To limit access, create and use a security group.
+
 # BOSH Command Line Interface #
 
 The BOSH command line interface is used to interact with the BOSH director to perform actions on the cloud.  For the most recent documentation on its functions, install BOSH and simply type `bosh`.  Usage:
