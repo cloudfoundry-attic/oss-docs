@@ -1,0 +1,62 @@
+---
+name: uBosh-dev-manager
+
+#
+# Change network settings to match your environment.
+#
+
+network:
+  ip: 10.1.2.10 # The IP address of your soon-to-be-deployed Micro BOSH
+  netmask: 255.255.0.0 
+  gateway: 10.1.1.1
+  dns:
+  - 10.1.1.2 # You can also include a second DNS server underneath this line.
+  cloud_properties:
+    name: "VM Network"
+
+resources:
+   persistent_disk: 16384
+   cloud_properties:
+      ram: 8192
+      disk: 16384
+      cpu: 4
+
+
+cloud:
+  plugin: vsphere
+  properties:
+    agent:
+      ntp:
+       - ntp.pool.org          # Specify any NTP server
+    vcenters:
+      - host: 10.1.1.3         # Your vCenter server IP
+        user: administrator    # The vCenter user for login
+        password: 238djd29d3lH # The vCenter user password 
+        datacenters:
+          - name: Dev
+            vm_folder: MicroBOSH_VMs
+            template_folder: MicroBOSH_Templates
+            disk_path: MicroBOSH_Disks
+            datastore_pattern: 1TB-ISCSI
+            persistent_datastore_pattern: 1TB-ISCSI
+            allow_mixed_datastores: true
+            clusters:
+            - Rubicon: # The Cluster name
+                resource_pool: MicroBOSH
+apply_spec:
+  properties:
+    vcenter:
+      host: 10.1.1.3
+      user: administrator      # Your vCenter username
+      password: 238djd29d3lH   # Your vCenter password
+      datacenters:
+        - name: Dev
+          vm_folder: BOSH_VMs             # Create this folder manually in vCenter
+          template_folder: BOSH_Templates # Ditto.
+          disk_path: BOSH_Disks           # Create this path manually in your datastore
+          datastore_pattern: 1TB-ISCSI    # See documentation.md (official doc) for more on the datastore pattern
+          persistent_datastore_pattern: 1TB-ISCSI
+          allow_mixed_datastores: true
+          clusters:
+          - Rubicon:
+              resource_pool: MicroBOSH

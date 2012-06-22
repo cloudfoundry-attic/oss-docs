@@ -1,0 +1,647 @@
+---
+#
+# This is a sample deployment manifest for a "developer" sized distributed instance of a cloud
+# application platform. All passwords, tokens, and secrets have been generated for illustrative purposes
+# in this file only. They should be changed prior to deployment.
+#
+# A note on DNS: You should assign at least one static IP to the router component. 
+# In addition, you may want to update your external DNS server
+# with a wildcard entry that maps that IP to requests sent to your cloud platform, ie *.dev124.dev.cloud
+#
+
+name: dev124     # The name used by BOSH to label your deployment.
+director_uuid: f5fc4c3e-2f4f-4e67-8d31-ab7efaa65dbb # Change this to the UUID of your BOSH Director
+                                                    # You can find this by running > bosh status
+release:
+  name: appcloud # The name of your release as specified in your release manifest
+  version: 77    # The version of your release as specified in your release manifest
+
+compilation:
+  workers: 4    
+  network: default
+  cloud_properties:
+    ram: 2048
+    disk: 8096
+    cpu: 4
+
+update:
+  canaries: 1
+  canary_watch_time: 3000-90000
+  update_watch_time: 3000-90000
+  max_in_flight: 4
+  max_errors: 1
+
+networks:
+
+- name: default               # A label for the network within the manifest file
+  subnets:
+  - range: 10.1.5.0/16        # Make certain you have enough IP addresses for your deployment.
+    reserved:
+    - 10.1.5.151 - 10.1.5.200 # IP addresses which are reserved for other uses.
+    static:
+    - 10.1.5.2 - 10.1.5.150   # A range of static IPs that can be used by your deploymed VMs.
+    gateway: 10.1.1.1       
+    dns:
+    - 10.1.1.2
+    cloud_properties:
+      name: "VM Network" # The name of the network within your cloud infrastructure, 
+                         # in this case vCenter.
+#
+# If you had a load balancer in your network, you could reference it here.
+#
+#- name: lb
+#  subnets:
+#  - range: 10.1.5.128/25
+#    static:
+#    - 10.1.5.130- 10.1.5.133
+#    reserved:
+#    - 10.1.5.135 - 10.1.5.140
+#    dns:
+#    - 10.1.5.103
+#    - 172.20.230.20
+#    cloud_properties:
+#      name: "VM Network"
+
+resource_pools:
+
+- name: infrastructure
+  network: default
+  size: 42
+  stemcell:
+    name: bosh-stemcell
+    version: 0.5.2
+  cloud_properties:
+    ram: 4096
+    disk: 8192
+    cpu: 1
+  env:
+    bosh:
+      password: 28dhUbdlIw9 # Create a secure password.
+
+- name: deas
+  network: default
+  size: 4
+  stemcell:
+    name: bosh-stemcell
+    version: 0.5.2
+  cloud_properties:
+    ram: 8192
+    disk: 16384
+    cpu: 4
+  env:
+    bosh:
+      password: 28dhUbdlIw9 # Enter your secure BOSH password from above.
+jobs:
+
+- name: debian_nfs_server
+  template: debian_nfs_server
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 8192
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.23 # Enter a static IP
+
+- name: services_nfs
+  template: debian_nfs_server
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 8192
+  properties:
+    debian_nfs_server:
+      no_root_squash: true
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.24 # Enter a static IP
+
+- name: syslog_aggregator
+  template: syslog_aggregator
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 600
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.25 # Enter a static IP
+
+- name: nats
+  template: nats
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.26 # Enter a static IP
+
+- name: opentsdb
+  template: opentsdb
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 8192
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.27 # Enter a static IP
+
+- name: collector
+  template: collector
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default # No static IP required here
+
+- name: dashboard
+  template: dashboard
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default # No static IP required here
+
+- name: ccdb_postgres
+  template: postgres
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 2048
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.28 # Enter a static IP.
+  properties:
+    db: ccdb
+
+- name: uaadb
+  template: postgres
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 2048
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.29 # Enter a static IP.
+  properties:
+    db: uaadb
+
+- name: vcap_redis
+  template: vcap_redis
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.30 # Enter a static IP.
+
+- name: services_redis
+  template: vcap_redis
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 2048
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.31 # Enter a static IP.
+  properties:
+    vcap_redis:
+      port: 3456
+      password: 38fsfkjnwefui
+      maxmemory: 2000000000
+      persistence:
+        dir: /var/vcap/store/vcap_redis
+
+- name: uaa
+  template: uaa
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default # No static IP required here
+
+- name: acmdb
+  template: postgres
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 2048
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.32  # Enter a static IP.
+  properties:
+    db: acmdb
+
+- name: acm
+  template: acm
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.33   # Enter a static IP.
+
+- name: cloud_controller
+  template: cloud_controller
+  instances: 2
+  resource_pool: infrastructure
+  networks:
+  - name: default # No static IP required here
+
+- name: stager
+  template: stager
+  instances: 2
+  resource_pool: infrastructure
+  networks:
+  - name: default # No static IP required here
+
+- name: router
+  template: router
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.34 # Enter a static IP. This should also be referenced in your DNS and point to your *.cloud.domain.com
+    default: [dns, gateway]
+#  - name: lb
+#    static_ips:
+#    - 10.1.5.128 - 10.1.5.129
+
+- name: health_manager
+  template: health_manager
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.36             # Enter a static IP.
+
+- name: health_manager_next
+  template: health_manager_next
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default           # No static IP required here
+
+- name: dea
+  template: dea
+  instances: 4
+  resource_pool: deas
+  networks:
+  - name: default           # No static IP required here
+
+- name: mysql_node
+  template: mysql_node
+  instances: 2
+  resource_pool: infrastructure
+  persistent_disk: 800
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.37 - 10.1.5.38 # Enter a static IP for each instance.
+
+- name: mysql_gateway
+  template: mysql_gateway
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default           # No static IP required here
+
+- name: mongodb_node
+  template: mongodb_node
+  instances: 2
+  resource_pool: infrastructure
+  persistent_disk: 4096
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.39 - 10.1.5.40 # Enter a static IP for each instance.
+
+- name: mongodb_gateway
+  template: mongodb_gateway
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default          # No static IP required here
+
+- name: redis_node
+  template: redis_node
+  instances: 2
+  resource_pool: infrastructure
+  persistent_disk: 600
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.41 - 10.1.5.42 # Enter a static IP for each instance.
+
+- name: redis_gateway
+  template: redis_gateway
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default           # No static IP required here
+
+- name: rabbit_node
+  template: rabbit_node
+  instances: 2
+  resource_pool: infrastructure
+  persistent_disk: 4096
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.43 - 10.1.5.44 # Enter a static IP for each instance.
+
+- name: rabbit_gateway
+  template: rabbit_gateway
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default           # No static IP required here
+
+- name: postgresql_node
+  template: postgresql_node
+  instances: 2
+  resource_pool: infrastructure
+  persistent_disk: 650
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.45 - 10.1.5.46 # Enter a static IP for each instance.
+
+- name: postgresql_gateway
+  template: postgresql_gateway
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default          # No static IP required here
+
+- name: vblob_node
+  template: vblob_node
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 1024
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.47            # Enter a static IP.
+
+- name: vblob_gateway
+  template: vblob_gateway
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default          # No static IP required here
+
+- name: backup_manager
+  template: backup_manager
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.48            # Enter a static IP.
+
+- name: service_utilities
+  template: service_utilities
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default
+    static_ips:
+    - 10.1.5.49            # Enter a static IP
+
+- name: serialization_data_server
+  template: serialization_data_server
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default          # No static IP required here
+
+properties:
+  domain: dev124.dev.cloud # The domain for your cloud application platform.
+
+  env:
+
+  networks:
+    apps: default
+    management: default
+
+  nats:
+    user: nats
+    password: 28d2jbwjJodh6  # Create a secure password
+    address: 10.1.5.26       # Change this IP address
+    port: 4222
+
+  ccdb:
+    address: 10.1.5.28       # Change this IP address
+    port: 5524
+    pool_size: 10
+    roles:
+    - tag: admin
+      name: ccadmin
+      password: 3834hf93nfUy # Create a secure password
+    databases:
+    - tag: cc
+      name: appcloud
+
+  uaadb:
+    address: 10.1.5.29      # Change this IP address
+    port: 2544
+    roles:
+    - tag: admin
+      name: root
+      password: 29d3uB9fjhs # Create a secure password
+    databases:
+    - tag: uaa
+      name: uaa
+
+  acmdb:
+    address: 10.1.5.32     # Change this IP address
+    port: 2544
+    roles:
+    - tag: admin
+      name: root
+      password: 9je9hebdjw # Create a secure password
+    databases:
+    - tag: acm
+      name: acm
+
+  cc:
+    srv_api_uri: http://api.dev124.dev.cloud # Enter a valid URI for your domain
+    password: PZuqdfn28cbhsilU               # Create a password
+    token: 28dh29d29fbvkoHydzP               # Create a token
+    use_nginx: true
+    new_stager_percent: 100
+    new_stager_email_regexp: '.*@yourdomain.com'
+    staging_upload_user: k2hddsn3Vba1      # Create a username
+    staging_upload_password: BF28H1akY83d  # Create a secure password
+    allow_registration: true
+    uaa:
+      enabled: true
+      resource_id: cloud_controller
+      token_creation_email_filter: [yourdomain.com, yourotherdomain.com] # Enter valid domain(s)
+    admins:
+    - admin@yourdomain.com  # Enter a valid email address
+
+  vcap_redis:
+    address: 10.1.5.30       # Create a secure password
+    port: 5454
+    password: 929fdj2judnbwi # Create a secure password
+    maxmemory: 2000000000    # 2GB
+
+  router:
+    status:
+      port: 8080
+      user: 329dhqlR     # Create a username
+      password: h2Y74No2 # Create a secure password
+
+  dashboard:
+    users:
+      - [b29, admin]
+
+  dea:
+    max_memory: 4096
+
+  nfs_server:
+    address: 10.1.5.23   # Change this IP address
+    network: 10.1.5.0/16 # Change this network range
+
+  opentsdb:
+    address: 10.1.5.27   # Change this IP address
+    port: 4242
+
+  service_plans:
+    mysql:
+      free:
+        job_management:
+          high_water: 1400
+          low_water: 100
+        configuration:
+          allow_over_provisioning: true
+          capacity: 200
+          max_db_size: 128
+          max_long_query: 3
+          max_long_tx: 0
+          max_clients: 20
+    postgresql:
+      free:
+        job_management:
+          high_water: 1400
+          low_water: 100
+        configuration:
+          capacity: 200
+          max_db_size: 128
+          max_long_query: 3
+          max_long_tx: 30
+          max_clients: 20
+    mongodb:
+      free:
+        job_management:
+          high_water: 3000
+          low_water: 100
+        configuration:
+          allow_over_provisioning: true
+          capacity: 200
+          quota_files: 4
+          max_clients: 500
+    redis:
+      free:
+        job_management:
+          high_water: 1400
+          low_water: 100
+        configuration:
+          capacity: 200
+          max_memory: 16
+          max_swap: 32
+          max_clients: 500
+    rabbit:
+      free:
+        job_management:
+          low_water: 100
+          high_water: 1400
+        configuration:
+          max_memory_factor: 0.5
+          max_clients: 512
+          capacity: 200
+    vblob:
+      free:
+        job_management:
+          low_water: 100
+          high_water: 1400
+        configuration:
+          capacity: 200
+
+  service_lifecycle:                                     
+    download_url: service-serialization.dev124.dev.cloud # Modify this url for your environment
+    mount_point: /var/vcap/service_lifecycle
+    tmp_dir: /var/vcap/service_lifecycle/tmp_dir
+    resque:
+      host: 10.1.5.50    # Change this IP address
+      port: 3456
+      password: 9fns03nf # Create a secure password
+    nfs_server:
+      address: 10.1.5.24 # Change this IP address
+      export_dir: /var/vcap/store/shared
+
+  mysql_gateway:
+    check_orphan_interval: 7200
+    token: "0xffffffff" # Change this to your own token string
+  mysql_node:
+    production: true
+    password: fh328f2k  # Create a secure password
+
+  redis_gateway:
+    token: "0xffffffff" # Change this to your own token string
+    check_orphan_interval: 7200
+  redis_node:
+    command_rename_prefix: foobar
+
+  mongodb_gateway:
+    check_orphan_interval: 7200
+    token: "0xffffffff" # Change this to your own token string
+  mongodb_node:
+    {}
+
+  rabbit_gateway:
+    token: ABD38934983483493483948394384D9 # Change this to your own token string
+    check_orphan_interval: 7200
+  rabbit_node:
+    {}
+
+  postgresql_gateway:
+    check_orphan_interval: 7200
+    token: s9d8fh30ddm39dlf93ngkW02jflskd8 # Change this to your own token string  
+  postgresql_node:
+    production: true
+
+  vblob_gateway:
+    token: H83udf39fdka9Jkfhksdjbe2sl     # Change this to your own token string
+    acls:
+      wildcards: [*@dev.cloud]
+  vblob_node:
+    vblobd_auth: s3
+    nfs_server:
+      address: 10.1.5.24 # Change this IP address. It should reference your services_nfs server.
+      export_dir: /var/vcap/store/shared
+
+  syslog_aggregator:
+    address: 10.1.5.25   # Change this IP address
+    port: 54321
+
+  stager:
+    max_staging_duration: 120
+    max_active_tasks: 20
+    queues:
+    - staging
+
+  uaa:
+    cc:
+      token_secret: Ghnvbw947fnUo     # Create your own token secret
+      client_secret: 27Gd9s3jdbvqpao2 # Create your own client secret       
+    admin:
+      client_secret: 63HgbdW782563Kbx # Create your own client secret          
+    batch:
+      username: UvG284710kJq  # Create a username
+      password: 8Hgdowb2108Tz # Create a password
+                
+  acm:
+    user: 8fhw92nfks27fhld     # Create a user
+    password: Bvsufjqp827db28s # Create a password
+              
