@@ -279,29 +279,37 @@ With a fully configured environment, we can begin deploying a Cloud Foundry Rele
 
 1. Create a Release
 
-		bosh create release --force --with-tarball
+		bosh create release --force
 
 1. Answer `cloudfoundry` to the `release name` prompt
 
 1. Your terminal will display information about the release including the Release Manifest, Packages, Jobs, and tarball location.
 
-1. Open `bosh/samples/cloudfoundry.yml` (in documentation repository) in your favorite text editor and confirm that `name` is `cloudfoundry` and `version` matches the version that was displayed in your terminal (if this is your first release, this will be version 1.)
+1. Create or locate a manifest file.  For instance copy
+`bosh/samples/cloudfoundry.yml` from the `oss-docs` documentation
+repository.
+
+1. Open the manifest file in your favorite text editor and confirm that `name` and `version` matches the version that was displayed in your terminal at the end of the release creation (if this is your first release, it will be version 1.)
 
 ### Deploy the Release ###
 
+1. Set the deployment to point to your manifest file
+
+        bosh deployment path/to/my-manifest.yml
+
 1. Upload the cloudfoundry Release to your Environment.
 
-		bosh upload release dev_releases/cloudfoundry-1.tgz
+		bosh upload release
 
 1. Your terminal will display information about the upload, and an upload progress bar will reach 100% after a few minutes.
 
-1. Open `bosh/samples/cloudfoundry.yml` and make sure that your network settings match the environment that you were given.
+1. Open the manifest and make sure that your network settings match the environment that you were given.
 
 1. Deploy the Release.
 
 		bosh deploy
 
-1. Your deployment will take a few minutes.
+1. Your deployment will take a few minutes. If it fails then possibly the manifest does not match the release directory.  If your target platform has a template manifest provided by the adminitrator (e.g. `template.erb`), you can use `bosh diff template.erb` to compare your manifest to the most up  to data target and fix common problems like missing properties or jobs.
 
 1. You may now target the Cloud Foundry deployment using VMC, as described in the Cloud Foundry documentation.
 
