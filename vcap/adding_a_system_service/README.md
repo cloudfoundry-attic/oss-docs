@@ -33,21 +33,21 @@ typing `vmc services`:
 
 ![services.png](https://github.com/cloudfoundry/oss-docs/raw/master/vcap/adding_a_system_service/images/services.png)
 
-## Adding the echo service to the system services
+## We have included a boilerplate sample service "echo" that you can copy and update for your own use case.
 
-After completing this section our echo service will appear as a system service
+After making echo service out of "excluded components"(see `https://github.com/cloudfoundry/vcap/blob/master/dev_setup/README`) then re-run `.../cloudfoundry/vcap/dev_setup/bin/vcap_dev start`
+our echo service will appear as a system service
 in the table printed by `vmc services`. This guide can be used for both
 single-machine and distributed setup of Cloud Foundry. **Note that by ellipsis
 (...) we mean the directory where your Cloud Foundry installation resides.**
-Here are the steps you need to execute:
+Here are the places you need to pay attention to if you would like to build your own service:
 
 1. On the file
-	`.../cloudfoundry/.deployments/devbox/config/vcap_components.json` add echo_node and echo_gateway to the list:
+	`.../cloudfoundry/.deployments/devbox/config/vcap_components.json`, echo_node and echo_gateway were put in the list:
 
-    
-        {"components":["health_manager","cloud_controller","redis_node","redis_gateway","neo4j_node","mysql_gateway","dea","router","mongodb_gateway","mongodb_node","neo4j_gateway","mysql_node","echo_node","echo_gateway"]}
+        {"components":["router","cloud_controller","health_manager","dea","uaa","vcap_redis","serialization_data_server","redis_node","mysql_node","mongodb_node","neo4j_node","rabbitmq_node","postgresql_node","vblob_node","memcached_node","elasticsearch_node","couchdb_node","redis_gateway","mysql_gateway","mongodb_gateway","neo4j_gateway","rabbitmq_gateway","postgresql_gateway","vblob_gateway","memcached_gateway","elasticsearch_gateway","couchdb_gateway","filesystem_gateway","service_broker","backup_manager","snapshot_manager","redis_worker","mysql_worker","mongodb_worker","postgresql_worker", "echo_node", "echo_gateway"]}
 
-2. Add service token configuration at `.../cloudfoundry/.deployments/devbox/config/cloud_controller.yml`
+2. Service token configuration was put at `.../cloudfoundry/.deployments/devbox/config/cloud_controller.yml`
         
         # Services we provide, and their tokens. Avoids bootstrapping DB.
          builtin_services:
@@ -59,45 +59,39 @@ Here are the steps you need to execute:
              token: changemysqltoken
            neo4j:
              token: changeneo4jtoken
+           rabbitmq:
+             token: changerabbitmqtoken
+           postgresql:
+             token: changepostgresqltoken
+           vblob:
+             token: changevblobtoken
+           memcached:
+             token: changememcachedtoken
+           filesystem:
+             token: changefilesystemtoken
+           elasticsearch:
+             token: changeelasticsearchtoken
+           couchdb:
+             token: changecouchdbtoken
            echo:
              token: changeechotoken
 
-
 3. On the services host go to
-`.../cloudfoundry/vcap/services/tools/misc/bin/nuke_service.rb` and add the path to the echo service configuration:
+`.../cloudfoundry/vcap/services/tools/misc/bin/nuke_service.rb` 
+and you can see the path to the echo service configuration is there:
 
         default_configs = {
           :mongodb => File.expand_path("../../mongodb/config/mongodb_gateway.yml", __FILE__),
           :redis => File.expand_path("../../redis/config/redis_gateway.yml", __FILE__),
           :mysql => File.expand_path("../../mysql/config/mysql_gateway.yml", __FILE__),
           :neo4j => File.expand_path("../../neo4j/config/neo4j_gateway.yml", __FILE__),
+          :vblob => File.expand_path("../../vblob/config/vblob_gateway.yml", __FILE__),
           :echo => File.expand_path("../../echo/config/echo_gateway.yml", __FILE__),
         }
 
-
-4. Create start scripts for '\_node' and '\_gateway' on the services host at
-`.../cloudfoundry/vcap/bin/services/`. These scripts just delegate to the real scripts provided with the service.
-
-   1. Content of 'echo_node':
-    
-            #!/usr/bin/env ruby
-             exec(File.expand_path("../../../services/echo/bin/echo_node", __FILE__), *ARGV)
-
-   2. Content of 'echo_gateway':
-    
-            #!/usr/bin/env ruby
-             exec(File.expand_path("../../../services/echo/bin/echo_gateway", __FILE__), *ARGV)
-
-   3. Make them executable:
-
-            $ chmod +x .../cloudfoundry/vcap/bin/services/echo_{node,gateway} 
-
-5. Download and extract the implementation of the [echo service provisioner](https://github.com/cloudfoundry/oss-docs/raw/master/vcap/adding_a_system_service/support/echo_sp.zip) to the services host. Then move the implementation files and config files to the appropriate locations:
-
-        $ unzip echo_sp.zip
-        $ cp -r echo .../cloudfoundry/vcap/services/
-        $ cp echo/config/echo_{gateway,node}.yml .../cloudfoundry/.deployments/devbox/config/
-
+4. On the services host go to 
+`.../cloudfoundry/vcap/services/echo` 
+and you can see the echo service implementation including codes and config files
 
     Ensure the echo_gateway and echo_node config files look like the following, with the appropriate IP address and port substitutions:
 
@@ -110,12 +104,12 @@ Here are the steps you need to execute:
            version: "1.0"  
            description: 'Echo key-value store service'  
            plans: ['free']  
-           tags: ['echo', 'echo-1.0', 'key-value', 'echobased']  
+           tags: ['echo', 'echo-1.0', 'echobased', 'demo']
          index: 0  
          token: changeechotoken
          logging:  
            level: debug
-         mbus: nats://nats:nats@<nats_host>:<nats_port>
+         mbus: nats://nats:nats@<nats_host>:<nats_port>/
          pid: /var/vcap/sys/run/echo_service.pid   
          node_timeout: 2 
 
@@ -123,27 +117,50 @@ Here are the steps you need to execute:
     `.../cloudfoundry/.deployments/devbox/config/echo_node.yml`
 
         ---  
+        capacity: 100
+        plan: free
         local_db: sqlite3:/var/vcap/services/echo/echo_node.db  
-        mbus: nats://nats:nats@<nats_host>:<nats_port>
-         index: 0  
+        mbus: nats://nats:nats@<nats_host>:<nats_port>/
+        index: 0 
         base_dir: /var/vcap/services/echo/  
         ip_route: <services_host_ip>  
         logging:  
           level: debug  
         pid: /var/vcap/sys/run/echo_node.pid  
-        available_memory: 4096  
-        node_id: echo_node_1  
+        node_id: echo_node_0 
         port: <echo_service_port> # port where echo service listens  
         host: <echo_service_host> # host where echo service resides. May be different from services host
 
     **Prefer using real IP addresses over localhost as some of these variables may become part of environment on other hosts!**
 
-6. Bundle the necessary dependencies for the node and gateway:
+5. On the services host go to
+`.../cloudfoundry/vcap/dev_setup/lib/vcap_components.rb`
+and you can see echo was registered as valid component
+
+    https://github.com/cloudfoundry/vcap/blob/master/dev_setup/lib/vcap_components.rb#L399-L406
+
+        ## services: gateways & nodes
+        %w(redis mysql mongodb rabbitmq postgresql vblob neo4j memcached couchdb elasticsearch filesystem echo).each do |service|
+          ServiceComponent.register("#{service}_gateway")
+        end
+
+        %w(redis mysql mongodb rabbitmq postgresql vblob neo4j memcached couchdb elasticsearch echo).each do |service|
+          ServiceComponent.register("#{service}_node")
+        end
+
+6. Bundle the necessary dependencies for the node and gateway for the new service:
+
+    Take echo service as example:
 
         $ cd .../cloudfoundry/vcap/services/echo
         $ source $HOME/.cloudfoundry_deployment_profile && bundle package
 
-7. Restart cloud controller and services node:
+7. To modify the default exclusion components list, add/remove the component name in `.../cloudfoundry/vcap/dev_setup/lib/vcap_components.rb` to/from 
+DEFAULT_CLOUD_FOUNDRY_EXCLUDED_COMPONENT then you do not have to use environment variable
+
+        DEFAULT_CLOUD_FOUNDRY_EXCLUDED_COMPONENT = 'neo4j|memcached|couchdb|service_broker|elasticsearch|backup_manager|vcap_redis|worker|snapshot_manager|serialization_data_server|echo'
+
+8. Restart cloud controller, service gateway and node:
 
         $ .../cloudfoundry/vcap/dev_setup/bin/vcap_dev restart
    
