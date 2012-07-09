@@ -74,25 +74,7 @@ Here are the steps you need to execute:
           :echo => File.expand_path("../../echo/config/echo_gateway.yml", __FILE__),
         }
 
-
-4. Create start scripts for '\_node' and '\_gateway' on the services host at
-`.../cloudfoundry/vcap/bin/services/`. These scripts just delegate to the real scripts provided with the service.
-
-   1. Content of 'echo_node':
-    
-            #!/usr/bin/env ruby
-             exec(File.expand_path("../../../services/echo/bin/echo_node", __FILE__), *ARGV)
-
-   2. Content of 'echo_gateway':
-    
-            #!/usr/bin/env ruby
-             exec(File.expand_path("../../../services/echo/bin/echo_gateway", __FILE__), *ARGV)
-
-   3. Make them executable:
-
-            $ chmod +x .../cloudfoundry/vcap/bin/services/echo_{node,gateway} 
-
-5. Download and extract the implementation of the [echo service provisioner](https://github.com/cloudfoundry/oss-docs/raw/master/vcap/adding_a_system_service/support/echo_sp.zip) to the services host. Then move the implementation files and config files to the appropriate locations:
+4. Download and extract the implementation of the [echo service provisioner](https://github.com/cloudfoundry/oss-docs/raw/master/vcap/adding_a_system_service/support/echo_sp.zip) to the services host. Then move the implementation files and config files to the appropriate locations:
 
         $ unzip echo_sp.zip
         $ cp -r echo .../cloudfoundry/vcap/services/
@@ -138,12 +120,12 @@ Here are the steps you need to execute:
 
     **Prefer using real IP addresses over localhost as some of these variables may become part of environment on other hosts!**
 
-6. Bundle the necessary dependencies for the node and gateway:
+5. Bundle the necessary dependencies for the node and gateway:
 
         $ cd .../cloudfoundry/vcap/services/echo
         $ source $HOME/.cloudfoundry_deployment_profile && bundle package
 
-7. Restart cloud controller and services node:
+6. Restart cloud controller and services node:
 
         $ .../cloudfoundry/vcap/dev_setup/bin/vcap_dev restart
    
