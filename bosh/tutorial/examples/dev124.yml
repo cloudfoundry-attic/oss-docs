@@ -573,7 +573,7 @@ properties:
     mount_point: /var/vcap/service_lifecycle
     tmp_dir: /var/vcap/service_lifecycle/tmp_dir
     resque:
-      host: 10.1.5.50    # Change this IP address
+      host: 10.1.5.31    # This IP address needs to match services_redis
       port: 3456
       password: 9fns03nf # Create a secure password
     nfs_server:
