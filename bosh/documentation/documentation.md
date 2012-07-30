@@ -319,25 +319,25 @@ Installation of BOSH is done using something called Micro BOSH, which is a singl
 
 A good way to think about this two step process is to consider that BOSH is a distributed system in itself. Since BOSH's core purpose is to deploy and manage distributed systems, it makes sense that we would use it to deploy itself. On the BOSH team, we gleefully refer to this as [Inception](http://en.wikipedia.org/wiki/Inception).
 
-## BOSH Deployer ##
+## BOSH bootstrap ##
 
 ### Prerequisites ###
 
-1. It is recommend that you install into an empty gemset (or similar.)
+1. We recommend that you run the BOSH bootstrap from Ubuntu since it is the distribution used by the BOSH team, and has been thoroughly tested.
 
-1. Install some core packages on Ubuntu.
+1. Install some core packages on Ubuntu that the BOSH deployer depends on.
 
 		sudo apt-get -y install libsqlite3-dev genisoimage
 
-1. Build the BOSH Deployer, which is also known as Micro BOSH.
+1. Ruby 1.9.2 or later.
 
-		cd bosh/deployer
-		bundle install
-		rake install
+1. Install the BOSH Deployer ruby gem.
 
-Once you have installed Micro BOSH, you will see some extra commands appear after typing `bosh` on your command line.
+		gem install bosh_deployer
 
-**The `bosh micro` commands must be run within the deployments directory**
+Once you have installed the deployer, you will see some extra commands appear after typing `bosh` on your command line.
+
+**The `bosh micro` commands must be run within a micro BOSH deployment directory**
 
 		% bosh help
 		...
@@ -346,17 +346,17 @@ Once you have installed Micro BOSH, you will see some extra commands appear afte
 			micro status              Display micro BOSH deployment status
 			micro deployments         Show the list of deployments
 			micro deploy <stemcell>   Deploy a micro BOSH instance to the currently
-                            selected deployment
-                            --update   update existing instance
+                                      selected deployment
+                            --update  update existing instance
 			micro delete              Delete micro BOSH instance (including
-                            persistent disk)
+                                      persistent disk)
 			micro agent <args>        Send agent messages
 			micro apply <spec>        Apply spec
 
 
 ### Configuration ###
 
-For a minimal configuration example, see: `https://github.com/cloudfoundry/bosh/blob/master/deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your Deployment name.
+For a minimal vSphere configuration example, see: `https://github.com/cloudfoundry/bosh/blob/master/deployer/spec/assets/test-bootstrap-config.yml`. Note that `disk_path` is `BOSH_Deployer` rather than `BOSH_Disks`. A datastore folder other than `BOSH_Disks` is required if your vCenter hosts other Directors. The `disk_path` folder needs to be created manually. Also, your configuration must live inside a `deployments` directory and follow the convention of having a `$name` subdir containing `micro_bosh.yml`, where `$name` is your deployment name.
 
 For example:
 
@@ -365,7 +365,7 @@ For example:
 		deployments/dev32/micro_bosh.yml
 		deployments/dev33/micro_bosh.yml
 
-Deployment state is persisted to deployments/bosh-deployments.yml.
+Deployment state is persisted to `deployments/bosh-deployments.yml`.
 
 ### vCenter Configuration ###
 
@@ -659,6 +659,8 @@ The `deployments` command prints a table view of deployments/bosh-deployments.ym
 
 		% bosh micro deployments
 
+The files in the `deployments` directory need to be saved if you later want to be able to update your micro BOSH instance. They are all text files, so you can commit them to a git repository to make sure they are safe in case your bootstrap VM goes away.
+
 ### Applying a specification
 
 The micro-bosh-stemcell includes an embedded `apply_spec.yml`. This command can be used to apply a different spec to an existing instance. The `apply_spec.yml` properties are merged with your Deployment's network.ip and cloud.properties.vcenters properties.
@@ -677,20 +679,11 @@ Example:
 
 ## Building your own micro BOSH stemcell for AWS
 
-If you want to create your own micro BOSH stemcell to use with AWS, this section describes the steps needed to do it.
-
-### Build the chroot
-
-The first step is to create the base contents of the stemcell
-
-		cd ~/bosh/agent
-		rake stemcell:chroot_tgz[aws]
-
-This outputs a file in `/var/tmp/bosh/agent-x.y.z-nnnnn/chroot-aws.tgz`
+If you want to create your own micro BOSH stemcell to use with AWS, this section describes the steps needed to do it, however, the recommended way is to download one of the public stemcells.
 
 ### Build the BOSH release
 
-Next create a tarball of the bosh release
+First you need to create a tarball of the bosh release
 
 		cd ~
 		git clone git@github.com:cloudfoundry/bosh-release.git
@@ -698,11 +691,11 @@ Next create a tarball of the bosh release
 		git submodule update --init
 		bosh create release --with-tarball
 
-If this is the first time you run `bosh create release` in the release repo, it will ask you to name the release, e.g. "bosh", and then the output will be dev_releases/bosh-n.tgz
+If this is the first time you run `bosh create release` in the release repo, it will ask you to name the release, e.g. "`bosh`", and then the output will be `dev_releases/bosh-n.tgz`.
 
-### Create manifest
+### Micro BOSH manifest
 
-Now you need to create the micro BOSH manifest file, call it `aws_micro.yml`
+Now you need the micro BOSH manifest file, which is available in the `bosh-release` repo in `micro/aws.yml`. It describes the components of micro BOSH and how they should be configured.
 
 		---
 		deployment: micro
@@ -775,22 +768,22 @@ Now you need to create the micro BOSH manifest file, call it `aws_micro.yml`
 		      agent_timeout: 180
 		      rogue_agent_alert: 180
 
+**Note that this manifest has passwords that are publicly known, but they can and should be overridden during the deployment**
 
 ### Build micro BOSH stemcell
 
 Now you have all the pieces to assemble the micro BOSH AWS stemcell
 
-        sudo apt-get -y install debootstrap python-vm-builder
 		cd ~/bosh/agent
-		rake stemcell:micro[micro_bosh:aws,aws_micro.yml,bosh-1.tgz,chroot-aws.tgz]
+		rake stemcell2:micro[aws,~/bosh-release/aws.yml,~/bosh-release/dev_builds/bosh-1.tgz]
 
-This outputs the stemcell in `/var/tmp/bosh/agent-x.y.z-nnnnn/bosh-stemcell-aws-x.y.z.tgz`
+This outputs the stemcell in `/var/tmp/bosh/agent-x.y.z-nnnnn/work/work/micro-bosh-stemcell-aws-x.y.z.tgz`
 
 ### Deploy it
 
-Before you can deploy, you need to upload the stemcell you build to your AWS VM:
+Before you can deploy, you need to upload the stemcell you built to your AWS bootstrap VM if you built the stemcell on your local system:
 
-		scp bosh-stemcell-aws-x.y.z.tgz ubuntu@ec2-nnn-nnn-nnn-nnn.compute-1.amazonaws.com:
+		scp micro-bosh-stemcell-aws-x.y.z.tgz ubuntu@ec2-nnn-nnn-nnn-nnn.compute-1.amazonaws.com:
 
 Then log on to the AWS VM and create the file `~/deployments/aws/micro_bosh.yml`
 
@@ -817,11 +810,57 @@ Then log on to the AWS VM and create the file `~/deployments/aws/micro_bosh.yml`
 		      default_security_groups: ["default"]
 		      ec2_private_key: ~/.ssh/ec2.pem
 
+		apply_spec:
+          properties:
+            nats:
+              user: ...
+              password: ...
+            postgres:
+              user: ...
+              password: ...
+            ...
+
 Finally run
 
 		cd ~/deployments
 		bosh micro deployment aws
-		bosh micro deploy ~/bosh-stemcell-aws-0.5.2.tgz
+		bosh micro deploy ~/micro-bosh-stemcell-aws-x.y.z.tgz
+
+A successful deployment looks like this:
+
+        $ bosh micro deploy ~/micro-bosh-stemcell-aws-x.y.z.tgz
+        Deploying new micro BOSH instance `aws/micro_bosh.yml' to `micro-bosh-aws' (type 'yes' to continue): yes
+
+        Verifying stemcell...
+        File exists and readable                                     OK
+        Manifest not found in cache, verifying tarball...
+        Extract tarball                                              OK
+        Manifest exists                                              OK
+        Stemcell image file                                          OK
+        Writing manifest to cache...
+        Stemcell properties                                          OK
+
+        Stemcell info
+        -------------
+        Name:    micro-bosh-stemcell
+        Version: x.y.z
+
+
+        Deploy Micro BOSH
+          unpacking stemcell (00:00:12)
+          uploading stemcell (00:06:20)
+          creating VM from ami-a99d34c0 (00:00:24)
+          waiting for the agent (00:02:29)
+          create disk (00:00:00)
+          mount disk (00:00:20)
+          stopping agent services (00:00:01)
+          applying micro BOSH spec (00:00:25)
+          starting agent services (00:00:00)
+          waiting for the director (00:01:21)
+        Done             11/11 00:11:44
+        WARNING! Your target has been changed to `http://nnn.nnn.nnn.nnn:25555'!
+        Deployment set to '/home/ubuntu/deployments/aws/micro_bosh.yml'
+        Deployed `aws/micro_bosh.yml' to `micro-bosh-aws', took 00:11:44 to complete
 
 ## Deploy BOSH as an application using micro BOSH. ##
 
