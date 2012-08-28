@@ -4,7 +4,7 @@ director_uuid: 74cee69e-2cd8-4c99-96c8-f332e4967021
 
 release:
   name: appcloud
-  version: 65
+  version: 96
 
 compilation:
   workers: 4
@@ -136,7 +136,7 @@ jobs:
   - name: default
 
 - name: ccdb_postgres
-  template: ccdb_postgres
+  template: postgres
   instances: 1
   resource_pool: infrastructure
   persistent_disk: 8192
@@ -144,23 +144,27 @@ jobs:
   - name: default
     static_ips:
     - 192.0.2.12
+  properties:
+    db: ccdb
 
 - name: uaadb
-  template: ccdb_postgres
+  template: postgres
   instances: 1
   resource_pool: infrastructure
   persistent_disk: 8192
-  properties:
-    ccdb:
-      user: root
-      password: aaa39c8e3f34bc201351ba7a
-      address: 192.0.2.15
-      port: 2544
-      dbname: uaa
   networks:
   - name: default
     static_ips:
     - 192.0.2.15
+  properties:
+    db: uaadb
+
+- name: uaa
+  template: uaa
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default
 
 - name: vcap_redis
   template: vcap_redis
@@ -170,13 +174,6 @@ jobs:
   - name: default
     static_ips:
     - 192.0.2.16
-
-- name: uaa
-  template: uaa
-  instances: 1
-  resource_pool: infrastructure
-  networks:
-  - name: default
 
 - name: cloud_controller
   template: cloud_controller
@@ -338,12 +335,26 @@ properties:
     port: 4222
 
   ccdb:
-    user: ccadmin
-    password: aaaBauWauZZb2
     address: 192.0.2.12
     port: 5524
-    pool_size: 10
-    dbname: appcloud
+    roles:
+    - tag: admin
+      name: ccadmin
+      password: aaaBauWauZZb2
+    databases:
+      tag: cc
+      name: appcloud
+
+  uaadb:
+    address: 192.0.2.15
+    port: 2544
+    roles:
+    - tag: admin
+      name: uaaadmin
+      password: aaaFi1233G45c
+    databases:
+    - tag: uaa
+      name: uaa
 
   cc:
     srv_api_uri: http://api.cloudfoundry.test
