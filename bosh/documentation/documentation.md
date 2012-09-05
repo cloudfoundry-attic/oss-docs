@@ -1337,6 +1337,84 @@ The main point of this versioning scheme is to partition release engineering pro
 1. Developers who are quickly iterating on their changes and don't really care about keeping consistent versioning of Bosh Release, BOSH CLI takes care of all versioning details for them and prevents others from seeing all the work-in-progress releases.
 2. SREs who are actually building releases for production use and want them to be consistently versioned and source controlled.
 
+## Setting up a new release repository using S3 ##
+
+The following instructions require that you use BOSH cli version 0.19.6 or later.
+
+To publish a BOSH release repository you need to do two things:
+1. make the repository available using git
+   e.g. on [github](https://github.com/)
+2. make the final jobs and packages available
+   e.g. using [S3](http://aws.amazon.com/s3/)
+
+In this blog post the [bosh-sample-release](https://github.com/cloudfoundry/bosh-sample-release) is used as an example of how you setup a BOSH release repository with publicly available final jobs and packages. The text in <span style="color: red;">red</span> needs to be replaced with your specific information, e.g. Amazon access key id and bucket name.
+
+First you need to create a new user in Amazon IAM that will be able to upload data to S3, then create a S3 bucket where the final objects are going to be stored.
+
+Then set a bucket policy that allows anonymous users (anyone) to get objects from the bucket:
+
+```{
+  "Version": "2008-10-17",
+  "Statement": [
+    {
+      "Sid": "AddPerm",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::<code style="color: red;">bosh-sample-release</code>/*"
+    }
+  ]
+}```
+
+Initialize a new release repository:
+
+    bosh init release <code style="color: red;">bosh-sample-release</code> --git
+
+In your release repository, create the file `config/final.yml` with the contents:
+
+```---
+final_name: wordpress
+min_cli_version: 0.19.6
+blobstore:
+  provider: s3
+  options:
+    bucket_name: <code style="color: red;">bosh-sample-release</code>```
+
+Next create the file `private.yml` somewhere **outside** of the repository and create a soft link to it in the `config` directory. This is to prevent you from accidentally committing the S3 credentials to the repository and thus exposing secret information.
+
+```---
+blobstore:
+  s3:
+    secret_access_key: <code style="color: red;"> EVGFswlmOvA33ZrU1ViFEtXC5Sugc19yPzokeWRf</code>
+    access_key_id: <code style="color: red;"> AKIAIYJWVDUP4KRWBESQ</code>```
+
+Now you need to commit the changes to the repository
+
+    git add .
+    git commit -m 'initial commit'
+
+Create some jobs and packages
+
+    bosh generate package foo
+    bosh generate job bar
+
+Create a dev release. The `--force` option is needed as you have uncommitted changes in the repository.
+
+    bosh create release --force
+
+Once you are satisfied with your changes, commit them and build the final release.
+
+    git add .
+    git commit -m 'added package foo and job bar'
+    bosh create release --final
+
+This uploads the final packages and jobs to S3, and stores references to them in your release repository. These references need to be committed too.
+
+    git add .
+    git commit -m 'release #1'
+
 # BOSH Deployments #
 
 ## Steps of a Deployment ##
