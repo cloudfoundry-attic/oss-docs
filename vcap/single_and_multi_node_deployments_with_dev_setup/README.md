@@ -127,12 +127,14 @@ This section will guide you through installation and verification of a single no
 
 	Now that you have the necessary dependencies, you can run the BVTs:
 
-    	cd cloudfoundry/vcap
+		source ~/.cloudfoundry_deployment_local
+		cd cloudfoundry/vcap
 		cd tests && bundle package; bundle install && cd ..
 		rake tests
 
 2. Unit tests can also be run using the following:
 
+		source ~/.cloudfoundry_deployment_local
 		cd cloud_controller
 		rake spec
 		cd ../dea
