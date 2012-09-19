@@ -3,7 +3,7 @@
 _Author: **Jennifer Hickey**_
 
 This document explains how to add a framework in a [dev_setup installation](https://github.com/cloudfoundry/oss-docs/tree/master/vcap/single_and_multi_node_deployments_with_dev_setup) of Cloud
-Foundry.
+Foundry.  Please look [here](https://github.com/cloudfoundry/oss-docs/tree/master/vcap/adding_a_runtime) for instructions on adding a runtime.
 
 ## Create a Staging Plugin
 Each framework should have a staging plugin.  Staging plugins should extend the [StagingPlugin](https://github.com/cloudfoundry/vcap-staging/blob/master/lib/vcap/staging/plugin/common.rb) class and should be named FrameworknamePlugin.  Take a look at the [Sinatra plugin](https://github.com/cloudfoundry/vcap-staging/blob/master/lib/vcap/staging/plugin/sinatra/plugin.rb) for an example.
