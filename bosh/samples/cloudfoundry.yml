@@ -4,7 +4,7 @@ director_uuid: 74cee69e-2cd8-4c99-96c8-f332e4967021
 
 release:
   name: appcloud
-  version: 65
+  version: 102
 
 compilation:
   workers: 4
@@ -25,12 +25,12 @@ networks:
 
 - name: default
   subnets:
-  - reserved:
+  - range: 192.0.2.0/24
+    reserved:
     - 192.0.2.2 - 192.0.2.9
     - 192.0.2.245 - 192.0.2.254
     static:
     - 192.0.2.10 - 192.0.2.140
-    range: 192.0.2.0/24
     gateway: 192.0.2.1
     dns:
     - 192.0.2.245
@@ -39,9 +39,9 @@ networks:
       name: VLAN2220
 - name: lb
   subnets:
-  - static:
+  - range: 192.168.0.0/24
+    static:
     - 192.168.0.1 - 192.168.0.100
-    range: 192.168.0.0/24
     dns:
     - 192.168.0.245
     - 192.168.0.246
@@ -52,10 +52,10 @@ resource_pools:
 
 - name: infrastructure
   network: default
-  size: 32
+  size: 45
   stemcell:
     name: bosh-stemcell
-    version: 0.4.4
+    version: 0.6.4
   cloud_properties:
     ram: 4096
     disk: 8192
@@ -70,9 +70,9 @@ resource_pools:
   size: 4
   stemcell:
     name: bosh-stemcell
-    version: 0.4.4
+    version: 0.6.4
   cloud_properties:
-    ram: 4096
+    ram: 8192
     disk: 16384
     cpu: 4
   env:
@@ -91,6 +91,19 @@ jobs:
   - name: default
     static_ips:
     - 192.0.2.10
+
+- name: services_nfs
+  template: debian_nfs_server
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 8192
+  properties:
+    debian_nfs_server:
+      no_root_squash: true
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.20
 
 - name: syslog_aggregator
   template: syslog_aggregator
@@ -111,11 +124,30 @@ jobs:
     static_ips:
     - 192.0.2.11
 
+- name: hbase_slave
+  template: hbase_slave
+  instances: 3
+  resource_pool: infrastructure
+  persistent_disk: 2048
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.21 - 192.0.2.23
+
+- name: hbase_master
+  template: hbase_master
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 2048
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.24
+
 - name: opentsdb
   template: opentsdb
   instances: 1
   resource_pool: infrastructure
-  persistent_disk: 16384
   networks:
   - name: default
     static_ips:
@@ -137,27 +169,27 @@ jobs:
 
 - name: ccdb_postgres
   template: postgres
-  properties:
-    db: ccdb
   instances: 1
   resource_pool: infrastructure
-  persistent_disk: 8192
+  persistent_disk: 2048
   networks:
   - name: default
     static_ips:
     - 192.0.2.12
+  properties:
+    db: ccdb
 
 - name: uaadb
   template: postgres
-  properties:
-    db: uaadb
   instances: 1
   resource_pool: infrastructure
-  persistent_disk: 8192
+  persistent_disk: 2048
   networks:
   - name: default
     static_ips:
     - 192.0.2.15
+  properties:
+    db: uaadb
 
 - name: vcap_redis
   template: vcap_redis
@@ -168,12 +200,50 @@ jobs:
     static_ips:
     - 192.0.2.16
 
+- name: services_redis
+  template: vcap_redis
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 2048
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.82
+  properties:
+    vcap_redis:
+      port: 3456
+      password: aaaFXngo
+      maxmemory: 2000000000
+      persistence:
+        dir: /var/vcap/store/vcap_redis
+
 - name: uaa
   template: uaa
   instances: 1
   resource_pool: infrastructure
   networks:
   - name: default
+
+- name: acmdb
+  template: postgres
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 2048
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.17
+  properties:
+    db: acmdb
+
+- name: acm
+  template: acm
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.18
 
 - name: cloud_controller
   template: cloud_controller
@@ -189,8 +259,8 @@ jobs:
   networks:
   - name: default
 
-- name: routerv2
-  template: routerv2
+- name: router
+  template: router
   instances: 2
   resource_pool: infrastructure
   networks:
@@ -198,7 +268,7 @@ jobs:
     default: [dns, gateway]
   - name: lb
     static_ips:
-    - 192.168.0.2 - 192.168.0.2
+    - 192.168.0.1 - 192.168.0.2
 
 - name: health_manager
   template: health_manager
@@ -218,13 +288,13 @@ jobs:
 
 - name: mysql_node
   template: mysql_node
-  instances: 1
+  instances: 2
   resource_pool: infrastructure
   persistent_disk: 800
   networks:
   - name: default
     static_ips:
-    - 192.0.2.30
+    - 192.0.2.30 - 192.0.2.31
 
 - name: mysql_gateway
   template: mysql_gateway
@@ -235,13 +305,13 @@ jobs:
 
 - name: mongodb_node
   template: mongodb_node
-  instances: 1
+  instances: 2
   resource_pool: infrastructure
-  persistent_disk: 600
+  persistent_disk: 4096
   networks:
   - name: default
     static_ips:
-    - 192.0.2.40
+    - 192.0.2.40 - 192.0.2.41
 
 - name: mongodb_gateway
   template: mongodb_gateway
@@ -252,13 +322,13 @@ jobs:
 
 - name: redis_node
   template: redis_node
-  instances: 1
+  instances: 2
   resource_pool: infrastructure
   persistent_disk: 600
   networks:
   - name: default
     static_ips:
-    - 192.0.2.50
+    - 192.0.2.50 - 192.0.2.51
 
 - name: redis_gateway
   template: redis_gateway
@@ -269,13 +339,13 @@ jobs:
 
 - name: rabbit_node
   template: rabbit_node
-  instances: 1
+  instances: 2
   resource_pool: infrastructure
   persistent_disk: 4096
   networks:
   - name: default
     static_ips:
-    - 192.0.2.60
+    - 192.0.2.60 - 192.0.2.61
 
 - name: rabbit_gateway
   template: rabbit_gateway
@@ -286,16 +356,33 @@ jobs:
 
 - name: postgresql_node
   template: postgresql_node
-  instances: 1
+  instances: 2
   resource_pool: infrastructure
   persistent_disk: 650
   networks:
   - name: default
     static_ips:
-    - 192.0.2.70
+    - 192.0.2.70 - 192.0.2.71
 
 - name: postgresql_gateway
   template: postgresql_gateway
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default
+
+- name: vblob_node
+  template: vblob_node
+  instances: 1
+  resource_pool: infrastructure
+  persistent_disk: 1024
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.90
+
+- name: vblob_gateway
+  template: vblob_gateway
   instances: 1
   resource_pool: infrastructure
   networks:
@@ -319,10 +406,19 @@ jobs:
     static_ips:
     - 192.0.2.81
 
+- name: serialization_data_server
+  template: serialization_data_server
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default
+    static_ips:
+    - 192.0.2.83
+
 properties:
   domain: cloudfoundry.test
 
-  env: {}
+  env:
 
   networks:
     apps: default
@@ -346,34 +442,53 @@ properties:
       name: uaa
 
   ccdb:
-    user: ccadmin
-    password: aaaBauWauZZb2
     address: 192.0.2.12
     port: 5524
     pool_size: 10
-    dbname: appcloud
     roles:
     - tag: admin
       name: ccadmin
-      password: vsdfFsd23rdfs
+      password: aaaBauWauZZb2
     databases:
     - tag: cc
       name: appcloud
+
+  uaadb:
+    address: 192.0.2.15
+    port: 2544
+    roles:
+    - tag: admin
+      name: root
+      password: aaa39c8e3f34bc201351ba7a
+    databases:
+    - tag: uaa
+      name: uaa
+
+  acmdb:
+    address: 192.0.2.17
+    port: 2544
+    roles:
+    - tag: admin
+      name: root
+      password: aaa0rBVCCDcMlkpQ0SrE9XUj
+    databases:
+    - tag: acm
+      name: acm
 
   cc:
     srv_api_uri: http://api.cloudfoundry.test
     password: aaauuLaap44jadlas2l312lk
     token: aaaf4eaa8c1758f66d5cb7adcb24adb9d7
     use_nginx: true
-    new_stager_percent: 25
+    new_stager_percent: 100
     new_stager_email_regexp: '.*@vmware.com'
     staging_upload_user: aaafhgjg
-    staging_upload_password: AAAfdase9
+    staging_upload_password: aaafdase9
     allow_registration: true
     uaa:
       enabled: true
       resource_id: cloud_controller
-      client_secret: aaaNxRJcx6cpv
+      token_creation_email_filter: [""]
     admins:
     - martin@englund.nu
 
@@ -391,7 +506,7 @@ properties:
 
   dashboard:
     users:
-      - [dash, admin]
+      - [b29, admin]
 
   dea:
     max_memory: 4096
@@ -400,9 +515,29 @@ properties:
     address: 192.0.2.10
     network: 192.0.2.0/24
 
+  hbase_master:
+    address: 192.0.2.24
+    hbase_master:
+      port: 60000
+      webui_port: 60010
+      heap_size: 1024
+    hbase_zookeeper:
+      heap_size: 1024
+    hadoop_namenode:
+      port: 9000
+
   opentsdb:
     address: 192.0.2.14
     port: 4242
+
+  hbase_slave:
+    hbase_regionserver:
+      port: 60020
+      heap_size: 1024
+    addresses:
+    - 192.0.2.21
+    - 192.0.2.22
+    - 192.0.2.23
 
   service_plans:
     mysql:
@@ -457,36 +592,106 @@ properties:
           max_memory_factor: 0.5
           max_clients: 512
           capacity: 200
+    vblob:
+      free:
+        job_management:
+          low_water: 100
+          high_water: 1400
+        configuration:
+          capacity: 200
+
+  serialization_data_server:
+    upload_token: aaaCOGvTlXT7l8IzAgOHxMXurBrG364k
+    use_nginx: true
+    upload_timeout: 10
+    port: 8080
+    upload_file_expire_time: 600
+    purge_expired_interval: 30
+
+  service_lifecycle:
+    download_url: service-serialization.cloudfoundry.test
+    mount_point: /var/vcap/service_lifecycle
+    tmp_dir: /var/vcap/service_lifecycle/tmp_dir
+    resque:
+      host: 192.0.2.82
+      port: 3456
+      password: aaaFXngo
+    nfs_server:
+      address: 192.0.2.20
+      export_dir: /var/vcap/store/shared
+    serialization_data_server:
+    - 192.0.2.83
 
   mysql_gateway:
     check_orphan_interval: 7200
     token: "0xfeedface"
+    supported_versions: ["5.1"]
+    version_aliases:
+      current: "5.1"
   mysql_node:
     production: true
     password: aaa13djkas
+    supported_versions: ["5.1"]
+    default_version: "5.1"
 
   redis_gateway:
     token: "0xfeedface"
     check_orphan_interval: 7200
+    supported_versions: ["2.2"]
+    version_aliases:
+      current: "2.2"
   redis_node:
-    command_rename_prefix: sample
+    command_rename_prefix: foobar
+    supported_versions: ["2.2"]
+    default_version: "2.2"
 
   mongodb_gateway:
     check_orphan_interval: 7200
     token: "0xfeedface"
+    supported_versions: ["1.8", "2.0"]
+    version_aliases:
+      current: "2.0"
+      deprecated: "1.8"
+
   mongodb_node:
-    {}
+    supported_versions: ["1.8", "2.0"]
+    default_version: "1.8"
 
   rabbit_gateway:
     token: AAA430A8BAED490B1240338DA34B10D
+    check_orphan_interval: 7200
+    supported_versions: ["2.4"]
+    version_aliases:
+      current: "2.4"
   rabbit_node:
-    {}
+    supported_versions: ["2.4"]
+    default_version: "2.4"
 
   postgresql_gateway:
     check_orphan_interval: 7200
-    token: aaaeAh4BXFBXwLrrWJCpQTfeDnaCn7m
+    token: AAAeAh4BXFBXwLrrWJCpQTfeDnaCn7m
+    supported_versions: ["9.0"]
+    version_aliases:
+      current: "9.0"
   postgresql_node:
     production: true
+    supported_versions: ["9.0"]
+    default_version: "9.0"
+
+  vblob_gateway:
+    token: AAA7eeKifuL9iichPohw1eeh5n
+    acls:
+      wildcards: [*@vmware.com, *@emc.com, *@rbcon.com]
+    supported_versions: ["0.51"]
+    version_aliases:
+      current: "0.51"
+  vblob_node:
+    vblobd_auth: s3
+    nfs_server:
+      address: 192.0.2.20
+      export_dir: /var/vcap/store/shared
+    supported_versions: ["0.51"]
+    default_version: "0.51"
 
   syslog_aggregator:
     address: 192.0.2.13
@@ -499,23 +704,15 @@ properties:
     - staging
 
   uaa:
-    db:
-      user: root
-      password: aaa39c8e3f34bc201351ba7a
-      address: 192.0.2.15
-      port: 2544
-      dbname: uaa
-    bootstrap:
-      username: admin@vmware.com
-      # BCrypt::Password.create('foobar', :cost => 8)
-      password: $2a$08$4iXvbGvgfC9vhyN7QjXboeK2tlc3dHMQlcWkfHGaHB5aCY.jTZrgy
-      given_name: UAA Administrator
-      family_name: UAA Administrator
-      email: admin@vmware.com
     cc:
       token_secret: aaabxaiC371JM
-      client_secret: $2a$08$dahioBqSkqa1AbLvaqkLoe5W0aOPN3Ia9W0xkeB926G.AZJhq1SsK
+      client_secret: aaaF5DMNDZIfCb9A
+    admin:
+      client_secret: aaa5fER8evgEisjj
     batch:
-      username: do0H2AKay2jAc
-      password: FSCTiplI5Q83n
+      username: aaaH2AKay2jAc
+      password: aaaTiplI5Q83n
 
+  acm:
+    user: aaa8mx8dvsecmbre
+    password: aaaI0DBOzXNEtZW6
