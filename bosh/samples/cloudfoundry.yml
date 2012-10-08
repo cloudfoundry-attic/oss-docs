@@ -436,7 +436,7 @@ properties:
     roles:
     - tag: admin
       name: uaaadmin
-      password: dfSDFsddfwer23223wdfWEF
+      password: aaaDFsddfwer23223wdfWEF
     databases:
     - tag: uaa
       name: uaa
@@ -452,17 +452,6 @@ properties:
     databases:
     - tag: cc
       name: appcloud
-
-  uaadb:
-    address: 192.0.2.15
-    port: 2544
-    roles:
-    - tag: admin
-      name: root
-      password: aaa39c8e3f34bc201351ba7a
-    databases:
-    - tag: uaa
-      name: uaa
 
   acmdb:
     address: 192.0.2.17
@@ -712,6 +701,8 @@ properties:
     batch:
       username: aaaH2AKay2jAc
       password: aaaTiplI5Q83n
+    login:
+      client_secret: aaa5fasdoi872klj
 
   acm:
     user: aaa8mx8dvsecmbre
