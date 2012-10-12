@@ -27,15 +27,15 @@ additional instructions for this environment have been included.
 
 ## Disclaimer
 
-These scripts are tested with and assume a pristine Ubuntu 10.04 64-bit install. Other Ubuntu releases, Linux distributions, and operating systems have not been verified with this installation method and are unlikely to work.
+*These scripts are tested with and assume a pristine Ubuntu 10.04 Server 64-bit install. Other Ubuntu releases, Linux distributions, and operating systems have not been verified with this installation method and are unlikely to work.*
 
 ## Prerequisites: Pristine VM with SSH
 
-* setup a VM with a pristine Ubuntu 10.04 server 64-bit image,
-  [download here](http://www.ubuntu.com/download/ubuntu/download)
-* setup your VM with 1G or more of memory
-* you may wish to snapshot your VM now in case things go pear shaped
-* to enable remote access (more fun than using the console), install ssh.
+* Setup a VM with a pristine **Ubuntu 10.04 Server 64-bit** image,
+  [download here](http://releases.ubuntu.com/lucid/)
+* Setup your VM with 1G or more of memory
+* You may wish to snapshot your VM now in case things go pear shaped
+* To enable remote access (more fun than using the console), install ssh.
 
 Install ssh:
 
