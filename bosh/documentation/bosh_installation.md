@@ -376,7 +376,7 @@ First you need to create a tarball of the bosh release
 		git submodule update --init
 		bosh create release --with-tarball
 
-If this is the first time you run `bosh create release` in the release repo, it will ask you to name the release, e.g. "`bosh`", and then the output will be `dev_releases/bosh-n.tgz`.
+If this is the first time you run `bosh create release` in the release repo, it will ask you to name the release, e.g. "`bosh`", and then the output will be `dev_releases/bosh-n.1-dev.tgz`.
 
 ### Micro BOSH manifest
 
@@ -460,7 +460,7 @@ Now you need the micro BOSH manifest file, which is available in the `bosh-relea
 Now you have all the pieces to assemble the micro BOSH AWS stemcell
 
 		cd ~/bosh/agent
-		rake stemcell2:micro[aws,~/bosh-release/aws.yml,~/bosh-release/dev_builds/bosh-1.tgz]
+		rake stemcell2:micro[aws,~/bosh-release/micro/aws.yml,~/bosh-release/dev_releases/bosh-n.1-dev.tgz]
 
 This outputs the stemcell in `/var/tmp/bosh/agent-x.y.z-nnnnn/work/work/micro-bosh-stemcell-aws-x.y.z.tgz`
 
