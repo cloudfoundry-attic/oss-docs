@@ -11,8 +11,8 @@ The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on eit
 
 Ruby can be installed using either rbenv or rvm. Please refer to the following documents for more details
 
-1. Installing ruby using rbenv :  [install_ruby_rvm.md](https://github.com/rajdeepd/bosh-oss-docs/tree/master/bosh/documentation/install_ruby_rvm.md)
-2. Installing ruby using rvm   :  [install_ruby_rbenv.md](https://github.com/rajdeepd/bosh-oss-docs/tree/master/bosh/documentation/install_ruby_rbenv.md)
+1. Installing ruby using rbenv :  [install_ruby_rvm.md](https://github.com/cloudfoundry/oss-docs/blob/master/bosh/documentation/install_ruby_rvm.md)
+2. Installing ruby using rvm   :  [install_ruby_rbenv.md](https://github.com/cloudfoundry/oss-docs/blob/master/bosh/documentation/install_ruby_rbenv.md)
 
 
 ### Install Local BOSH and BOSH Releases ###
