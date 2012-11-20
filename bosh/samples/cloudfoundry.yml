@@ -1,10 +1,10 @@
 ---
 name: sample
-director_uuid: 74cee69e-2cd8-4c99-96c8-f332e4967021
+director_uuid: 80b15e97-7bda-4d79-81cc-fe722fa0692b
 
 release:
   name: appcloud
-  version: 102
+  version: 119
 
 compilation:
   workers: 4
@@ -18,7 +18,7 @@ update:
   canaries: 1
   canary_watch_time: 3000-90000
   update_watch_time: 3000-90000
-  max_in_flight: 2
+  max_in_flight: 4
   max_errors: 1
 
 networks:
@@ -52,7 +52,7 @@ resource_pools:
 
 - name: infrastructure
   network: default
-  size: 45
+  size: 46
   stemcell:
     name: bosh-stemcell
     version: 0.6.4
@@ -224,6 +224,13 @@ jobs:
   networks:
   - name: default
 
+- name: login
+  template: login
+  instances: 1
+  resource_pool: infrastructure
+  networks:
+  - name: default
+
 - name: acmdb
   template: postgres
   instances: 1
@@ -260,7 +267,7 @@ jobs:
   - name: default
 
 - name: router
-  template: router
+  template: router_next
   instances: 2
   resource_pool: infrastructure
   networks:
@@ -271,13 +278,11 @@ jobs:
     - 192.168.0.1 - 192.168.0.2
 
 - name: health_manager
-  template: health_manager
+  template: health_manager_next
   instances: 1
   resource_pool: infrastructure
   networks:
   - name: default
-    static_ips:
-    - 192.0.2.109
 
 - name: dea
   template: dea
@@ -430,17 +435,6 @@ properties:
     address: 192.0.2.11
     port: 4222
 
-  uaadb:
-    address: 192.0.2.15
-    port: 2544
-    roles:
-    - tag: admin
-      name: uaaadmin
-      password: aaaDFsddfwer23223wdfWEF
-    databases:
-    - tag: uaa
-      name: uaa
-
   ccdb:
     address: 192.0.2.12
     port: 5524
@@ -452,6 +446,17 @@ properties:
     databases:
     - tag: cc
       name: appcloud
+
+  uaadb:
+    address: 192.0.2.15
+    port: 2544
+    roles:
+    - tag: admin
+      name: root
+      password: aaa39c8e3f34bc201351ba7a
+    databases:
+    - tag: uaa
+      name: uaa
 
   acmdb:
     address: 192.0.2.17
@@ -488,17 +493,28 @@ properties:
     maxmemory: 2000000000 # 2GB
 
   router:
+    port: 8081
     status:
       port: 8080
       user: aaaUxXlS0pc71wVef
       password: aaamaIf9vPV4mJyBe
 
   dashboard:
+    uaa:
+      client_id: dashboard
+      client_secret: aaauKyUCZF53kBKS
     users:
       - [b29, admin]
 
   dea:
     max_memory: 4096
+
+  dea_next:
+    memory_mb: 8192
+    memory_overcommit_factor: 4
+    disk_mb: 16384
+    disk_overcommit_factor: 4
+    num_instances: 256
 
   nfs_server:
     address: 192.0.2.10
@@ -626,12 +642,13 @@ properties:
   redis_gateway:
     token: "0xfeedface"
     check_orphan_interval: 7200
-    supported_versions: ["2.2"]
+    supported_versions: ["2.2", "2.4", "2.6"]
     version_aliases:
       current: "2.2"
+      next: "2.6"
   redis_node:
     command_rename_prefix: foobar
-    supported_versions: ["2.2"]
+    supported_versions: ["2.2", "2.4", "2.6"]
     default_version: "2.2"
 
   mongodb_gateway:
@@ -693,17 +710,40 @@ properties:
     - staging
 
   uaa:
+    catalina_opts: -Xmx768m -XX:MaxPermSize=256m
+    jwt:
+      signing_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        add yout key here
+        -----END RSA PRIVATE KEY-----
+      verification_key: |
+        -----BEGIN PUBLIC KEY-----
+        add yout key here
+        -----END PUBLIC KEY-----
+
     cc:
       token_secret: aaabxaiC371JM
       client_secret: aaaF5DMNDZIfCb9A
+    clients:
+      dashboard:
+        secret: aaauKyUCZF53kBKS
+        scope: openid,dashboard.user
+        authorities: uaa.admin,uaa.resource,tokens.read,scim.read,scim.write
+        authorized-grant-types: client_credentials,authorization_code,refresh_token
     admin:
       client_secret: aaa5fER8evgEisjj
+    login:
+      client_secret: aaad2FyZS5jb20iL
     batch:
       username: aaaH2AKay2jAc
       password: aaaTiplI5Q83n
-    login:
-      client_secret: aaa5fasdoi872klj
+    scim:
+      users:
+      - b29|admin|openid,dashboard.user
 
   acm:
     user: aaa8mx8dvsecmbre
     password: aaaI0DBOzXNEtZW6
+
+  login:
+    protocol: https
