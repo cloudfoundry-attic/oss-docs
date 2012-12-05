@@ -5,14 +5,14 @@ Before we can use MicroBOSH or BOSH we need to install the [BOSH CLI](#bosh-cli)
 
 ## Installing BOSH Command Line Interface ##
 
-The following steps install BOSH CLI on Ubuntu 12.04.1 LTS. You can install on either a physical or Virtual Machine.
+The following steps install BOSH CLI on Ubuntu 10.04 LTS. You can install on either a physical or Virtual Machine.
 
 ### Install Ruby ###
 
 Ruby can be installed using either rbenv or rvm. Please refer to the following documents for more details
 
-1. Installing ruby using rvm :  [install_ruby_rvm.md](https://github.com/cloudfoundry/oss-docs/blob/master/bosh/documentation/install_ruby_rvm.md)
-2. Installing ruby using rbenv   :  [install_ruby_rbenv.md](https://github.com/cloudfoundry/oss-docs/blob/master/bosh/documentation/install_ruby_rbenv.md)
+1. Installing ruby using rbenv :  [install_ruby_rvm.md](https://github.com/rajdeepd/bosh-oss-docs/tree/master/bosh/documentation/install_ruby_rvm.md)
+2. Installing ruby using rvm   :  [install_ruby_rbenv.md](https://github.com/rajdeepd/bosh-oss-docs/tree/master/bosh/documentation/install_ruby_rbenv.md)
 
 
 ### Install Local BOSH and BOSH Releases ###
@@ -32,14 +32,9 @@ Ruby can be installed using either rbenv or rvm. Please refer to the following d
 		git config --global user.name "Firstname Lastname"
 		git config --global user.email "your_email@youremail.com"
 
-1. Install out gerrit-cli gem
+1. Install gerrit-cli gem
 
 		gem install gerrit-cli
-
-1. Clone BOSH repositories from Gerrit
-
-		gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/cf-release.git
-		gerrit clone ssh://[<your username>@]reviews.cloudfoundry.org:29418/bosh.git
 
 1. Run some rake tasks to install the BOSH CLI
 
