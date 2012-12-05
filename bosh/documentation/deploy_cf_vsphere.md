@@ -4,13 +4,36 @@ By now the deployment steps should seem somewhat familiar. We'll target our new 
  
 ## Target New BOSH Director ##
 
-You'll need to target your new BOSH Director. Find out its IP address by running:
+You'll need to target your new BOSH Director. First set the target to Micro BOSH and find out the IP address of BOSH Director as follows:
 
++ `bosh target 192.168.9.20` #IP address of Micro BOSH
 + `bosh vms`
+
+Output of this command is similar to the listing below
+
+    $ bosh vms
+      Deployment 'bosh'
+
+      Director task 9
+
+      Task 9 done
+
+      +-----------------+---------+---------------+--------------+
+      | Job/index       | State   | Resource Pool | IPs          |
+      +-----------------+---------+---------------+--------------+
+      | unknown/unknown | running | small         | 192.168.9.27 |
+      | blobstore/0     | running | small         | 192.168.9.25 |
+      | director/0      | running | director      | 192.168.9.24 |
+      | nats/0          | running | small         | 192.168.9.21 |
+      | postgres/0      | running | small         | 192.168.9.22 |
+      | redis/0         | running | small         | 192.168.9.23 |
+      +-----------------+---------+---------------+--------------+
+
+      VMs total: 6
 
 The first time you target the Director, you'll be asked to provide login credentials. These were specified in your BOSH [deployment manifest](../tutorial/examples/bosh_manifest.yml).
 
-+ `bosh target 10.1.4.225:25555 # Note the default port setting`
++ `bosh target 192.168.9.24:25555 # Note the default port setting`
 
 
 ## Upload Stemcell ##
@@ -80,6 +103,7 @@ Use the BOSH CLI to set your current deployment. If you placed your deployment m
 
    `Deployment set to '/home/rajdeep/deployments/cloudfoundry_new.yml'`
 
+
 ## Deploy ##
 
 Let's summarize what we accomplished in this section -- we mirrored the steps we used to deploy BOSH. We targeted our new BOSH Director (running as part of a distributed BOSH,) uploaded a stemcell to the Director, uploaded a public cloud application platform release to the Director, configured a deployment manifest, and set the deployment manifest as the current deployment using the BOSH CLI. 
@@ -87,7 +111,32 @@ Let's summarize what we accomplished in this section -- we mirrored the steps we
 Now you get to watch your vCenter light up with tasks:
 
 + `bosh deploy`
-    
+
+    Output of the above command is pretty long and is partially listed below
+
+   .                           
+ 
+    Getting deployment properties from director...
+	Unable to get properties list from director, trying without it...
+	Compiling deployment manifest...
+	Cannot get current deployment information from director, possibly a new deployment
+    Please review all changes carefully
+      Deploying <filename>.yml' to dev124'(type 'yes' to continue): yes
+    Director task 31
+    Preparing deployment
+        binding deployment (00:00:00)
+        binding releases (00:00:00)
+        binding existing deployment (00:00:00)
+        binding resource pools (00:00:00)
+    binding stemcells (00:00:00)
+    binding templates (00:00:00)
+    binding unallocated VMs (00:00:01)
+    binding instance networks (00:00:00)
+    Done                    8/8 00:00:01        Preparing package compilation
+    finding packages to compile (00:00:00)
+    Done                    1/1 00:00:00
+
+
 
 If you'd like to learn more about what happens during the deployment process, read the official documentation's [explanation of a deployment](https://github.com/cloudfoundry/oss-docs/blob/master/bosh/documentation/documentation.md#bosh-deployments).
 

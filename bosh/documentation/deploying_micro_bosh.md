@@ -126,16 +126,17 @@ If you have 2 datastores called "vnx:1",  "vnx:2" and you would like to separate
 		% mkdir -p ~/stemcells
 		% cd stemcells
 		% bosh public stemcells
-		+-------------------------------+----------------------------------------------------+
-		| Name                          | Url                                                |
-		+-------------------------------+----------------------------------------------------+
-		| bosh-stemcell-0.4.7.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...h120= |
-		| micro-bosh-stemcell-0.1.0.tgz | https://blob.cfblob.com/rest/objects/4e4e7...5Mms= |
-		| bosh-stemcell-0.3.0.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...mw1w= |
-		| bosh-stemcell-0.4.4.tgz       | https://blob.cfblob.com/rest/objects/4e4e7...r144= |
-		+-------------------------------+----------------------------------------------------+
+		+---------------------------------------+--------------------------------------------------+
+		| Name                                  | Tags                                             |
+		+---------------------------------------+--------------------------------------------------+
+		| bosh-stemcell-aws-0.6.4.tgz           | aws, stable                                      |
+		| bosh-stemcell-vsphere-0.6.4.tgz       | vsphere, stable                                  |
+		| bosh-stemcell-vsphere-0.6.7.tgz       | vsphere, stable                                  | 
+		| micro-bosh-stemcell-aws-0.6.4.tgz     | aws, micro, stable                               |
+		| micro-bosh-stemcell-vsphere-0.6.4.tgz | vsphere, micro, stable                           |
+		+---------------------------------------+--------------------------------------------------+
 		To download use 'bosh download public stemcell <stemcell_name>'.
-		% bosh download public stemcell micro-bosh-stemcell-0.1.0.tgz
+		% bosh download public stemcell micro-bosh-stemcell-0.6.4.tgz
 
 
 1. Set the micro BOSH Deployment using:
@@ -144,13 +145,13 @@ If you have 2 datastores called "vnx:1",  "vnx:2" and you would like to separate
 		% bosh micro deployment dev33
 		Deployment set to '/var/vcap/deployments/dev33/micro_bosh.yml'
 
-1. Deploy a new micro BOSH instance and create a new persistent disk.
+1. Deploy a new micro BOSH instance.
 
-		% bosh micro deploy ~/stemcells/micro-bosh-stemcell-0.1.0.tgz
+		% bosh micro deploy ~/stemcells/micro-bosh-stemcell-0.6.4.tgz
 
 1. Update an existing micro BOSH instance. The existing persistent disk will be attached to the new VM.
 
-		% bosh micro deploy ~/stemcells/micro-bosh-stemcell-0.1.1.tgz --update
+		% bosh micro deploy ~/stemcells/micro-bosh-stemcell-0.6.4.tgz --update
 
 ### Deleting a micro BOSH deployment ###
 
