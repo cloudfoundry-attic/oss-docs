@@ -54,8 +54,8 @@
 
 1. Upload a public release from bosh-release
 
-		cd /home/bosh_user/bosh-release/releases/
-		bosh upload release bosh-1.yml
+		cd /home/bosh_user/bosh-release/
+		bosh upload release releases/bosh-1.yml
 
 
 ### Setup a BOSH deployment manifest and deploy ###
