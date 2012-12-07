@@ -165,13 +165,14 @@ Example:
 
 The status command will show the persisted state for a given micro BOSH instance.
 
-		% bosh micro status
-		Stemcell CID   sc-f2430bf9-666d-4034-9028-abf9040f0edf
-		Stemcell name  micro-bosh-stemcell-0.1.0
-		VM CID         vm-9cc859a4-2d51-43ca-8dd5-220425518fd8
-		Disk CID       1
-		Deployment     /var/vcap/deployments/dev33/micro_bosh.yml
-		Target         micro (http://11.23.194.100:25555) Ver: 0.3.12 (00000000)
+                Stemcell CID   sc-fba33340-72c9-4bc2-8fea-3a258511a702
+                Stemcell name  micro-bosh-stemcell-vsphere-0.6.4
+                VM CID         vm-1b15b7e5-af8f-4dba-9212-9e240d662d4f
+                Disk CID       1
+                Micro BOSH CID bm-05558542-61c0-4a99-802a-1909689c659a
+                Deployment     /home/user/cloudfoundry/deployments/micro_bosh/micro_bosh.yml
+                Target         http://192.168.9.20:25555 #IP Address of the Director
+ 
 
 ### Listing Deployments ###
 

@@ -112,9 +112,7 @@ Now you get to watch your vCenter light up with tasks:
 
 + `bosh deploy`
 
-    Output of the above command is pretty long and is partially listed below
-
-   .                           
+Output of the above command is pretty long and is partially listed below                           
  
     Getting deployment properties from director...
 	Unable to get properties list from director, trying without it...
@@ -145,142 +143,78 @@ If you'd like to learn more about what happens during the deployment process, re
 
 You watched your vCenter hard at work and followed the deployment logs, and now the job has finished. How do you verify that your platform is indeed functional?
 
-1. execute the `bosh vms` command again to see all the vas deployed
++ execute the `bosh vms` command again to see all the vas deployed
 
-   Output of this command will similar to the listing below, make sure  State of all the Jobs is running.
+Output of this command will similar to the listing below, make sure  State of all the Jobs is running.	
 
-
-
-	$ bosh vms
-	Deployment `cloudfoundry'
+     $ bosh vms
+     Deployment `cloudfoundry'
 	
-	Director task 30
+     Director task 30
+
+
+     Task 30 done
 	
-	Task 30 done
-	
-	+-----------------------------+---------+----------------+---------------+
-	| Job/index                   | State   | Resource Pool  | IPs           |
-	+-----------------------------+---------+----------------+---------------+
-	| acm/0                       | running | infrastructure | 192.168.9.38  |
-	| acmdb/0                     | running | infrastructure | 192.168.9.37  |
-	| backup_manager/0            | running | infrastructure | 192.168.9.120 |
-	| ccdb_postgres/0             | running | infrastructure | 192.168.9.32  |
-	| cloud_controller/0          | running | infrastructure | 192.168.9.213 |
-	| cloud_controller/1          | running | infrastructure | 192.168.9.214 |
-	| collector/0                 | running | infrastructure | 192.168.9.210 |
-	| dashboard/0                 | running | infrastructure | 192.168.9.211 |
-	| dea/0                       | running | deas           | 192.168.9.186 |
-	| dea/1                       | running | deas           | 192.168.9.187 |
-	| dea/2                       | running | deas           | 192.168.9.188 |
-	| dea/3                       | running | deas           | 192.168.9.189 |
-	| debian_nfs_server/0         | running | infrastructure | 192.168.9.30  |
-	| hbase_master/0              | running | infrastructure | 192.168.9.44  |
-	| hbase_slave/0               | running | infrastructure | 192.168.9.41  |
-	| hbase_slave/1               | running | infrastructure | 192.168.9.42  |
-	| hbase_slave/2               | running | infrastructure | 192.168.9.43  |
-	| health_manager/0            | running | infrastructure | 192.168.9.163 |
-	| login/0                     | running | infrastructure | 192.168.9.162 |
-	| mongodb_gateway/0           | running | infrastructure | 192.168.9.222 |
-	| mongodb_node/0              | running | infrastructure | 192.168.9.60  |
-	| mongodb_node/1              | running | infrastructure | 192.168.9.61  |
-	| mysql_gateway/0             | running | infrastructure | 192.168.9.221 |
-	| mysql_node/0                | running | infrastructure | 192.168.9.51  |
-	| mysql_node/1                | running | infrastructure | 192.168.9.52  |
-	| nats/0                      | running | infrastructure | 192.168.9.31  |
-	| opentsdb/0                  | running | infrastructure | 192.168.9.34  |
-	| postgresql_gateway/0        | running | infrastructure | 192.168.9.192 |
-	| postgresql_node/0           | running | infrastructure | 192.168.9.90  |
-	| postgresql_node/1           | running | infrastructure | 192.168.9.91  |
-	| rabbit_gateway/0            | running | infrastructure | 192.168.9.191 |
-	| rabbit_node/0               | running | infrastructure | 192.168.9.80  |
-	| rabbit_node/1               | running | infrastructure | 192.168.9.81  |
-	| redis_gateway/0             | running | infrastructure | 192.168.9.190 |
-	| redis_node/0                | running | infrastructure | 192.168.9.70  |
-	| redis_node/1                | running | infrastructure | 192.168.9.71  |
-	| router/0                    | running | infrastructure | 192.168.9.101 |
-	| router/1                    | running | infrastructure | 192.168.9.102 |
-	| serialization_data_server/0 | running | infrastructure | 192.168.9.123 |
-	| service_utilities/0         | running | infrastructure | 192.168.9.121 |
-	| services_nfs/0              | running | infrastructure | 192.168.9.50  |
-	| services_redis/0            | running | infrastructure | 192.168.9.72  |
-	| stager/0                    | running | infrastructure | 192.168.9.215 |
-	| stager/1                    | running | infrastructure | 192.168.9.216 |
-	| syslog_aggregator/0         | running | infrastructure | 192.168.9.33  |
-	| uaa/0                       | running | infrastructure | 192.168.9.212 |
-	| uaadb/0                     | running | infrastructure | 192.168.9.35  |
-	| vblob_gateway/0             | running | infrastructure | 192.168.9.193 |
-	| vblob_node/0                | running | infrastructure | 192.168.9.110 |
-	| vcap_redis/0                | running | infrastructure | 192.168.9.36  |
-	+-----------------------------+---------+----------------+---------------+
-	
-	VMs total: 50
+     +-----------------------------+---------+----------------+---------------+
+     | Job/index                   | State   | Resource Pool  | IPs           |
+     +-----------------------------+---------+----------------+---------------+
+     | acm/0                       | running | infrastructure | 192.168.9.38  |
+     | acmdb/0                     | running | infrastructure | 192.168.9.37  |
+     | backup_manager/0            | running | infrastructure | 192.168.9.120 |
+     | ccdb_postgres/0             | running | infrastructure | 192.168.9.32  |
+     | cloud_controller/0          | running | infrastructure | 192.168.9.213 |
+     | cloud_controller/1          | running | infrastructure | 192.168.9.214 |
+     | collector/0                 | running | infrastructure | 192.168.9.210 |
+     | dashboard/0                 | running | infrastructure | 192.168.9.211 |
+     | dea/0                       | running | deas           | 192.168.9.186 |
+     | dea/1                       | running | deas           | 192.168.9.187 |
+     | dea/2                       | running | deas           | 192.168.9.188 |
+     | dea/3                       | running | deas           | 192.168.9.189 |
+     | debian_nfs_server/0         | running | infrastructure | 192.168.9.30  |
+     | hbase_master/0              | running | infrastructure | 192.168.9.44  |
+     | hbase_slave/0               | running | infrastructure | 192.168.9.41  |
+     | hbase_slave/1               | running | infrastructure | 192.168.9.42  |
+     | hbase_slave/2               | running | infrastructure | 192.168.9.43  |
+     | health_manager/0            | running | infrastructure | 192.168.9.163 |
+     | login/0                     | running | infrastructure | 192.168.9.162 |
+     | mongodb_gateway/0           | running | infrastructure | 192.168.9.222 |
+     | mongodb_node/0              | running | infrastructure | 192.168.9.60  |
+     | mongodb_node/1              | running | infrastructure | 192.168.9.61  |
+     | mysql_gateway/0             | running | infrastructure | 192.168.9.221 |
+     | mysql_node/0                | running | infrastructure | 192.168.9.51  |
+     | mysql_node/1                | running | infrastructure | 192.168.9.52  |
+     | nats/0                      | running | infrastructure | 192.168.9.31  |
+     | opentsdb/0                  | running | infrastructure | 192.168.9.34  |
+     | postgresql_gateway/0        | running | infrastructure | 192.168.9.192 |
+     | postgresql_node/0           | running | infrastructure | 192.168.9.90  |
+     | postgresql_node/1           | running | infrastructure | 192.168.9.91  |
+     | rabbit_gateway/0            | running | infrastructure | 192.168.9.191 |
+     | rabbit_node/0               | running | infrastructure | 192.168.9.80  |
+     | rabbit_node/1               | running | infrastructure | 192.168.9.81  |
+     | redis_gateway/0             | running | infrastructure | 192.168.9.190 |
+     | redis_node/0                | running | infrastructure | 192.168.9.70  |
+     | redis_node/1                | running | infrastructure | 192.168.9.71  |
+     | router/0                    | running | infrastructure | 192.168.9.101 |
+     | router/1                    | running | infrastructure | 192.168.9.102 |
+     | serialization_data_server/0 | running | infrastructure | 192.168.9.123 |
+     | service_utilities/0         | running | infrastructure | 192.168.9.121 |
+     | services_nfs/0              | running | infrastructure | 192.168.9.50  |
+     | services_redis/0            | running | infrastructure | 192.168.9.72  |
+     | stager/0                    | running | infrastructure | 192.168.9.215 |
+     | stager/1                    | running | infrastructure | 192.168.9.216 |
+     | syslog_aggregator/0         | running | infrastructure | 192.168.9.33  |
+     | uaa/0                       | running | infrastructure | 192.168.9.212 |
+     | uaadb/0                     | running | infrastructure | 192.168.9.35  |
+     | vblob_gateway/0             | running | infrastructure | 192.168.9.193 |
+     | vblob_node/0                | running | infrastructure | 192.168.9.110 |
+     | vcap_redis/0                | running | infrastructure | 192.168.9.36  |
+     +-----------------------------+---------+----------------+---------------+
+     VMs total: 50
 
 
-   $ bosh vms
-    Deployment cloudfoundry-106
-    
-    Director task 176
-    
-    Task 176 done
-    
-    +-----------------------------+---------+----------------+----------------+
-    | Job/index                   | State   | Resource Pool  | IPs            |
-    +-----------------------------+---------+----------------+----------------+
-    | acm/0                       | running | infrastructure | 192.168.10.48  |
-    | acmdb/0                     | running | infrastructure | 192.168.10.47  |
-    | backup_manager/0            | running | infrastructure | 192.168.10.130 |
-    | ccdb_postgres/0             | running | infrastructure | 192.168.10.42  |
-    | cloud_controller/0          | running | infrastructure | 192.168.10.194 |
-    | cloud_controller/1          | running | infrastructure | 192.168.10.195 |
-    | collector/0                 | running | infrastructure | 192.168.10.191 |
-    | dashboard/0                 | running | infrastructure | 192.168.10.192 |
-    | dea/0                       | running | deas           | 192.168.10.198 |
-    | dea/1                       | running | deas           | 192.168.10.199 |
-    | dea/2                       | running | deas           | 192.168.10.200 |
-    | dea/3                       | running | deas           | 192.168.10.201 |
-    | debian_nfs_server/0         | running | infrastructure | 192.168.10.40  |
-    | hbase_master/0              | running | infrastructure | 192.168.10.54  |
-    | hbase_slave/0               | running | infrastructure | 192.168.10.51  |
-    | hbase_slave/1               | running | infrastructure | 192.168.10.52  |
-    | hbase_slave/2               | running | infrastructure | 192.168.10.53  |
-    | health_manager/0            | running | infrastructure | 192.168.10.109 |
-    | mongodb_gateway/0           | running | infrastructure | 192.168.10.203 |
-    | mongodb_node/0              | running | infrastructure | 192.168.10.70  |
-    | mongodb_node/1              | running | infrastructure | 192.168.10.71  |
-    | mysql_gateway/0             | running | infrastructure | 192.168.10.202 |
-    | mysql_node/0                | running | infrastructure | 192.168.10.61  |
-    | mysql_node/1                | running | infrastructure | 192.168.10.62  |
-    | nats/0                      | running | infrastructure | 192.168.10.41  |
-    | opentsdb/0                  | running | infrastructure | 192.168.10.44  |
-    | postgresql_gateway/0        | running | infrastructure | 192.168.10.206 |
-    | postgresql_node/0           | running | infrastructure | 192.168.10.100 |
-    | postgresql_node/1           | running | infrastructure | 192.168.10.101 |
-    | rabbit_gateway/0            | running | infrastructure | 192.168.10.205 |
-    | rabbit_node/0               | running | infrastructure | 192.168.10.90  |
-    | rabbit_node/1               | running | infrastructure | 192.168.10.91  |
-    | redis_gateway/0             | running | infrastructure | 192.168.10.204 |
-    | redis_node/0                | running | infrastructure | 192.168.10.80  |
-    | redis_node/1                | running | infrastructure | 192.168.10.81  |
-    | router/0                    | running | infrastructure | 192.168.10.111 |
-    | router/1                    | running | infrastructure | 192.168.10.112 |
-    | serialization_data_server/0 | running | infrastructure | 192.168.10.133 |
-    | service_utilities/0         | running | infrastructure | 192.168.10.131 |
-    | services_nfs/0              | running | infrastructure | 192.168.10.60  |
-    | services_redis/0            | running | infrastructure | 192.168.10.82  |
-    | stager/0                    | running | infrastructure | 192.168.10.196 |
-    | stager/1                    | running | infrastructure | 192.168.10.197 |
-    | syslog_aggregator/0         | running | infrastructure | 192.168.10.43  |
-    | uaa/0                       | running | infrastructure | 192.168.10.193 |
-    | uaadb/0                     | running | infrastructure | 192.168.10.45  |
-    | vblob_gateway/0             | running | infrastructure | 192.168.10.207 |
-    | vblob_node/0                | running | infrastructure | 192.168.10.120 |
-    | vcap_redis/0                | running | infrastructure | 192.168.10.46  |
-    +-----------------------------+---------+----------------+----------------+
-    
-    VMs total: 49
 
 
-2. At this point, you've crossed over from `bosh` territory to `vmc`. The `vmc` tool will allow you to push a sample app to your cloud application platform instance and test its functionality.
++ At this point, you've crossed over from `bosh` territory to `vmc`. The `vmc` tool will allow you to push a sample app to your cloud application platform instance and test its functionality.
 
 ## Install VMC ##
 
