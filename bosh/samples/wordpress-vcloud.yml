@@ -1,0 +1,121 @@
+---
+name: wordpress
+director_uuid: d00ea2b1-47a4-4efe-8e04-02106da57391
+release:
+  name: wordpress
+version: 1
+compilation:
+  workers: 4
+network: default
+cloud_properties:
+    ram: 2048
+disk: 8096
+cpu: 2
+
+# this section describes how updates are handled
+update:
+  canaries: 1
+canary_watch_time: 30000
+update_watch_time: 30000
+max_in_flight: 4
+max_errors: 1
+
+networks:
+- name: default
+  subnets:
+  - static:
+    - 192.168.0.111 - 192.168.0.116
+    range: 192.168.0.64/26
+    gateway: 192.168.0.126
+    dns:
+- 10.3.1.1
+- 10.3.1.2
+    cloud_properties:
+      name: cf-routed
+- name: dmz
+  subnets:
+  - static:
+    - 10.147.130.112 - 10.147.130.113
+    range: 10.147.130.64/26
+    gateway: 10.147.130.126
+    dns:
+- 10.3.1.1
+- 10.3.1.2
+    cloud_properties:
+      name: cf-net
+
+resource_pools:
+  - name: infrastructure
+    network: default
+    size: 6
+    stemcell:
+      name: bosh-stemcell
+      version: 0.6.4
+    cloud_properties:
+      cpu: 1
+      disk: 8192
+      ram: 4096
+
+jobs:
+  - name: mysql
+    template: mysql
+    instances: 1
+    resource_pool: infrastructure
+    persistent_disk: 16384
+    networks:
+    - name: default
+      static_ips:
+      - 192.168.0.111
+
+  - name: wordpress
+    template: wordpress
+    instances: 4
+    resource_pool: infrastructure
+    networks:
+    - name: default
+      static_ips:
+      - 192.168.0.113 - 192.168.0.116
+  
+    - name: nginx
+      template: nginx
+      instances: 1
+      resource_pool: infrastructure
+      networks:
+      - name: default
+        default: [dns, gateway]
+        static_ips:
+        - 192.168.0.112
+      - name: dmz
+        static_ips:
+        - 10.147.130.112
+
+properties:
+  wordpress:
+    admin: foo@bar.com
+    port: 8008
+    servers:
+      - 192.168.0.113
+      - 192.168.0.114
+      - 192.168.0.115
+      - 192.168.0.116
+    servername: 10.147.130.112
+    db:
+      name: wp
+      user: wordpress
+      pass: w0rdpr3ss
+    auth_key: random key
+    secure_auth_key: random key
+    logged_in_key: random key
+    nonce_key: random key
+    auth_salt: random key
+    secure_auth_salt: random key
+    logged_in_salt: random key
+    nonce_salt: random key
+
+  mysql:
+    address: 192.168.0.111
+    port: 3306
+    password: rootpass
+  
+nginx:
+    workers: 1
