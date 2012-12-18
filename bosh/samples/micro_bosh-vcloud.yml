@@ -1,0 +1,35 @@
+
+---
+name: vcloud
+
+network:
+  ip: x.x.x.x
+  netmask: n.n.n.n
+  gateway: n.n.n.n
+  dns:
+  - n.n.n.n
+  - n.n.n.n
+  cloud_properties:
+    name: cf-net
+
+resources:
+  persistent_disk: 4096
+
+cloud:
+  plugin: vcloud
+  properties:
+    agent:
+      ntp:
+       - n.n.n.n
+    vcds:
+      - url: https://v.v.v.v
+        user: cfadmin
+        password: *****
+        entities:
+          organization: cf-org
+          virtual_datacenter: cf-vdc
+          vapp_catalog: cf-catalog
+          media_catalog: cf-catalog
+          vm_metadata_key: cf-agent-env
+          description: vcd-cf
+

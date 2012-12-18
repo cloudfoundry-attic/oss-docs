@@ -1,4 +1,4 @@
-#Deploying to vCloud Using Cloud Foundry BOSH#
+#Deploying to vCloud Director Using Cloud Foundry BOSH#
 
 In this tutorial we learn how to deploy a simple Wordpress application on vCloud Director using BOSH.
 
@@ -23,7 +23,7 @@ We assume you already have Ruby (1.9.2) and rubygems (1.8) installed. To install
 
 + We have published micro BOSH stemcells for download. When you are ready to use the BOSH deployer download a micro BOSH stemcell.
 
-Download a micro BOSH stemcell with version >= 0.6.4  Use bosh-release version #11 or higher.
+Download a micro BOSH stemcell with version >= 0.8.0  Use bosh-release version #11 or higher.
 
 Note :  Stemcells for vSphere work for vCloud Director
 
@@ -41,7 +41,7 @@ Note :  Stemcells for vSphere work for vCloud Director
 
 To download use `bosh download public stemcell <stemcell_name>` as shown below
 	
-	% bosh download public stemcell micro-bosh-stemcell-0.6.4.tgz
+	% bosh download public stemcell micro-bosh-stemcell-0.8.0.tgz
 
 ##Deploying Micro BOSH##
 
@@ -67,43 +67,7 @@ The BOSH deployer will deploy applications based on files in expected directory 
 
 Micro BOSH configurations are set in the `micro_bosh.yml`, which you need to create.
 
-+ Create `~/deployments/vcloud/micro_bosh.yml` using the template that appears below:
-
-
-
-		---
-        name:vcloud
-
-        network:
-		  ip: x.x.x.x
-		  netmask: n.n.n.n
-		  gateway: n.n.n.n
-		  dns:
-		    - n.n.n.n
-		    - n.n.n.n
-		  cloud_properties:
-    			name: cf-net
-
-		resources:
-		  persistent_disk: 4096
-		
-		cloud:
-		  plugin: vcloud
-		  properties:
-    			agent:
-    			ntp:
-    			  - n.n.n.n
-    			vcds:
-    			  - url: https://v.v.v.v
-    			  user: cfadmin
-                password: *****
-                entities:
-                  organization: cf-org
-                  virtual_datacenter: cf-vdc
-                  vapp_catalog: cf-catalog
-                  media_catalog: cf-catalog
-                  vm_metadata_key: cf-agent-env
-                  description: vcd-cf
++ Create `~/deployments/vcloud/micro_bosh.yml` using [this template](https://raw.github.com/cloudfoundry/oss-docs/master/bosh/samples/micro_bosh-vcloud.yml).
 
    1. Update the instance of `x.x.x.x` with one of the IPs from the block assigned to you. Change the other IP addresses `n.n.n.n`  to match your network’s netmask, gateway, DNS and NTP server addresses.
    2. Under the vcds section, replace `v.v.v.v` with the address of the vCloud instance and enter your vCloud credentials.
@@ -125,7 +89,7 @@ Note: don’t be concerned by seemingly inaccurate message WARNING! Your target 
 
 + Start the deployment using the micro stemcell downloaded earlier:
 
-		bosh micro deploy ~/stemcells/micro-bosh-stemcell-vsphere-0.6.4.tgz
+		bosh micro deploy ~/stemcells/micro-bosh-stemcell-vsphere-0.8.0.tgz
 
 + Within 20 minutes your instance of micro BOSH will be deployed. After the ‘Done’ message appears, you have a running micro BOSH instance.
 
