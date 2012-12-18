@@ -23,7 +23,7 @@ We assume you already have Ruby (1.9.2) and rubygems (1.8) installed. To install
 
 + We have published micro BOSH stemcells for download. When you are ready to use the BOSH deployer download a micro BOSH stemcell.
 
-Download a micro BOSH stemcell with version >= 0.8.0  Use bosh-release version #11 or higher.
+Download a micro BOSH stemcell with version >= 0.8.0 (coming soon)  Use bosh-release version #11 or higher.
 
 Note :  Stemcells for vSphere work for vCloud Director
 
