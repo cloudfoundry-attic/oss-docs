@@ -7,7 +7,7 @@ In this tutorial we learn how to deploy a simple Wordpress application on vCloud
 
 To get started with BOSH on vCloud you need:
 
-1. An account in a [vCloud organization](http://www.google.com/url?q=http%3A%2F%2Fpubs.vmware.com%2Fvcd-51%2Ftopic%2Fcom.vmware.vcloud.users.doc_51%2FGUID-B2D21D95-B37F-4339-9887-F7788D397FD8.html&sa=D&sntz=1&usg=AFQjCNFXvafOCSo6mu2RqwrqInMggIb0qA) with [organization administrator](http://www.google.com/url?q=http%3A%2F%2Fpubs.vmware.com%2Fvcd-51%2Ftopic%2Fcom.vmware.vcloud.users.doc_51%2FGUID-5B60A9C0-612A-4A3A-9ECE-694C40272505.html&sa=D&sntz=1&usg=AFQjCNHJSQwucHuiTCSsoGSivJX9DnguHw) credentials
+1. An account in a [vCloud 5.1 organization](http://www.google.com/url?q=http%3A%2F%2Fpubs.vmware.com%2Fvcd-51%2Ftopic%2Fcom.vmware.vcloud.users.doc_51%2FGUID-B2D21D95-B37F-4339-9887-F7788D397FD8.html&sa=D&sntz=1&usg=AFQjCNFXvafOCSo6mu2RqwrqInMggIb0qA) with [organization administrator](http://www.google.com/url?q=http%3A%2F%2Fpubs.vmware.com%2Fvcd-51%2Ftopic%2Fcom.vmware.vcloud.users.doc_51%2FGUID-5B60A9C0-612A-4A3A-9ECE-694C40272505.html&sa=D&sntz=1&usg=AFQjCNHJSQwucHuiTCSsoGSivJX9DnguHw) credentials
 2. A vCloud virtual datacenter with an Internet routable network and a block of assigned IP addresses
 3. A Mac or *NIX computer
 
