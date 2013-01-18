@@ -54,6 +54,15 @@ This document describes how to update a Cloud Foundry deployment with a new rele
 ##### [Delete Cloud Foundry and Bosh Deployments] (https://github.com/cloudfoundry/oss-docs/blob/master/bosh/documentation/delete_cf_vsphere.md) #####
 This document describes how to delete a Cloud Foundry deployment and release. We will also learn how to delete a Bosh deployment.
 
+## Installing WordPress on OpenStack  using Micro BOSH##
+This tutorial describes  the steps involved in deploying a sample Wordpress application on OpenStack  - Essex using Micro BOSH
+
+####[Install OpenStack - Essex](https://github.com/cloudfoundry/oss-docs/blob/master/bosh/documentation/install_openstack.md)
+
+####[Install Micro BOSH on OpenStack](https://github.com/cloudfoundry/oss-docs/blob/master/bosh/documentation/install_microbosh_openstack.md) ####
+
+####[Install Wordpress on OpenStack](https://github.com/cloudfoundry/oss-docs/blob/master/bosh/documentation/install_wordpress_openstack.md)
+
 ##Reference Documents ##
 ##### [BOSH CLI Reference] (https://github.com/cloudfoundry/oss-docs/blob/master/bosh/documentation/bosh_cli_reference.md) #####
 This document provides informations about all the flags of `bosh` command line reference.
