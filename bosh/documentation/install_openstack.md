@@ -1,4 +1,4 @@
-$#OpenStack Installation:
+##OpenStack Installation:
 
 ###OpenStack Code Names:
  Each OpenStack service has a code name. Code Names to be used in this document
