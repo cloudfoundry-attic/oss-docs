@@ -48,8 +48,8 @@ apply_spec:
       password: 238djd29d3lH   # Your vCenter password
       datacenters:
       - name: Dev
-        vm_folder: NGIS/BOSH_VMs             # Create this folder manually in vCenter
-        template_folder: NGIS/BOSH_Templates # Ditto.
+        vm_folder: CF/BOSH_VMs             # Create this folder manually in vCenter
+        template_folder: CF/BOSH_Templates # Ditto.
         disk_path: BOSH_Disks           # Create this path manually in your datastore
         datastore_pattern: 1TB-ISCSI    # See documentation.md (official doc) for more on the datastore pattern
         persistent_datastore_pattern: 1TB-ISCSI
